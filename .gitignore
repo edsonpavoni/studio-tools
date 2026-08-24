@@ -1,0 +1,13 @@
+# PCB-Maker is its own repository: github.com/edsonpavoni/pcb-maker
+PCB-Maker/
+
+# Transcripts, caches, and hand-verification notes contain private
+# conversations. They never leave the machine that made them.
+PT-Transcriber/transcripts/
+
+# Private domain vocabulary (people's names, case terms)
+PT-Transcriber/vocab.txt
+
+.DS_Store
+__pycache__/
+*.pyc
