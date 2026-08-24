@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="88.000mm" height="70.000mm" viewBox="-2.000 -68.000 88.000 70.000">
+<g id="HOLES" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="9.000" cy="-17.000" r="0.300000"/>
+<circle cx="12.400" cy="-17.000" r="0.450000"/>
+<circle cx="15.800" cy="-17.000" r="0.500000"/>
+<circle cx="19.200" cy="-17.000" r="0.650000"/>
+<circle cx="22.600" cy="-17.000" r="1.200000"/>
+<circle cx="11.000" cy="-9.000" r="3.300000"/>
+<circle cx="33.000" cy="-17.000" r="0.300000"/>
+<circle cx="36.400" cy="-17.000" r="0.450000"/>
+<circle cx="39.800" cy="-17.000" r="0.500000"/>
+<circle cx="43.200" cy="-17.000" r="0.650000"/>
+<circle cx="46.600" cy="-17.000" r="1.200000"/>
+<circle cx="35.000" cy="-9.000" r="3.300000"/>
+<circle cx="57.000" cy="-17.000" r="0.300000"/>
+<circle cx="60.400" cy="-17.000" r="0.450000"/>
+<circle cx="63.800" cy="-17.000" r="0.500000"/>
+<circle cx="67.200" cy="-17.000" r="0.650000"/>
+<circle cx="70.600" cy="-17.000" r="1.200000"/>
+<circle cx="59.000" cy="-9.000" r="3.300000"/>
+</g>
+<g id="CLR_200ns" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<rect x="9.000" y="-56.050" width="12.000" height="0.100"/>
+<rect x="9.000" y="-53.062" width="12.000" height="0.125"/>
+<rect x="9.000" y="-50.075" width="12.000" height="0.150"/>
+<rect x="9.000" y="-47.087" width="12.000" height="0.175"/>
+<rect x="9.000" y="-44.100" width="12.000" height="0.200"/>
+<rect x="9.000" y="-41.125" width="12.000" height="0.250"/>
+<rect x="9.000" y="-38.150" width="12.000" height="0.300"/>
+<rect x="9.000" y="-35.200" width="12.000" height="0.400"/>
+<rect x="12.000" y="-29.000" width="6.000" height="6.000"/>
+<text x="7.000" y="-4.000" font-size="3.000000" fill="#39c" stroke="none">200ns</text>
+</g>
+<g id="CLR_350ns" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="33.000" y="-56.050" width="12.000" height="0.100"/>
+<rect x="33.000" y="-53.062" width="12.000" height="0.125"/>
+<rect x="33.000" y="-50.075" width="12.000" height="0.150"/>
+<rect x="33.000" y="-47.087" width="12.000" height="0.175"/>
+<rect x="33.000" y="-44.100" width="12.000" height="0.200"/>
+<rect x="33.000" y="-41.125" width="12.000" height="0.250"/>
+<rect x="33.000" y="-38.150" width="12.000" height="0.300"/>
+<rect x="33.000" y="-35.200" width="12.000" height="0.400"/>
+<rect x="36.000" y="-29.000" width="6.000" height="6.000"/>
+<text x="31.000" y="-4.000" font-size="3.000000" fill="#2a2" stroke="none">350ns</text>
+</g>
+<g id="CLR_500ns" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="57.000" y="-56.050" width="12.000" height="0.100"/>
+<rect x="57.000" y="-53.062" width="12.000" height="0.125"/>
+<rect x="57.000" y="-50.075" width="12.000" height="0.150"/>
+<rect x="57.000" y="-47.087" width="12.000" height="0.175"/>
+<rect x="57.000" y="-44.100" width="12.000" height="0.200"/>
+<rect x="57.000" y="-41.125" width="12.000" height="0.250"/>
+<rect x="57.000" y="-38.150" width="12.000" height="0.300"/>
+<rect x="57.000" y="-35.200" width="12.000" height="0.400"/>
+<rect x="60.000" y="-29.000" width="6.000" height="6.000"/>
+<text x="55.000" y="-4.000" font-size="3.000000" fill="#c72" stroke="none">500ns</text>
+</g>
+<g id="CUTOUT" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<rect x="0.000" y="-66.000" width="84.000" height="66.000"/>
+</g>
+</svg>

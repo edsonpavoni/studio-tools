@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="30.000mm" height="49.400mm" viewBox="1.000 -50.400 30.000 49.400">
+<g id="CLEAR" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="12.000" y="-8.150" width="15.000" height="2.500"/>
+<rect x="12.000" y="-5.500" width="15.000" height="2.500"/>
+<rect x="12.000" y="-14.150" width="15.000" height="2.500"/>
+<rect x="12.000" y="-11.450" width="15.000" height="2.500"/>
+<rect x="12.000" y="-20.200" width="15.000" height="2.500"/>
+<rect x="12.000" y="-17.450" width="15.000" height="2.500"/>
+<rect x="12.000" y="-26.300" width="15.000" height="2.500"/>
+<rect x="12.000" y="-23.500" width="15.000" height="2.500"/>
+<rect x="12.000" y="-32.500" width="15.000" height="2.500"/>
+<rect x="12.000" y="-29.600" width="15.000" height="2.500"/>
+<rect x="12.000" y="-38.800" width="15.000" height="2.500"/>
+<rect x="12.000" y="-35.800" width="15.000" height="2.500"/>
+<rect x="12.000" y="-45.400" width="15.000" height="2.500"/>
+<rect x="12.000" y="-42.100" width="15.000" height="2.500"/>
+</g>
+<g id="LABELS" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<text x="29.000" y="-4.575" font-size="2.200000" fill="#39c" stroke="none">0.15</text>
+<text x="29.000" y="-10.550" font-size="2.200000" fill="#39c" stroke="none">0.20</text>
+<text x="29.000" y="-16.575" font-size="2.200000" fill="#39c" stroke="none">0.25</text>
+<text x="29.000" y="-22.650" font-size="2.200000" fill="#39c" stroke="none">0.30</text>
+<text x="29.000" y="-28.800" font-size="2.200000" fill="#39c" stroke="none">0.40</text>
+<text x="29.000" y="-35.050" font-size="2.200000" fill="#39c" stroke="none">0.50</text>
+<text x="29.000" y="-41.500" font-size="2.200000" fill="#39c" stroke="none">0.80</text>
+<text x="3.000" y="-47.200" font-size="2.400000" fill="#39c" stroke="none">meter each bar</text>
+</g>
+</svg>

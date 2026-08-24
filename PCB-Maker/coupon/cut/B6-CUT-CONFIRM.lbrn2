@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="CUTOUT_confirm"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.3"/>
+        <wobbleStep Value="0.04"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="9"/>
+        <name Value="LABELS"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 18.000000 28.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="20.000000" H="20.000000" Cr="0">
+        <XForm>1 0 0 1 52.000000 28.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="30.000000" H="30.000000" Cr="0">
+        <XForm>1 0 0 1 86.000000 28.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="10mm" H="2.600000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 13.000000 19.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="20mm" H="2.600000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 42.000000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="30mm" H="2.600000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 71.000000 9.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="CUTOUT confirmation. Single stage, wobble 0.30, 400 mm/s, 16 passes. The taper never ran in test 02 - both squares fell during its first stage - so this is that stage on its own, with margin. Three squares of different size to check that a longer perimeter still releases. Board lifted off the bed, air assist ON. Watch the % and note when each one drops."/>
+</LightBurnProject>

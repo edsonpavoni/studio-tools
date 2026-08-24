@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="92.000mm" height="39.300mm" viewBox="11.000 -45.000 92.000 39.300">
+<g id="CUTOUT_confirm" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="13.000" y="-33.000" width="10.000" height="10.000"/>
+<rect x="42.000" y="-38.000" width="20.000" height="20.000"/>
+<rect x="71.000" y="-43.000" width="30.000" height="30.000"/>
+</g>
+<g id="LABELS" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<text x="13.000" y="-19.000" font-size="2.600000" fill="#39c" stroke="none">10mm</text>
+<text x="42.000" y="-14.000" font-size="2.600000" fill="#39c" stroke="none">20mm</text>
+<text x="71.000" y="-9.000" font-size="2.600000" fill="#39c" stroke="none">30mm</text>
+</g>
+</svg>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="66.000mm" height="49.200mm" viewBox="9.000 -51.000 66.000 49.200">
+<g id="01_w.30" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="11.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="01_w.20" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<rect x="11.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="01_w.10" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="11.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="01_w.05" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="11.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="02_w.30" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<rect x="37.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="02_w.20" data-priority="5" stroke="#666" fill="none" stroke-width="0.1">
+<rect x="37.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="02_w.10" data-priority="6" stroke="#c39" fill="none" stroke-width="0.1">
+<rect x="37.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="02_w.05" data-priority="7" stroke="#3aa" fill="none" stroke-width="0.1">
+<rect x="37.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="03_w.20" data-priority="8" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="63.000" y="-49.000" width="10.000" height="10.000"/>
+</g>
+<g id="04_w.10" data-priority="9" stroke="#39c" fill="none" stroke-width="0.1">
+<rect x="11.000" y="-19.000" width="10.000" height="10.000"/>
+</g>
+<g id="05_w.10" data-priority="10" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="37.000" y="-19.000" width="10.000" height="10.000"/>
+</g>
+<g id="06_nowob" data-priority="11" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="63.000" y="-19.000" width="10.000" height="10.000"/>
+</g>
+<g id="01_lbl" data-priority="12" stroke="#93c" fill="none" stroke-width="0.1">
+<text x="11.000" y="-35.000" font-size="2.400000" fill="#93c" stroke="none">01 taper 40</text>
+</g>
+<g id="02_lbl" data-priority="13" stroke="#666" fill="none" stroke-width="0.1">
+<text x="37.000" y="-35.000" font-size="2.400000" fill="#666" stroke="none">02 taper 400</text>
+</g>
+<g id="03_lbl" data-priority="14" stroke="#c39" fill="none" stroke-width="0.1">
+<text x="63.000" y="-35.000" font-size="2.400000" fill="#c39" stroke="none">03 w20 40</text>
+</g>
+<g id="04_lbl" data-priority="15" stroke="#3aa" fill="none" stroke-width="0.1">
+<text x="11.000" y="-5.000" font-size="2.400000" fill="#3aa" stroke="none">04 w10 400</text>
+</g>
+<g id="05_lbl" data-priority="16" stroke="#d33" fill="none" stroke-width="0.1">
+<text x="37.000" y="-5.000" font-size="2.400000" fill="#d33" stroke="none">05 w10 40</text>
+</g>
+<g id="06_lbl" data-priority="17" stroke="#39c" fill="none" stroke-width="0.1">
+<text x="63.000" y="-5.000" font-size="2.400000" fill="#39c" stroke="none">06 none 40</text>
+</g>
+</svg>

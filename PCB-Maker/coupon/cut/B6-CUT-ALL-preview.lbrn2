@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="01_w.30"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.3"/>
+        <wobbleStep Value="0.04"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="1"/>
+        <name Value="01_w.20"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.2"/>
+        <wobbleStep Value="0.03"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="2"/>
+        <name Value="01_w.10"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="2"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="3"/>
+        <name Value="01_w.05"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.05"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="3"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="5"/>
+        <name Value="02_w.30"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.3"/>
+        <wobbleStep Value="0.04"/>
+        <priority Value="4"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="6"/>
+        <name Value="02_w.20"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.2"/>
+        <wobbleStep Value="0.03"/>
+        <priority Value="5"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="7"/>
+        <name Value="02_w.10"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="6"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="8"/>
+        <name Value="02_w.05"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.05"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="7"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="10"/>
+        <name Value="03_w.20"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="32"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.2"/>
+        <wobbleStep Value="0.03"/>
+        <priority Value="8"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="12"/>
+        <name Value="04_w.10"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="64"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="9"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="14"/>
+        <name Value="05_w.10"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="32"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="10"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="16"/>
+        <name Value="06_nowob"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="32"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="11"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="20"/>
+        <name Value="01_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="12"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="21"/>
+        <name Value="02_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="13"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="22"/>
+        <name Value="03_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="14"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="23"/>
+        <name Value="04_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="15"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="24"/>
+        <name Value="05_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="16"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="25"/>
+        <name Value="06_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="17"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="3" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="20" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="01 taper 40" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 11.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="5" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="6" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="7" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="8" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="21" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="02 taper 400" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 37.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="10" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 68.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="22" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="03 w20 40" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 63.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="12" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="23" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="04 w10 400" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 11.000000 5.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="14" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="24" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="05 w10 40" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 37.000000 5.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="16" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 68.000000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="25" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="06 none 40" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 63.000000 5.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="PREVIEW ONLY of all six cut tests. Do not run this file; run B6-CUT-01 .. 06 one at a time, cooling in between."/>
+</LightBurnProject>

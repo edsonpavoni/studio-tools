@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Scan">
+        <index Value="1"/>
+        <name Value="CLEAR"/>
+        <maxPower Value="75"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1500"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="9"/>
+        <name Value="LABELS"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 6.900000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 4.250000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.15" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 4.575000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 12.900000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 10.200000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.20" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 10.550000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 18.950000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 16.200000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.25" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 16.575000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 25.050000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 22.250000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.30" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 22.650000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 31.250000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 28.350000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.40" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 28.800000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 37.550000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 34.550000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.50" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 35.050000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 44.150000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="2.500000" Cr="0">
+        <XForm>1 0 0 1 19.500000 40.850000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="0.80" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 29.000000 41.500000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="9" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="meter each bar" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 3.000000 47.200000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="Trace-width coupon. Meter each bar END TO END across the pads. The narrowest bar with continuity is the minimum trace width. Production fill recipe, air assist ON, board off the bed."/>
+</LightBurnProject>

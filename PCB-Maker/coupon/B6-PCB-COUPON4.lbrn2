@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Scan">
+        <index Value="0"/>
+        <name Value="P25S1000"/>
+        <maxPower Value="25"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="1"/>
+        <name Value="P25S1500"/>
+        <maxPower Value="25"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1500"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="2"/>
+        <name Value="P25S2000"/>
+        <maxPower Value="25"/>
+        <maxPower2 Value="20"/>
+        <speed Value="2000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="2"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="3"/>
+        <name Value="P25S3000"/>
+        <maxPower Value="25"/>
+        <maxPower2 Value="20"/>
+        <speed Value="3000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="3"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="4"/>
+        <name Value="P50S1000"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="4"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="5"/>
+        <name Value="P50S1500"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1500"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="5"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="6"/>
+        <name Value="P50S2000"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="2000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="6"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="7"/>
+        <name Value="P50S3000"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="3000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="7"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="8"/>
+        <name Value="P75S1000"/>
+        <maxPower Value="75"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="8"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="9"/>
+        <name Value="P75S1500"/>
+        <maxPower Value="75"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1500"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="9"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="10"/>
+        <name Value="P75S2000"/>
+        <maxPower Value="75"/>
+        <maxPower2 Value="20"/>
+        <speed Value="2000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="10"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="11"/>
+        <name Value="P75S3000"/>
+        <maxPower Value="75"/>
+        <maxPower2 Value="20"/>
+        <speed Value="3000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="11"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="12"/>
+        <name Value="moats"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1500"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <anglePerPass Value="13"/>
+        <priority Value="12"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="13"/>
+        <name Value="H4x"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="4"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="13"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="14"/>
+        <name Value="H8x"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="14"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="15"/>
+        <name Value="H16x"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="15"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="16"/>
+        <name Value="C8x"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="16"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="17"/>
+        <name Value="C16x"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="40000"/>
+        <numPasses Value="16"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="17"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 12.000000 60.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 22.000000 60.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 32.000000 60.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="3" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 60.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="4" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 12.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="5" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 22.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="6" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 32.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="7" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="8" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 12.000000 40.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="9" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 22.000000 40.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="10" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 32.000000 40.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="11" W="5.000000" H="5.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 40.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="0" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="1000" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 7.500000 64.800000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="1" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="1500" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 17.500000 64.800000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="2" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="2000" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 27.500000 64.800000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="3000" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 37.500000 64.800000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="0" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="25%" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 2.000000 59.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="4" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="50%" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 2.000000 49.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="8" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="75%" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 2.000000 39.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="12" W="22.000000" H="0.150000" Cr="0">
+        <XForm>1 0 0 1 27.000000 30.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="12" W="22.000000" H="0.250000" Cr="0">
+        <XForm>1 0 0 1 27.000000 27.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="12" W="22.000000" H="0.400000" Cr="0">
+        <XForm>1 0 0 1 27.000000 24.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="12" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="moat" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 2.000000 27.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="13" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 10.000000 16.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="13" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 15.000000 16.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="13" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 22.000000 16.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="13" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="4x" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 1.000000 15.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="14" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 10.000000 7.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="14" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 15.000000 7.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="14" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 22.000000 7.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="14" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="8x" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 1.000000 6.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="15" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 10.000000 -2.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="15" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 15.000000 -2.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="15" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 22.000000 -2.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="15" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="16x" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 1.000000 -3.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="16" W="16.000000" H="7.000000" Cr="0">
+        <XForm>1 0 0 1 38.000000 7.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="16" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="cut 8x" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 31.000000 1.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="17" W="16.000000" H="7.000000" Cr="0">
+        <XForm>1 0 0 1 60.000000 7.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="17" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="cut 16x" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 53.000000 1.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="Coupon 4, low energy. Fills: power x speed at 4 passes, 40kHz, 200ns, 0.05mm, hatch +13. Run 3 showed 100% power is far too much and that speed is the dominant variable. Holes and cuts start much lower: run 3 caught fire at 24 passes. Air assist ON. Judge the fills from the BACK and with a meter."/>
+</LightBurnProject>

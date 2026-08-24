@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="79.110mm" height="29.500mm" viewBox="3.000 -39.300 79.110 29.500">
+<g id="01_400/16_w10" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="6.000" cy="-26.000" r="0.450000"/>
+<circle cx="8.540" cy="-26.000" r="0.450000"/>
+<circle cx="11.080" cy="-26.000" r="0.450000"/>
+</g>
+<g id="02_400/32_w10" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="13.620" cy="-26.000" r="0.450000"/>
+<circle cx="16.160" cy="-26.000" r="0.450000"/>
+<circle cx="18.700" cy="-26.000" r="0.450000"/>
+</g>
+<g id="03_200/8_w10" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<circle cx="21.240" cy="-26.000" r="0.450000"/>
+<circle cx="23.780" cy="-26.000" r="0.450000"/>
+<circle cx="26.320" cy="-26.000" r="0.450000"/>
+</g>
+<g id="04_200/16_w10" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<circle cx="28.860" cy="-26.000" r="0.450000"/>
+<circle cx="31.400" cy="-26.000" r="0.450000"/>
+<circle cx="33.940" cy="-26.000" r="0.450000"/>
+</g>
+<g id="05_200/16_w20" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<circle cx="36.480" cy="-26.000" r="0.450000"/>
+<circle cx="39.020" cy="-26.000" r="0.450000"/>
+<circle cx="41.560" cy="-26.000" r="0.450000"/>
+</g>
+<g id="06_100/8_w10" data-priority="5" stroke="#666" fill="none" stroke-width="0.1">
+<circle cx="44.100" cy="-26.000" r="0.450000"/>
+<circle cx="46.640" cy="-26.000" r="0.450000"/>
+<circle cx="49.180" cy="-26.000" r="0.450000"/>
+</g>
+<g id="07_100/16_w10" data-priority="6" stroke="#c39" fill="none" stroke-width="0.1">
+<circle cx="51.720" cy="-26.000" r="0.450000"/>
+<circle cx="54.260" cy="-26.000" r="0.450000"/>
+<circle cx="56.800" cy="-26.000" r="0.450000"/>
+</g>
+<g id="08_100/8_w05" data-priority="7" stroke="#3aa" fill="none" stroke-width="0.1">
+<circle cx="59.340" cy="-26.000" r="0.450000"/>
+<circle cx="61.880" cy="-26.000" r="0.450000"/>
+<circle cx="64.420" cy="-26.000" r="0.450000"/>
+</g>
+<g id="09_100/16_none" data-priority="8" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="66.960" cy="-26.000" r="0.450000"/>
+<circle cx="69.500" cy="-26.000" r="0.450000"/>
+<circle cx="72.040" cy="-26.000" r="0.450000"/>
+</g>
+<g id="10_40/8_w10" data-priority="9" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="74.580" cy="-26.000" r="0.450000"/>
+<circle cx="77.120" cy="-26.000" r="0.450000"/>
+<circle cx="79.660" cy="-26.000" r="0.450000"/>
+</g>
+<g id="LABELS" data-priority="10" stroke="#2a2" fill="none" stroke-width="0.1">
+<text x="5.000" y="-31.000" font-size="2.600000" fill="#2a2" stroke="none">1</text>
+<text x="12.620" y="-36.000" font-size="2.600000" fill="#2a2" stroke="none">2</text>
+<text x="20.240" y="-31.000" font-size="2.600000" fill="#2a2" stroke="none">3</text>
+<text x="27.860" y="-36.000" font-size="2.600000" fill="#2a2" stroke="none">4</text>
+<text x="35.480" y="-31.000" font-size="2.600000" fill="#2a2" stroke="none">5</text>
+<text x="43.100" y="-36.000" font-size="2.600000" fill="#2a2" stroke="none">6</text>
+<text x="50.720" y="-31.000" font-size="2.600000" fill="#2a2" stroke="none">7</text>
+<text x="58.340" y="-36.000" font-size="2.600000" fill="#2a2" stroke="none">8</text>
+<text x="65.960" y="-31.000" font-size="2.600000" fill="#2a2" stroke="none">9</text>
+<text x="73.580" y="-36.000" font-size="2.600000" fill="#2a2" stroke="none">10</text>
+<text x="36.480" y="-13.000" font-size="2.400000" fill="#2a2" stroke="none">ends of a 30-pin 2.54mm header</text>
+</g>
+<g id="REF_pitch" data-priority="11" stroke="#c72" fill="none" stroke-width="0.1">
+<circle cx="6.000" cy="-18.000" r="0.450000"/>
+<circle cx="79.660" cy="-18.000" r="0.450000"/>
+</g>
+</svg>

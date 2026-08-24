@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Hand Route</title>
+<style>
+  :root{
+    --bg:#141110; --panel:#1E1917; --panel2:#282120; --rule:#3A302C;
+    --ink:#EFE7DC; --ink2:#B3A798; --ink3:#7E7266;
+    --cu:#D0865A; --fr4:#2A211B; --board:#33281f;
+    --ok:#7FB183; --warn:#E0A552; --stop:#E0705C; --sel:#6FB3C7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+    font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    touch-action:none;overscroll-behavior:none}
+  #app{display:flex;height:100%}
+  #stage{flex:1;position:relative}
+  canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+
+  #side{width:295px;flex:none;background:var(--panel);border-left:1px solid var(--rule);
+    display:flex;flex-direction:column}
+  #side h1{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
+    padding:14px 16px 8px}
+  #chips{display:flex;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
+  .chip{font:600 12px/1 ui-monospace,monospace;padding:6px 10px;border-radius:20px;
+    background:var(--panel2);border:1px solid var(--rule)}
+  .chip.ok{color:var(--ok)} .chip.bad{color:var(--stop)} .chip.warn{color:var(--warn)}
+  #nets{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 10px 10px;touch-action:pan-y}
+  .net{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:8px;margin:2px 0}
+  .net .dot{width:13px;height:13px;border-radius:4px;flex:none}
+  .net .nm{font:600 13px ui-monospace,monospace}
+  .net .pads{font-size:11px;color:var(--ink3);margin-top:1px}
+  .net .st{margin-left:auto;font:700 13px ui-monospace,monospace;flex:none}
+  .net.done{background:rgba(127,177,131,.08)} .net.done .st{color:var(--ok)}
+  .net.short{background:rgba(224,112,92,.12)} .net.short .st{color:var(--stop)}
+  .net .st.todo{color:var(--ink3)}
+  #alerts{max-height:150px;overflow-y:auto;border-top:1px solid var(--rule);padding:8px 16px;touch-action:pan-y}
+  #alerts div{font-size:12px;padding:5px 0;cursor:pointer;
+    border-bottom:1px dashed var(--rule)}
+  #alerts div:active{opacity:.6}
+  #alerts div::after{content:" \2192";color:var(--ink3)}
+  #alerts .short{color:var(--stop)} #alerts .gap{color:var(--warn)}
+  #bar{display:flex;gap:6px;padding:10px;border-top:1px solid var(--rule);flex-wrap:wrap}
+  button{background:var(--panel2);color:var(--ink);border:1px solid var(--rule);
+    border-radius:8px;padding:9px 12px;font:600 13px -apple-system,sans-serif}
+  button.on{background:var(--sel);color:#0c1c22;border-color:var(--sel)}
+  button:active{opacity:.7}
+  #saveB.dirty{background:var(--warn);color:#231a08;border-color:var(--warn)}
+  #wsel{display:flex;gap:4px}
+  #wsel button{padding:9px 8px;font-family:ui-monospace,monospace}
+  #smoothWrap{display:flex;align-items:center;gap:8px;width:100%;padding:2px 4px 0}
+  #smoothWrap label{font:600 11px ui-monospace,monospace;color:var(--ink3);
+    text-transform:uppercase;letter-spacing:.08em;flex:none}
+  #smooth{flex:1;height:26px;position:relative;touch-action:none}
+  #smooth .track{position:absolute;left:0;right:0;top:11px;height:4px;
+    border-radius:2px;background:var(--rule)}
+  #smooth .fill{position:absolute;left:0;top:11px;height:4px;border-radius:2px;
+    background:var(--sel)}
+  #smooth .knob{position:absolute;top:2px;width:22px;height:22px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--sel);margin-left:-11px}
+  #tabs{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:5}
+  #tabs button{min-width:74px}
+  #cv3{position:absolute;inset:0;width:100%;height:100%;touch-action:none;
+    display:none;background:var(--bg)}
+  #legend{position:absolute;left:12px;bottom:34px;z-index:5;display:none;
+    background:rgba(20,17,16,.92);border:1px solid var(--rule);border-radius:10px;
+    padding:12px 16px;
+    display:none;grid-template-columns:12px 76px 1fr auto;
+    column-gap:12px;row-gap:6px;align-items:baseline;
+    font:11.5px/1.4 ui-monospace,monospace;color:var(--ink2)}
+  #legend.show{display:grid}
+  #legend i{width:10px;height:10px;border-radius:2px;align-self:center}
+  #legend b{color:var(--ink);font-weight:700;white-space:nowrap}
+  #legend .what{white-space:nowrap}
+  #legend .dims{color:var(--ink3);white-space:nowrap;text-align:right;
+    font-variant-numeric:tabular-nums}
+  #toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);
+    background:var(--panel2);border:1px solid var(--rule);border-radius:10px;
+    padding:9px 16px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="cv"></canvas><canvas id="cv3"></canvas>
+    <div id="tabs">
+      <button id="tabDraw" class="on">Draw</button>
+      <button id="tabView">View</button>
+    </div>
+    <div id="legend"></div>
+    <div id="toast"></div>
+  </div>
+  <div id="side">
+    <h1>Connections</h1>
+    <div id="chips">
+      <span class="chip" id="cNets">–</span>
+      <span class="chip" id="cShorts">–</span>
+      <span class="chip" id="cGaps">–</span>
+    </div>
+    <div id="nets"></div>
+    <div id="alerts"></div>
+    <div id="bar">
+      <div id="smoothWrap"><label>Smooth</label>
+        <div id="smooth"><div class="track"></div><div class="fill"></div><div class="knob"></div></div>
+      </div>
+      <button id="undoB">Undo</button>
+      <button id="eraseB">Erase</button>
+      <div id="wsel"></div>
+      <button id="autoB" class="on">Ghost</button>
+      <button id="copperB">Copper</button>
+      <button id="saveB">Save</button>
+    </div>
+  </div>
+</div>
+<script>
+"use strict";
+/* ============================ state ==================================== */
+let B = null;                       // board data from /board
+let strokes = [];                   // [{pts:[[x,y]...], w}]  mm, y-up
+let undoStack = [];
+let view = {x: 0, y: 0, s: 8};      // world->screen: sx=(x-vx)*s, sy=(vy-y)*s
+let drawW = 0.5, erase = false, showAuto = true, dirty = false;
+let copperView = false;             // true = render as real copper on FR4
+let smoothVal = 0.35;             // 0 = raw line, 1 = very smooth
+let cur = null;                     // in-progress stroke pts
+let eraseSession = null;            // strokes deleted during one erase gesture
+let marker = null;                  // {x,y} crosshair dropped by tapping an alert
+let conn = null;                    // last connectivity result
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const DPR = window.devicePixelRatio || 1;
+
+const PALETTE = ["#62A0EA","#8FBE6C","#E0A552","#D67BB8","#6FC7B4",
+                 "#C7B45F","#9E86E8","#E08585","#6FB3C7","#B5C76F",
+                 "#E89A6C","#85AEE0","#C78FD6","#7FC79A"];
+function netColor(net){
+  if (net === B.pour_net) return "#8a7a6a";
+  let h = 0; for (const c of net) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
+
+/* ============================ geometry ================================= */
+function d2(ax,ay,bx,by){ const dx=ax-bx, dy=ay-by; return dx*dx+dy*dy; }
+function distPtSeg(px,py, ax,ay, bx,by){
+  const dx=bx-ax, dy=by-ay, L2=dx*dx+dy*dy;
+  let t = L2 ? ((px-ax)*dx+(py-ay)*dy)/L2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px-(ax+t*dx), py-(ay+t*dy));
+}
+function distPtStroke(px,py, s){
+  let m = 1e9;
+  for (let i=0;i+1<s.pts.length;i++)
+    m = Math.min(m, distPtSeg(px,py, s.pts[i][0],s.pts[i][1], s.pts[i+1][0],s.pts[i+1][1]));
+  return m;
+}
+function ccw(px,py,qx,qy,rx,ry){ return (qx-px)*(ry-py)-(qy-py)*(rx-px); }
+function segSeg(ax,ay,bx,by, cx,cy,dx,dy){
+  // true segment-segment distance. Vertex sampling alone misses two long
+  // segments crossing near mid-span - that blindness let real welds through.
+  const d1=ccw(cx,cy,dx,dy,ax,ay), d2=ccw(cx,cy,dx,dy,bx,by),
+        d3=ccw(ax,ay,bx,by,cx,cy), d4=ccw(ax,ay,bx,by,dx,dy);
+  if (((d1>0)!==(d2>0)) && ((d3>0)!==(d4>0))) return 0;
+  return Math.min(distPtSeg(ax,ay,cx,cy,dx,dy), distPtSeg(bx,by,cx,cy,dx,dy),
+                  distPtSeg(cx,cy,ax,ay,bx,by), distPtSeg(dx,dy,ax,ay,bx,by));
+}
+function distStrokes(a, b){       // centreline distance between two polylines
+  let m = 1e9;
+  for (let i=0;i+1<a.pts.length;i++)
+    for (let j=0;j+1<b.pts.length;j++)
+      m = Math.min(m, segSeg(a.pts[i][0],a.pts[i][1], a.pts[i+1][0],a.pts[i+1][1],
+                             b.pts[j][0],b.pts[j][1], b.pts[j+1][0],b.pts[j+1][1]));
+  return m;
+}
+function rdp(pts, tol){
+  if (pts.length < 3) return pts;
+  const keep = new Array(pts.length).fill(false);
+  keep[0] = keep[pts.length-1] = true;
+  const st = [[0, pts.length-1]];
+  while (st.length){
+    const [i,j] = st.pop();
+    let best = -1, bi = -1;
+    for (let k=i+1;k<j;k++){
+      const d = distPtSeg(pts[k][0],pts[k][1], pts[i][0],pts[i][1], pts[j][0],pts[j][1]);
+      if (d > best){ best = d; bi = k; }
+    }
+    if (best > tol){ keep[bi]=true; st.push([i,bi],[bi,j]); }
+  }
+  return pts.filter((_,k)=>keep[k]);
+}
+function smooth(pts){              // one Chaikin pass keeps it organic, kills jitter
+  if (pts.length < 3) return pts;
+  const out = [pts[0]];
+  for (let i=0;i+1<pts.length;i++){
+    const [ax,ay]=pts[i],[bx,by]=pts[i+1];
+    out.push([ax*0.75+bx*0.25, ay*0.75+by*0.25], [ax*0.25+bx*0.75, ay*0.25+by*0.75]);
+  }
+  out.push(pts[pts.length-1]);
+  return out;
+}
+
+/* ===================== connectivity + checks =========================== */
+function segRect(ax,ay,bx,by, cx,cy,hw,hh){
+  // distance from segment to axis-aligned rect. Circle models under-reach a
+  // square pad's corner by 0.41r - more than the clearance floor.
+  if ((Math.abs(ax-cx)<=hw && Math.abs(ay-cy)<=hh) ||
+      (Math.abs(bx-cx)<=hw && Math.abs(by-cy)<=hh)) return 0;
+  const co = [[cx-hw,cy-hh],[cx+hw,cy-hh],[cx+hw,cy+hh],[cx-hw,cy+hh]];
+  let m = 1e18;
+  for (let i=0;i<4;i++){
+    const [x1,y1]=co[i], [x2,y2]=co[(i+1)%4];
+    m = Math.min(m, segSeg(ax,ay,bx,by, x1,y1,x2,y2));
+  }
+  return m;
+}
+function strokePadSurf(s, p){
+  if (p.shape === "rect"){
+    const hw=(p.pad_w||p.d)/2, hh=(p.pad_h||p.d)/2;
+    let m = 1e18;
+    for (let i=0;i+1<s.pts.length;i++)
+      m = Math.min(m, segRect(s.pts[i][0],s.pts[i][1],s.pts[i+1][0],s.pts[i+1][1],
+                              p.x,p.y,hw,hh));
+    return m - s.w/2;
+  }
+  return distPtStroke(p.x,p.y,s) - s.w/2 - Math.max(p.d, p.pad_w||0, p.pad_h||0)/2;
+}
+
+function analyze(){
+  const N = B.pads.length + strokes.length;
+  const par = Array.from({length:N}, (_,i)=>i);
+  const find = a => { while (par[a]!==a){ par[a]=par[par[a]]; a=par[a]; } return a; };
+  const uni = (a,b) => { a=find(a); b=find(b); if (a!==b) par[a]=b; };
+
+  // pads of the same net are pre-joined (that is what "same net" means),
+  // pour-net pads doubly so
+  const byNet = {};
+  B.pads.forEach((p,i)=>{ if (p.net) (byNet[p.net] ||= []).push(i); });
+  for (const net in byNet){
+    const l = byNet[net];
+    for (let i=1;i<l.length;i++) uni(l[0], l[i]);
+  }
+  // stroke-pad and stroke-stroke contact
+  const touches = strokes.map(()=>new Set());
+  strokes.forEach((s, si)=>{
+    B.pads.forEach((p, pi)=>{
+      // segment-accurate, not vertex-only: a segment sweeping past a pad
+      // mid-span must count as touching it
+      if (strokePadSurf(s, p) <= 0.08){
+        uni(B.pads.length+si, pi); touches[si].add(pi);
+      }
+    });
+  });
+  for (let i=0;i<strokes.length;i++)
+    for (let j=i+1;j<strokes.length;j++)
+      if (distStrokes(strokes[i], strokes[j]) <= (strokes[i].w+strokes[j].w)/2 + 0.05)
+        uni(B.pads.length+i, B.pads.length+j);
+
+  // nets present in each group
+  const groupNets = {};
+  B.pads.forEach((p,i)=>{ if (p.net) (groupNets[find(i)] ||= new Set()).add(p.net); });
+
+  const shorts = [];               // {nets:[..], strokeIdx?}
+  for (const g in groupNets)
+    if (groupNets[g].size > 1) shorts.push([...groupNets[g]]);
+
+  const strokeState = strokes.map((s,si)=>{
+    const g = find(B.pads.length+si);
+    const nets = groupNets[g] ? [...groupNets[g]] : [];
+    return { nets, short: nets.length>1, floating: nets.length===0 };
+  });
+
+  // net completion: every pad of the net in one group AND that group holds a stroke
+  // path between them (pads are pre-joined logically, so completion = every pad is
+  // reachable from every other through drawn copper). Test pairwise via a second
+  // union-find that does NOT pre-join same-net pads.
+  const par2 = Array.from({length:N}, (_,i)=>i);
+  const find2 = a => { while (par2[a]!==a){ par2[a]=par2[par2[a]]; a=par2[a]; } return a; };
+  const uni2 = (a,b) => { a=find2(a); b=find2(b); if (a!==b) par2[a]=b; };
+  strokes.forEach((s,si)=>{ for (const pi of touches[si]) uni2(B.pads.length+si, pi); });
+  for (let i=0;i<strokes.length;i++)
+    for (let j=i+1;j<strokes.length;j++)
+      if (distStrokes(strokes[i], strokes[j]) <= (strokes[i].w+strokes[j].w)/2 + 0.05)
+        uni2(B.pads.length+i, B.pads.length+j);
+
+  const netDone = {};
+  for (const net in B.nets){
+    if (net === B.pour_net){ netDone[net] = true; continue; }
+    const l = B.nets[net];
+    netDone[net] = l.every(i => find2(i) === find2(l[0])) &&
+      (l.length < 2 || l.some(i => find2(i) !== i || strokes.some((s,si)=>touches[si].has(i))));
+  }
+
+  // clearance: stroke surface vs other-net copper surface
+  const gaps = [];
+  strokes.forEach((s, si)=>{
+    const myNets = strokeState[si].nets;
+    if (myNets.length !== 1) return;      // floating or already shorted
+    const my = myNets[0];
+    B.pads.forEach(p=>{
+      if (!p.net || p.net === my) return;
+      const surf = strokePadSurf(s, p);
+      if (surf < B.min_gap && surf > -0.01){
+        let bq = s.pts[0], bd = 1e18;
+        for (const q of s.pts){
+          const dd = d2(q[0],q[1], p.x,p.y);
+          if (dd < bd){ bd = dd; bq = q; }
+        }
+        gaps.push({si, x:(bq[0]+p.x)/2, y:(bq[1]+p.y)/2,
+                   msg:`${my} runs ${surf.toFixed(2)} mm from ${p.name} (${p.net})`});
+      }
+    });
+    strokes.forEach((o, oi)=>{
+      if (oi <= si) return;
+      const oNets = strokeState[oi].nets;
+      if (oNets.length !== 1 || oNets[0] === my) return;
+      const surf = distStrokes(s, o) - s.w/2 - o.w/2;
+      if (surf < B.min_gap && surf > -0.01){
+        let loc = s.pts[0], bd = 1e18;
+        for (const q of s.pts){
+          const dd = distPtStroke(q[0], q[1], o);
+          if (dd < bd){ bd = dd; loc = q; }
+        }
+        gaps.push({si, oi, x:loc[0], y:loc[1],
+                   msg:`${my} runs ${surf.toFixed(2)} mm from ${oNets[0]}`});
+      }
+    });
+  });
+
+  // ---- ornament fusion: what the LASER will weld, not what logically touches.
+  // Copper closer than FUSE mm (kerf pullback both sides + margin) gets physically
+  // merged on the real board. An ornament fusing into ONE net becomes that net's
+  // decoration - fine. An ornament chain reaching TWO nets is a manufactured short
+  // that no logical check can see. Mirror of the converter's net_fusions().
+  const FUSE = 0.17;
+  const par3 = Array.from({length:N}, (_,i)=>i);
+  const find3 = a => { while (par3[a]!==a){ par3[a]=par3[par3[a]]; a=par3[a]; } return a; };
+  const uni3 = (a,b) => { a=find3(a); b=find3(b); if (a!==b) par3[a]=b; };
+  strokes.forEach((s, si)=>{
+    B.pads.forEach((p, pi)=>{
+      if (strokePadSurf(s, p) <= FUSE) uni3(B.pads.length+si, pi);
+    });
+  });
+  for (let i=0;i<strokes.length;i++)
+    for (let j=i+1;j<strokes.length;j++)
+      if (distStrokes(strokes[i], strokes[j]) <= (strokes[i].w+strokes[j].w)/2 + FUSE)
+        uni3(B.pads.length+i, B.pads.length+j);
+  const fuseNets = {};
+  B.pads.forEach((p,i)=>{ if (p.net) (fuseNets[find3(i)] ||= new Set()).add(p.net); });
+  const fusions = [];
+  strokes.forEach((s, si)=>{
+    const st = strokeState[si];
+    const fn = fuseNets[find3(B.pads.length+si)];
+    if (st.floating && fn){
+      if (fn.size > 1){ st.fuseShort = [...fn]; }
+      else { st.fusedNet = [...fn][0]; }
+    }
+  });
+  const seen = new Set();
+  strokes.forEach((s, si)=>{
+    const st = strokeState[si];
+    if (st.fuseShort){
+      const key = st.fuseShort.join("+");
+      if (!seen.has(key)){ seen.add(key); fusions.push(st.fuseShort); }
+    }
+  });
+
+  // ---- locations for alerts: closest approach between the first two nets'
+  //      copper. A bridge belongs to both sets, so the argmin lands on it.
+  function effNets(si){
+    const st = strokeState[si];
+    if (st.nets.length) return st.nets;
+    if (st.fuseShort) return st.fuseShort;
+    if (st.fusedNet) return [st.fusedNet];
+    return [];
+  }
+  function samplesOf(si){
+    const out = [], pts = strokes[si].pts, STEP = 0.5;
+    for (let i=0;i+1<pts.length;i++){
+      const [ax,ay]=pts[i],[bx,by]=pts[i+1];
+      const L = Math.hypot(bx-ax, by-ay), n = Math.max(1, Math.ceil(L/STEP));
+      for (let k=0;k<=n;k++) out.push([ax+(bx-ax)*k/n, ay+(by-ay)*k/n]);
+    }
+    return out;
+  }
+  function netSamples(net){
+    let out = [];
+    B.pads.forEach(p=>{
+      if (p.net !== net) return;
+      out.push([p.x, p.y]);
+      const hw = (p.pad_w||p.d)/2, hh = (p.pad_h||p.d)/2;
+      // boundary points so alert locations land at the contact, not the centre
+      out.push([p.x-hw, p.y-hh], [p.x+hw, p.y-hh], [p.x+hw, p.y+hh], [p.x-hw, p.y+hh],
+               [p.x-hw, p.y], [p.x+hw, p.y], [p.x, p.y-hh], [p.x, p.y+hh]);
+    });
+    strokes.forEach((s,si)=>{ if (effNets(si).includes(net)) out = out.concat(samplesOf(si)); });
+    if (out.length > 1400) out = out.filter((_,i)=> i % Math.ceil(out.length/1400) === 0);
+    return out;
+  }
+  function closestBetween(nA, nB){
+    const A = netSamples(nA), Bs = netSamples(nB);
+    let best = 1e18, loc = null;
+    for (const a of A) for (const b of Bs){
+      const dd = d2(a[0],a[1], b[0],b[1]);
+      if (dd < best){ best = dd; loc = [(a[0]+b[0])/2, (a[1]+b[1])/2]; }
+    }
+    return loc;
+  }
+  const shortLocs = shorts.map(g => closestBetween(g[0], g[1]));
+  const fusionLocs = fusions.map(g => closestBetween(g[0], g[1]));
+
+  conn = { strokeState, netDone, shorts, shortLocs, gaps, fusions, fusionLocs };
+  renderSide();
+}
+
+/* ============================ rendering ================================ */
+function resize(){
+  cv.width = cv.clientWidth * DPR; cv.height = cv.clientHeight * DPR;
+  draw();
+}
+function W2S(x,y){ return [(x-view.x)*view.s*DPR, (view.y-y)*view.s*DPR]; }
+function S2W(sx,sy){ return [sx/DPR/view.s + view.x, view.y - sy/DPR/view.s]; }
+
+function poly(pts, close){
+  ctx.beginPath();
+  const [x0,y0] = W2S(pts[0][0], pts[0][1]);
+  ctx.moveTo(x0,y0);
+  for (let i=1;i<pts.length;i++){ const [x,y]=W2S(pts[i][0],pts[i][1]); ctx.lineTo(x,y); }
+  if (close) ctx.closePath();
+}
+function draw(){
+  const css = getComputedStyle(document.documentElement);
+  const C = n => css.getPropertyValue(n).trim();
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if (!B) return;
+  const px = mm => mm*view.s*DPR;
+
+  // board
+  poly(B.outline, true); ctx.fillStyle = C("--board"); ctx.fill();
+  ctx.lineWidth = px(0.3); ctx.strokeStyle = "#0d0a08"; ctx.stroke();
+
+  // autoroute ghost, coloured by net so it works as a routing guide.
+  // (hidden entirely in copper view - the real board has no ghosts)
+  // Dashed so a ghost is never mistaken for drawn copper. A ghost is a PROPOSAL,
+  // not an obstacle: checks only apply between drawn strokes. To keep the promise
+  // readable, ghosts of nets that are already complete disappear - every dotted
+  // line still visible means "this corridor is still owed to an undrawn net".
+  if (showAuto && !copperView){
+    ctx.lineWidth = px(0.3); ctx.lineCap = ctx.lineJoin = "round";
+    ctx.setLineDash([px(1.2), px(0.9)]);
+    ctx.globalAlpha = 0.45;
+    for (const t of B.auto){
+      if (t.net === B.pour_net) continue;                    // pour: never drawn
+      if (conn && t.net && conn.netDone[t.net]) continue;    // finished: ghost gone
+      ctx.strokeStyle = t.net ? netColor(t.net) : "rgba(220,200,180,0.5)";
+      poly(t.pts); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  }
+
+  // mounting holes
+  for (const h of B.holes){
+    const [x,y]=W2S(h.x,h.y);
+    ctx.beginPath(); ctx.arc(x,y,px(h.d/2),0,7);
+    ctx.fillStyle = C("--bg"); ctx.fill();
+    ctx.lineWidth = px(0.2); ctx.strokeStyle = "#0d0a08"; ctx.stroke();
+  }
+
+  // strokes
+  strokes.forEach((s, si)=>{
+    const st = conn ? conn.strokeState[si] : null;
+    let col = "#c9b9a8";
+    if (copperView){ col = C("--cu"); }
+    else if (st){
+      if (st.short) col = C("--stop");
+      else if (st.fuseShort) col = C("--stop");          // laser will weld it to 2+ nets
+      else if (st.fusedNet) col = netColor(st.fusedNet); // ornament adopted by a net
+      else if (st.floating) col = "#8a8075";
+      else col = netColor(st.nets[0]);
+    }
+    ctx.lineWidth = px(s.w); ctx.lineCap = ctx.lineJoin = "round";
+    ctx.strokeStyle = col;
+    poly(s.pts); ctx.stroke();
+    if (!copperView && conn && conn.gaps.some(g=>g.si===si || g.oi===si)){
+      ctx.lineWidth = px(s.w) + 4*DPR; ctx.strokeStyle = "rgba(224,165,82,.35)";
+      poly(s.pts); ctx.stroke();
+    }
+  });
+
+  // live stroke
+  if (cur && cur.length > 1){
+    ctx.lineWidth = px(drawW); ctx.lineCap = ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(239,231,220,.9)";
+    poly(cur); ctx.stroke();
+  }
+
+  // crosshair from a tapped alert
+  if (marker){
+    const [mx,my] = W2S(marker.x, marker.y);
+    ctx.strokeStyle = C("--stop"); ctx.lineWidth = 1.6*DPR;
+    for (const rr of [px(1.2), px(2.2)]){
+      ctx.beginPath(); ctx.arc(mx,my,rr,0,7); ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.moveTo(mx-px(3.2),my); ctx.lineTo(mx-px(1.6),my);
+    ctx.moveTo(mx+px(1.6),my); ctx.lineTo(mx+px(3.2),my);
+    ctx.moveTo(mx,my-px(3.2)); ctx.lineTo(mx,my-px(1.6));
+    ctx.moveTo(mx,my+px(1.6)); ctx.lineTo(mx,my+px(3.2));
+    ctx.stroke();
+  }
+
+  // pads on top
+  const zoomed = view.s > 6;
+  for (const p of B.pads){
+    const [x,y]=W2S(p.x,p.y);
+    const isPour = p.net === B.pour_net;
+    const done = conn && p.net && conn.netDone[p.net];
+    const r = px(Math.max(p.d, p.pad_w||0)/2);
+    // Draw the pad's TRUE footprint. Square pads were rendered as circles until
+    // 2026-08-23, hiding the corner - which reaches 0.41r beyond the circle and
+    // was exactly where an "invisible" short lived.
+    const isRect = p.shape === "rect";
+    const hw = px((p.pad_w||p.d)/2), hh = px((p.pad_h||p.d)/2);
+    function padPath(grow){
+      ctx.beginPath();
+      if (isRect) ctx.rect(x-hw-grow, y-hh-grow, 2*(hw+grow), 2*(hh+grow));
+      else ctx.arc(x,y,r+grow,0,7);
+    }
+    padPath(0);
+    ctx.fillStyle = isPour ? "#6a5a4c" : C("--cu"); ctx.fill();
+    if (!copperView){
+      ctx.lineWidth = Math.max(1.2*DPR, px(0.12));
+      ctx.strokeStyle = p.net ? (isPour ? "#4a3e33" : netColor(p.net)) : "#555";
+      ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(x,y,Math.max(1.5*DPR, px(p.d/4)),0,7);
+    ctx.fillStyle = "#120e0b"; ctx.fill();
+    if (done && !isPour && !copperView){
+      padPath(2.5*DPR);
+      ctx.lineWidth = 1.6*DPR; ctx.strokeStyle = C("--ok"); ctx.stroke();
+    }
+    if (zoomed && p.net && !copperView){
+      ctx.font = `${10*DPR}px ui-monospace,monospace`;
+      ctx.fillStyle = "rgba(239,231,220,.55)";
+      ctx.fillText(p.name, x + r + 3*DPR, y - 3*DPR);
+    }
+  }
+}
+
+/* ============================ side panel =============================== */
+function renderSide(){
+  const nets = Object.keys(B.nets).filter(n=>n!==B.pour_net).sort();
+  const doneN = nets.filter(n=>conn.netDone[n]).length;
+  const el = document.getElementById("nets");
+  el.innerHTML = "";
+  for (const n of nets){
+    const done = conn.netDone[n];
+    const inShort = conn.shorts.some(s=>s.includes(n));
+    const div = document.createElement("div");
+    div.className = "net" + (inShort ? " short" : done ? " done" : "");
+    const padNames = B.nets[n].map(i=>B.pads[i].name).join("  ");
+    div.innerHTML = `<span class="dot" style="background:${netColor(n)}"></span>
+      <span><div class="nm">${n}</div><div class="pads">${padNames}</div></span>
+      <span class="st ${done?"":"todo"}">${inShort ? "SHORT" : done ? "✓" : "·"}</span>`;
+    el.appendChild(div);
+  }
+  document.getElementById("cNets").textContent = `${doneN}/${nets.length} nets`;
+  document.getElementById("cNets").className = "chip " + (doneN===nets.length ? "ok" : "");
+  const nShort = conn.shorts.length + (conn.fusions ? conn.fusions.length : 0);
+  const sh = document.getElementById("cShorts");
+  sh.textContent = nShort ? `${nShort} short` : "no shorts";
+  sh.className = "chip " + (nShort ? "bad" : "ok");
+  const gp = document.getElementById("cGaps");
+  gp.textContent = conn.gaps.length ? `${conn.gaps.length} gap` : "gaps ok";
+  gp.className = "chip " + (conn.gaps.length ? "warn" : "ok");
+
+  const al = document.getElementById("alerts");
+  al.innerHTML = "";
+  const row = (cls, text, loc)=>{
+    const d = document.createElement("div");
+    d.className = cls; d.textContent = text;
+    if (loc) d.onclick = ()=>flyTo(loc[0], loc[1]);
+    al.appendChild(d);
+  };
+  conn.shorts.forEach((sh,i)=> row("short", "✕ SHORT: " + sh.join(" + "),
+                                   conn.shortLocs[i]));
+  (conn.fusions||[]).forEach((f,i)=> row("short", "✕ ORNAMENT will weld: " + f.join(" + "),
+                                         conn.fusionLocs[i]));
+  conn.gaps.forEach(g=> row("gap", "△ " + g.msg,
+                            (g.x!==undefined) ? [g.x, g.y] : null));
+}
+
+/* ============================ input ==================================== */
+const fingers = new Map();
+let pinch0 = null;
+
+cv.addEventListener("pointerdown", e=>{
+  e.preventDefault();
+  if (e.pointerType === "touch"){
+    fingers.set(e.pointerId, [e.offsetX, e.offsetY]);
+    if (fingers.size === 2){
+      const [a,b] = [...fingers.values()];
+      pinch0 = { d: Math.hypot(a[0]-b[0],a[1]-b[1]), s: view.s,
+                 mid: [(a[0]+b[0])/2,(a[1]+b[1])/2],
+                 world: S2W(((a[0]+b[0])/2)*DPR, ((a[1]+b[1])/2)*DPR) };
+    }
+    return;
+  }
+  // pen or mouse
+  const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+  if (erase){
+    // continuous erasing: hold and slide, everything the tip crosses goes.
+    // Deletions collect into ONE undo entry per gesture.
+    eraseSession = [];
+    eraseAt(wx, wy);
+    cv.setPointerCapture(e.pointerId);
+    return;
+  }
+  cur = [[wx,wy]];
+  cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener("pointermove", e=>{
+  e.preventDefault();
+  if (e.pointerType === "touch"){
+    if (!fingers.has(e.pointerId)) return;
+    const prev = fingers.get(e.pointerId);
+    fingers.set(e.pointerId, [e.offsetX, e.offsetY]);
+    if (fingers.size === 1 && !pinch0){
+      view.x -= (e.offsetX - prev[0]) / view.s;
+      view.y += (e.offsetY - prev[1]) / view.s;
+      draw();
+    } else if (fingers.size === 2 && pinch0){
+      const [a,b] = [...fingers.values()];
+      const d = Math.hypot(a[0]-b[0], a[1]-b[1]);
+      view.s = Math.min(60, Math.max(1.5, pinch0.s * d / pinch0.d));
+      const mid = [(a[0]+b[0])/2, (a[1]+b[1])/2];
+      view.x = pinch0.world[0] - mid[0]/view.s;
+      view.y = pinch0.world[1] + mid[1]/view.s;
+      draw();
+    }
+    return;
+  }
+  if (erase && eraseSession !== null){
+    const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+    eraseAt(wx, wy);
+    return;
+  }
+  if (!cur) return;
+  const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+  const last = cur[cur.length-1];
+  if (d2(wx,wy,last[0],last[1]) > 0.02) { cur.push([wx,wy]); draw(); }
+});
+function endTouch(e){
+  fingers.delete(e.pointerId);
+  if (fingers.size < 2) pinch0 = null;
+}
+cv.addEventListener("pointerup", e=>{
+  e.preventDefault();
+  if (e.pointerType === "touch"){ endTouch(e); return; }
+  if (erase){
+    if (eraseSession && eraseSession.length)
+      undoStack.push({op:"delmulti", items: eraseSession});
+    eraseSession = null;
+    return;
+  }
+  if (!cur) return;
+  finishStroke();
+});
+cv.addEventListener("pointercancel", e=>{
+  if (e.pointerType === "touch") endTouch(e); else cur = null;
+  draw();
+});
+cv.addEventListener("wheel", e=>{      // desktop testing
+  e.preventDefault();
+  const w = S2W(e.offsetX*DPR, e.offsetY*DPR);
+  view.s = Math.min(60, Math.max(1.5, view.s * (e.deltaY < 0 ? 1.1 : 0.9)));
+  view.x = w[0] - e.offsetX/view.s;
+  view.y = w[1] + e.offsetY/view.s;
+  draw();
+}, {passive:false});
+
+function snapEnd(pt){
+  let best = null, bd = 1e9;
+  for (const p of B.pads){
+    const d = Math.hypot(pt[0]-p.x, pt[1]-p.y);
+    const r = Math.max(p.d, p.pad_w||0)/2 + 1.0;
+    if (d < r && d < bd){ bd = d; best = [p.x, p.y]; }
+  }
+  if (best) return best;
+  for (const s of strokes){                       // junction onto another stroke
+    for (const q of s.pts){
+      const d = Math.hypot(pt[0]-q[0], pt[1]-q[1]);
+      if (d < 0.9 && d < bd){ bd = d; best = [q[0], q[1]]; }
+    }
+  }
+  return best || pt;
+}
+function finishStroke(){
+  let pts = cur; cur = null;
+  if (pts.length < 2){ draw(); return; }
+  // smoothness 0..1 controls both how aggressively corners are simplified away
+  // and how many rounding passes run afterwards. At 0 the line is kept almost
+  // raw (only sensor jitter removed); at 1 it is generously rounded.
+  const tol = 0.04 + smoothVal * 0.55;
+  const passes = Math.round(smoothVal * 3);
+  pts = rdp(pts, tol);
+  for (let k = 0; k < passes; k++) pts = smooth(pts);
+  pts = rdp(pts, 0.03 + smoothVal * 0.05);
+  pts[0] = snapEnd(pts[0]);
+  pts[pts.length-1] = snapEnd(pts[pts.length-1]);
+  if (pts.length < 2){ draw(); return; }
+  strokes.push({ pts: pts.map(p=>[+p[0].toFixed(3), +p[1].toFixed(3)]), w: drawW });
+  undoStack.push({op:"add"});
+  markDirty(); analyze(); draw();
+}
+
+/* ============================ buttons ================================== */
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.opacity = 1;
+  clearTimeout(t._h); t._h = setTimeout(()=>t.style.opacity=0, 1600);
+}
+function markDirty(){ dirty = true; document.getElementById("saveB").classList.add("dirty"); }
+
+function eraseAt(wx, wy){
+  let hit = false;
+  for (let i=strokes.length-1;i>=0;i--)
+    if (distPtStroke(wx,wy,strokes[i]) < strokes[i].w/2 + 0.8){
+      eraseSession.push({i, s: strokes[i]});
+      strokes.splice(i,1);
+      hit = true;
+    }
+  if (hit){ markDirty(); analyze(); draw(); }
+}
+document.getElementById("undoB").onclick = ()=>{
+  const u = undoStack.pop();
+  if (!u) return;
+  if (u.op === "add") strokes.pop();
+  else if (u.op === "delmulti"){
+    // restore in reverse deletion order so recorded indices stay valid
+    for (let k=u.items.length-1;k>=0;k--)
+      strokes.splice(u.items[k].i, 0, u.items[k].s);
+  }
+  else strokes.splice(u.i, 0, u.s);
+  markDirty(); analyze(); draw();
+};
+document.getElementById("eraseB").onclick = e=>{
+  erase = !erase; e.target.classList.toggle("on", erase);
+};
+document.getElementById("copperB").onclick = e=>{
+  copperView = !copperView; e.target.classList.toggle("on", copperView); draw();
+};
+document.getElementById("tabDraw").onclick = ()=>setMode("draw");
+document.getElementById("tabView").onclick = ()=>setMode("view");
+function setMode(m){
+  const v = m === "view";
+  document.getElementById("cv3").style.display = v ? "block" : "none";
+  document.getElementById("legend").classList.toggle("show", v);
+  cv.style.display = v ? "none" : "block";
+  document.getElementById("tabDraw").classList.toggle("on", !v);
+  document.getElementById("tabView").classList.toggle("on", v);
+  if (v) render3d();
+}
+document.getElementById("autoB").onclick = e=>{
+  showAuto = !showAuto; e.target.classList.toggle("on", showAuto); draw();
+};
+async function save(){
+  const r = await fetch("/save", {method:"POST",
+    body: JSON.stringify({strokes, saved: Date.now()})});
+  if ((await r.json()).ok){
+    dirty = false; document.getElementById("saveB").classList.remove("dirty");
+    toast("Saved " + strokes.length + " traces");
+  } else toast("SAVE FAILED");
+}
+document.getElementById("saveB").onclick = save;
+setInterval(()=>{ if (dirty) save(); }, 20000);
+
+// 0.3 mm is PROVEN: V3 (2026-08-23) carried three 0.3-drawn strokes, one 7.4 mm
+// long, and all read continuous — 0.40 mm finished after the 2x0.05 kerf pullback.
+// 0.2 stays amber: 0.30 finished is below anything metered on a real board.
+const widths = [0.2, 0.3, 0.4, 0.5, 0.8, 1.2];
+const PROVEN_W = 0.3;
+const wsel = document.getElementById("wsel");
+widths.forEach(w=>{
+  const b = document.createElement("button");
+  b.textContent = w.toFixed(1).replace("0.", ".");
+  if (w < PROVEN_W) b.style.color = "var(--warn)";
+  if (w === drawW) b.classList.add("on");
+  b.onclick = ()=>{
+    drawW = w;
+    [...wsel.children].forEach(c=>c.classList.toggle("on", c===b));
+  };
+  wsel.appendChild(b);
+});
+
+/* ============================ 3D view ================================== */
+/* Honest body sizes per real part - the pinheader courtyards lie about what is
+   actually soldered (a bent axial resistor, a radial can, a standing TO-220). */
+const BODY = {
+  JP:{w:24, h:2.6, z:8.5, c:"#4a4440", note:"socket 9"},
+  JS:{w:19, h:2.6, z:8.5, c:"#4a4440", note:"socket 7"},
+  JU:{w:11, h:2.6, z:9,   c:"#333", note:"header 4"},
+  PA:{w:16, h:2.6, z:9,   c:"#333", note:"header 6"},
+  PB:{w:16, h:2.6, z:9,   c:"#333", note:"header 6"},
+  LA:{w:6,  h:2.6, z:9,   c:"#333", note:"header 2"},
+  LB:{w:6,  h:2.6, z:9,   c:"#333", note:"header 2"},
+  QA:{w:10.2,h:4.6,z:16,  c:"#66727e", note:"IRLZ44N standing"},
+  QB:{w:10.2,h:4.6,z:16,  c:"#66727e", note:"IRLZ44N standing"},
+  RGA:{w:9.5,h:2.5, z:2.6, c:"#a8763e", note:"axial 120R"},
+  RGB:{w:9.5,h:2.5, z:2.6, c:"#a8763e", note:"axial 120R"},
+  RPA:{w:9.5,h:2.5, z:2.6, c:"#a8763e", note:"axial 10k"},
+  RPB:{w:9.5,h:2.5, z:2.6, c:"#a8763e", note:"axial 10k"},
+  C1:{w:10.5,h:10.5,z:17,  c:"#2e3a6e", note:"330uF 63V radial"},
+};
+const LEGEND = [
+  ["JP JS",   "#4a4440",    "XIAO ESP32-S3 + sockets",       "24 \u00d7 18 \u00d7 13 mm"],
+  ["JU",      "#333",    "USB-C escape, 4 pin",           "11 \u00d7 2.6 \u00d7 9 mm"],
+  ["PA PB",   "#333",    "ToF pod header, 6 pin",         "16 \u00d7 2.6 \u00d7 9 mm"],
+  ["LA LB",   "#333",    "laser header, 2 pin",           "6 \u00d7 2.6 \u00d7 9 mm"],
+  ["QA QB",   "#66727e", "IRLZ44N TO-220, standing",      "10.2 \u00d7 4.6 \u00d7 16 mm"],
+  ["RGA RGB", "#a8763e", "120 \u03a9 axial, bent 7.62",  "9.5 \u00d7 2.5 \u00d7 2.6 mm"],
+  ["RPA RPB", "#a8763e", "10 k\u03a9 axial, bent 7.62",  "9.5 \u00d7 2.5 \u00d7 2.6 mm"],
+  ["C1",      "#2e3a6e", "330 \u00b5F 63 V \u00b7 square = +", "\u2300 10.5 \u00d7 17 mm"],
+  ["board",   "#7a5a3c", "FR4, 35 \u00b5m copper",       "60 \u00d7 40 \u00d7 1.6 mm"],
+];
+(function(){
+  const el = document.getElementById("legend");
+  for (const [refs, col, what, dims] of LEGEND){
+    el.insertAdjacentHTML("beforeend",
+      `<i style="background:${col}"></i><b>${refs}</b>` +
+      `<span class="what">${what}</span><span class="dims">${dims}</span>`);
+  }
+})();
+const cv3 = document.getElementById("cv3"), c3 = cv3.getContext("2d");
+let yaw = 0.6, pitch = 1.0, zoom3 = 9;
+function render3d(){
+  cv3.width = cv3.clientWidth * DPR; cv3.height = cv3.clientHeight * DPR;
+  const css = getComputedStyle(document.documentElement);
+  const C3 = n => css.getPropertyValue(n).trim();
+  c3.clearRect(0,0,cv3.width,cv3.height);
+  const S = zoom3 * DPR, ox = cv3.width/2, oy = cv3.height/2;
+  const ca = Math.cos(yaw), sa = Math.sin(yaw);
+  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  // +y on the board renders UP, matching the Draw tab. z lifts up.
+  function P3(x, y, z){
+    const x1 = x*ca - y*sa, y1 = x*sa + y*ca;
+    return [ox + x1*S, oy - (y1*cp + z*sp)*S, y1];
+  }
+  function face(pts, fill, stroke){
+    c3.beginPath();
+    c3.moveTo(pts[0][0], pts[0][1]);
+    for (let i=1;i<pts.length;i++) c3.lineTo(pts[i][0], pts[i][1]);
+    c3.closePath();
+    c3.fillStyle = fill; c3.fill();
+    if (stroke){ c3.strokeStyle = stroke; c3.lineWidth = 1*DPR; c3.stroke(); }
+  }
+  function shade(hex, f){
+    const n = parseInt(hex.slice(1), 16);
+    return `rgb(${(((n>>16)&255)*f)|0},${(((n>>8)&255)*f)|0},${((n&255)*f)|0})`;
+  }
+  // Collect every face of every component into ONE list and sort globally by
+  // depth. Sorting whole boxes made touching parts appear to interpenetrate,
+  // which is precisely the artefact that hides real collisions.
+  const faces = [], labels = [];
+  function box(cx, cy, w, h, z0, z1, col, rotDeg, name){
+    const t = (rotDeg||0) * Math.PI/180, ct = Math.cos(t), st = Math.sin(t);
+    const cor = [[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]]
+      .map(([dx,dy]) => [cx + dx*ct - dy*st, cy + dx*st + dy*ct]);
+    const top = cor.map(([x,y]) => P3(x,y,z1));
+    const bot = cor.map(([x,y]) => P3(x,y,z0));
+    for (let i=0;i<4;i++){
+      const j = (i+1)%4;
+      faces.push({d: (top[i][2]+top[j][2])/2,
+                  pts: [bot[i],bot[j],top[j],top[i]],
+                  fill: shade(col, i%2 ? 0.6 : 0.78), stroke: "rgba(0,0,0,.4)"});
+    }
+    faces.push({d: Math.min(...top.map(p=>p[2])) - 0.001,
+                pts: top, fill: col, stroke: "rgba(0,0,0,.5)"});
+    if (name){
+      const mx = top.reduce((q,p)=>q+p[0],0)/4, my = top.reduce((q,p)=>q+p[1],0)/4;
+      labels.push([name, mx, my]);
+    }
+  }
+  // board slab first - everything sits on top of it, so it never occludes
+  const ol = B.outline;
+  const bx0 = Math.min(...ol.map(p=>p[0])), bx1 = Math.max(...ol.map(p=>p[0]));
+  const by0 = Math.min(...ol.map(p=>p[1])), by1 = Math.max(...ol.map(p=>p[1]));
+  box((bx0+bx1)/2, (by0+by1)/2, bx1-bx0, by1-by0, -1.6, 0, "#7a5a3c", 0, null);
+  faces.sort((a,b)=>b.d-a.d);
+  for (const f of faces) face(f.pts, f.fill, f.stroke);
+  faces.length = 0;
+  // pads and holes lie on the board plane, under every component
+  for (const p of B.pads){
+    const [sx,sy] = P3(p.x, p.y, 0.02);
+    c3.beginPath(); c3.arc(sx, sy, Math.max(1.5*DPR, 0.8*S), 0, 7);
+    c3.fillStyle = C3("--cu"); c3.fill();
+  }
+  for (const h of B.holes){
+    const [sx,sy] = P3(h.x, h.y, 0.02);
+    c3.beginPath(); c3.arc(sx, sy, (h.d/2)*S, 0, 7);
+    c3.fillStyle = "#14100c"; c3.fill();
+  }
+  // all component faces, one global depth sort
+  for (const c of (B.comps||[])){
+    const bd = BODY[c.name] || {w:c.w, h:c.h, z:3, c:"#666"};
+    const rot = (bd.w >= bd.h) === (c.w >= c.h) ? c.rot : (c.rot + 90);
+    box(c.x, c.y, bd.w, bd.h, 0, bd.z, bd.c, rot, c.name);
+  }
+  faces.sort((a,b)=>b.d-a.d);
+  for (const f of faces) face(f.pts, f.fill, f.stroke);
+  // labels last, never occluded
+  c3.font = `${11*DPR}px ui-monospace,monospace`;
+  c3.textAlign = "center";
+  for (const [name, mx, my] of labels){
+    c3.fillStyle = "rgba(0,0,0,.55)";
+    c3.fillText(name, mx+1, my-3*DPR+1);
+    c3.fillStyle = "rgba(239,231,220,.95)";
+    c3.fillText(name, mx, my-3*DPR);
+  }
+  c3.textAlign = "left";
+  c3.font = `${12*DPR}px ui-monospace,monospace`;
+  c3.fillStyle = "rgba(239,231,220,.5)";
+  c3.fillText(`board ${Math.round(bx1-bx0)} x ${Math.round(by1-by0)} mm - ` +
+              `drag to orbit, pinch to zoom`, 14*DPR, cv3.height - 14*DPR);
+}
+const f3 = new Map(); let pinch3 = null;
+cv3.addEventListener("pointerdown", e=>{ e.preventDefault();
+  f3.set(e.pointerId, [e.offsetX, e.offsetY]);
+  if (f3.size === 2){
+    const [a,b] = [...f3.values()];
+    pinch3 = {d: Math.hypot(a[0]-b[0], a[1]-b[1]), z: zoom3};
+  }
+  cv3.setPointerCapture(e.pointerId);
+});
+cv3.addEventListener("pointermove", e=>{ e.preventDefault();
+  if (!f3.has(e.pointerId)) return;
+  const prev = f3.get(e.pointerId);
+  f3.set(e.pointerId, [e.offsetX, e.offsetY]);
+  if (f3.size === 1){
+    yaw   += (e.offsetX - prev[0]) * 0.01;
+    pitch = Math.max(0.15, Math.min(1.5, pitch + (e.offsetY - prev[1]) * 0.008));
+    render3d();
+  } else if (pinch3){
+    const [a,b] = [...f3.values()];
+    zoom3 = Math.max(3, Math.min(40, pinch3.z * Math.hypot(a[0]-b[0],a[1]-b[1]) / pinch3.d));
+    render3d();
+  }
+});
+function end3(e){ f3.delete(e.pointerId); if (f3.size < 2) pinch3 = null; }
+cv3.addEventListener("pointerup", end3);
+cv3.addEventListener("pointercancel", end3);
+cv3.addEventListener("wheel", e=>{ e.preventDefault();
+  zoom3 = Math.max(3, Math.min(40, zoom3 * (e.deltaY < 0 ? 1.1 : 0.9)));
+  render3d();
+}, {passive:false});
+
+/* ---- fly the canvas to an alert location, drop a crosshair ---- */
+function flyTo(x, y){
+  view.s = Math.max(view.s, 22);
+  view.x = x - cv.clientWidth  / (2 * view.s);
+  view.y = y + cv.clientHeight / (2 * view.s);
+  marker = {x, y};
+  draw();
+}
+
+/* ---- smoothness slider ---- */
+const smEl = document.getElementById("smooth");
+function smRender(){
+  const w = smEl.clientWidth;
+  smEl.querySelector(".fill").style.width = (smoothVal*w) + "px";
+  smEl.querySelector(".knob").style.left = (smoothVal*w) + "px";
+}
+function smSet(e){
+  const r = smEl.getBoundingClientRect();
+  smoothVal = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  smRender();
+}
+smEl.addEventListener("pointerdown", e=>{
+  e.preventDefault(); smEl.setPointerCapture(e.pointerId); smSet(e);
+});
+smEl.addEventListener("pointermove", e=>{
+  if (smEl.hasPointerCapture && smEl.hasPointerCapture(e.pointerId)) smSet(e);
+});
+new ResizeObserver(smRender).observe(smEl);
+
+/* ============================ boot ===================================== */
+async function boot(){
+  B = await (await fetch("/board")).json();
+  const t = await (await fetch("/traces")).json();
+  strokes = t.strokes || [];
+  // fit view
+  const xs = B.outline.map(p=>p[0]), ys = B.outline.map(p=>p[1]);
+  const bw = Math.max(...xs)-Math.min(...xs), bh = Math.max(...ys)-Math.min(...ys);
+  const fit = ()=>{
+    view.s = Math.min(cv.clientWidth/(bw*1.15), cv.clientHeight/(bh*1.15));
+    view.x = Math.min(...xs) - (cv.clientWidth/view.s - bw)/2;
+    view.y = Math.max(...ys) + (cv.clientHeight/view.s - bh)/2;
+  };
+  new ResizeObserver(()=>{ resize(); }).observe(cv);
+  fit(); resize(); analyze(); draw();
+}
+boot();
+</script>
+</body>
+</html>

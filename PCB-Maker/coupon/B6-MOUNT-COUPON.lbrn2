@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="MOUNT"/>
+        <maxPower Value="70"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="1"/>
+        <name Value="S100"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="6"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.3"/>
+        <wobbleStep Value="0.04"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="2"/>
+        <name Value="S85"/>
+        <maxPower Value="85"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="8"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.3"/>
+        <wobbleStep Value="0.04"/>
+        <priority Value="2"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="3"/>
+        <name Value="LABELS"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="3"/>
+    </CutSetting>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.850000" Ry="0.850000">
+        <XForm>1 0 0 1 8.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.850000" Ry="0.850000">
+        <XForm>1 0 0 1 13.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.850000" Ry="0.850000">
+        <XForm>1 0 0 1 18.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.880000" Ry="0.880000">
+        <XForm>1 0 0 1 29.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.880000" Ry="0.880000">
+        <XForm>1 0 0 1 34.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.880000" Ry="0.880000">
+        <XForm>1 0 0 1 39.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.910000" Ry="0.910000">
+        <XForm>1 0 0 1 50.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.910000" Ry="0.910000">
+        <XForm>1 0 0 1 55.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="0" Rx="0.910000" Ry="0.910000">
+        <XForm>1 0 0 1 60.000000 34.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="15.000000" H="15.000000" Cr="0">
+        <XForm>1 0 0 1 15.500000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="15.000000" H="15.000000" Cr="0">
+        <XForm>1 0 0 1 42.500000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="1.70" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 13.000000 38.500000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="1.76" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 34.000000 38.500000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="1.82" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 55.000000 38.500000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="100/6" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 15.500000 24.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="85/8" H="2.200000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 42.500000 24.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="3" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="MOUNT drawn 1.70/1.76/1.82 - M2 gauge - ATTEND SQUARES" H="2.000000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 8.000000 44.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="MOUNT + CUTOUT coupon. MOUNT: drawn 1.70/1.76/1.82 at the dialed hole cell (70%, 8 passes, 400mm/s, 40kHz, 200ns, wobble 0.10/0.02), 3 holes each, M2 screw is the gauge. CUTOUT: S100 = proven 100%/6-pass recipe, count the release pass; S85 = 85%/8-pass char experiment. BOARD OFF THE BED, AIR ON, ATTEND THE SQUARES — they fall when released."/>
+</LightBurnProject>

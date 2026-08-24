@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="10"/>
+        <name Value="HOLES"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="37000"/>
+        <numPasses Value="8"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="0"/>
+        <name Value="CLR_200ns"/>
+        <maxPower Value="95"/>
+        <maxPower2 Value="20"/>
+        <speed Value="200"/>
+        <frequency Value="37000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.1"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="1"/>
+        <name Value="CLR_350ns"/>
+        <maxPower Value="95"/>
+        <maxPower2 Value="20"/>
+        <speed Value="200"/>
+        <frequency Value="37000"/>
+        <QPulseWidth Value="350"/>
+        <interval Value="0.1"/>
+        <priority Value="2"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="2"/>
+        <name Value="CLR_500ns"/>
+        <maxPower Value="95"/>
+        <maxPower2 Value="20"/>
+        <speed Value="200"/>
+        <frequency Value="37000"/>
+        <QPulseWidth Value="500"/>
+        <interval Value="0.1"/>
+        <priority Value="3"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="11"/>
+        <name Value="CUTOUT"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="40"/>
+        <frequency Value="37000"/>
+        <numPasses Value="12"/>
+        <priority Value="4"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="11" W="84.000000" H="66.000000" Cr="0">
+        <XForm>1 0 0 1 42.000000 33.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.100000" Cr="0">
+        <XForm>1 0 0 1 15.000000 56.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.125000" Cr="0">
+        <XForm>1 0 0 1 15.000000 53.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.150000" Cr="0">
+        <XForm>1 0 0 1 15.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.175000" Cr="0">
+        <XForm>1 0 0 1 15.000000 47.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.200000" Cr="0">
+        <XForm>1 0 0 1 15.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.250000" Cr="0">
+        <XForm>1 0 0 1 15.000000 41.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.300000" Cr="0">
+        <XForm>1 0 0 1 15.000000 38.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="12.000000" H="0.400000" Cr="0">
+        <XForm>1 0 0 1 15.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="0" W="6.000000" H="6.000000" Cr="0">
+        <XForm>1 0 0 1 15.000000 26.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="0" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="200ns" H="3.000000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 7.000000 4.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.300000" Ry="0.300000">
+        <XForm>1 0 0 1 9.000000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.450000" Ry="0.450000">
+        <XForm>1 0 0 1 12.400000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 15.800000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.650000" Ry="0.650000">
+        <XForm>1 0 0 1 19.200000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 22.600000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 11.000000 9.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.100000" Cr="0">
+        <XForm>1 0 0 1 39.000000 56.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.125000" Cr="0">
+        <XForm>1 0 0 1 39.000000 53.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.150000" Cr="0">
+        <XForm>1 0 0 1 39.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.175000" Cr="0">
+        <XForm>1 0 0 1 39.000000 47.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.200000" Cr="0">
+        <XForm>1 0 0 1 39.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.250000" Cr="0">
+        <XForm>1 0 0 1 39.000000 41.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.300000" Cr="0">
+        <XForm>1 0 0 1 39.000000 38.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="12.000000" H="0.400000" Cr="0">
+        <XForm>1 0 0 1 39.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="6.000000" H="6.000000" Cr="0">
+        <XForm>1 0 0 1 39.000000 26.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="1" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="350ns" H="3.000000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 31.000000 4.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.300000" Ry="0.300000">
+        <XForm>1 0 0 1 33.000000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.450000" Ry="0.450000">
+        <XForm>1 0 0 1 36.400000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 39.800000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.650000" Ry="0.650000">
+        <XForm>1 0 0 1 43.200000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 46.600000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 35.000000 9.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.100000" Cr="0">
+        <XForm>1 0 0 1 63.000000 56.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.125000" Cr="0">
+        <XForm>1 0 0 1 63.000000 53.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.150000" Cr="0">
+        <XForm>1 0 0 1 63.000000 50.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.175000" Cr="0">
+        <XForm>1 0 0 1 63.000000 47.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.200000" Cr="0">
+        <XForm>1 0 0 1 63.000000 44.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.250000" Cr="0">
+        <XForm>1 0 0 1 63.000000 41.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.300000" Cr="0">
+        <XForm>1 0 0 1 63.000000 38.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="12.000000" H="0.400000" Cr="0">
+        <XForm>1 0 0 1 63.000000 35.000000</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="6.000000" H="6.000000" Cr="0">
+        <XForm>1 0 0 1 63.000000 26.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="2" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="500ns" H="3.000000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 55.000000 4.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.300000" Ry="0.300000">
+        <XForm>1 0 0 1 57.000000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.450000" Ry="0.450000">
+        <XForm>1 0 0 1 60.400000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.500000" Ry="0.500000">
+        <XForm>1 0 0 1 63.800000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="0.650000" Ry="0.650000">
+        <XForm>1 0 0 1 67.200000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="1.200000" Ry="1.200000">
+        <XForm>1 0 0 1 70.600000 17.000000</XForm>
+    </Shape>
+    <Shape Type="Ellipse" CutIndex="10" Rx="3.300000" Ry="3.300000">
+        <XForm>1 0 0 1 59.000000 9.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="B6 PCB test coupon. One block per pulse width: 200 ns, 350 ns, 500 ns. Run on FR4 scrap. Scuff the LEFT half matte before running, leave the RIGHT half bright, then compare. Score sheet is in SCORE.md."/>
+</LightBurnProject>

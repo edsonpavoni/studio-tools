@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="74.300mm" height="67.500mm" viewBox="1.000 -69.300 74.300 67.500">
+<g id="F95" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="5.000" y="-67.000" width="6.000" height="6.000"/>
+<text x="3.000" y="-58.400" font-size="2.400000" fill="#d33" stroke="none">95%</text>
+</g>
+<g id="F70" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<rect x="19.000" y="-67.000" width="6.000" height="6.000"/>
+<text x="17.000" y="-58.400" font-size="2.400000" fill="#39c" stroke="none">70%</text>
+</g>
+<g id="F50" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="5.000" y="-53.000" width="6.000" height="6.000"/>
+<text x="3.000" y="-44.400" font-size="2.400000" fill="#2a2" stroke="none">50%</text>
+</g>
+<g id="F35" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="19.000" y="-53.000" width="6.000" height="6.000"/>
+<text x="17.000" y="-44.400" font-size="2.400000" fill="#c72" stroke="none">35%</text>
+</g>
+<g id="F25" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<rect x="5.000" y="-39.000" width="6.000" height="6.000"/>
+<text x="3.000" y="-30.400" font-size="2.400000" fill="#93c" stroke="none">25%</text>
+</g>
+<g id="F15" data-priority="5" stroke="#666" fill="none" stroke-width="0.1">
+<rect x="19.000" y="-39.000" width="6.000" height="6.000"/>
+<text x="17.000" y="-30.400" font-size="2.400000" fill="#666" stroke="none">15%</text>
+</g>
+<g id="H8x" data-priority="6" stroke="#c39" fill="none" stroke-width="0.1">
+<circle cx="46.000" cy="-64.000" r="0.500000"/>
+<circle cx="52.000" cy="-64.000" r="3.300000"/>
+<text x="43.000" y="-58.000" font-size="2.400000" fill="#c39" stroke="none">8x</text>
+</g>
+<g id="H16x" data-priority="7" stroke="#3aa" fill="none" stroke-width="0.1">
+<circle cx="64.000" cy="-64.000" r="0.500000"/>
+<circle cx="70.000" cy="-64.000" r="3.300000"/>
+<text x="61.000" y="-58.000" font-size="2.400000" fill="#3aa" stroke="none">16x</text>
+</g>
+<g id="H32x" data-priority="8" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="46.000" cy="-44.000" r="0.500000"/>
+<circle cx="52.000" cy="-44.000" r="3.300000"/>
+<text x="43.000" y="-38.000" font-size="2.400000" fill="#d33" stroke="none">32x</text>
+</g>
+<g id="H64x" data-priority="9" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="64.000" cy="-44.000" r="0.500000"/>
+<circle cx="70.000" cy="-44.000" r="3.300000"/>
+<text x="61.000" y="-38.000" font-size="2.400000" fill="#39c" stroke="none">64x</text>
+</g>
+<g id="C12x" data-priority="10" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="5.000" y="-16.000" width="14.000" height="8.000"/>
+<text x="6.000" y="-5.000" font-size="2.400000" fill="#2a2" stroke="none">cut 12x</text>
+</g>
+<g id="C24x" data-priority="11" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="31.000" y="-16.000" width="14.000" height="8.000"/>
+<text x="32.000" y="-5.000" font-size="2.400000" fill="#c72" stroke="none">cut 24x</text>
+</g>
+<g id="C48x" data-priority="12" stroke="#93c" fill="none" stroke-width="0.1">
+<rect x="57.000" y="-16.000" width="14.000" height="8.000"/>
+<text x="58.000" y="-5.000" font-size="2.400000" fill="#93c" stroke="none">cut 48x</text>
+</g>
+</svg>

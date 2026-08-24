@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="04_w.10"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="400"/>
+        <frequency Value="40000"/>
+        <numPasses Value="64"/>
+        <QPulseWidth Value="200"/>
+        <wobbleEnable Value="1"/>
+        <wobbleSize Value="0.1"/>
+        <wobbleStep Value="0.02"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Scan">
+        <index Value="23"/>
+        <name Value="04_lbl"/>
+        <maxPower Value="20"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 16.000000 14.000000</XForm>
+    </Shape>
+    <Shape Type="Text" CutIndex="23" Font="Arial,-1,100,5,50,0,0,0,0,0" Str="04 w10 400" H="2.400000" LS="0" LnS="0" Ah="0" Av="0" Weld="1">
+        <XForm>1 0 0 1 11.000000 5.000000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="Cut test 04: w10 400. ONE TEST PER FILE ON PURPOSE. Run it, then LET THE BOARD COOL before the next file. Air assist ON, board lifted off the bed."/>
+</LightBurnProject>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="52.500mm" height="30.600mm" viewBox="-0.500 -31.500 52.500 30.600">
+<g id="fillA" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<rect x="5.500" y="-29.500" width="5.000" height="5.000"/>
+<text x="3.500" y="-22.500" font-size="2.400000" fill="#d33" stroke="none">A</text>
+</g>
+<g id="fillB" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<rect x="16.500" y="-29.500" width="5.000" height="5.000"/>
+<text x="14.500" y="-22.500" font-size="2.400000" fill="#39c" stroke="none">B</text>
+</g>
+<g id="fillC" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<rect x="27.500" y="-29.500" width="5.000" height="5.000"/>
+<text x="25.500" y="-22.500" font-size="2.400000" fill="#2a2" stroke="none">C</text>
+</g>
+<g id="moats" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<rect x="38.000" y="-29.075" width="12.000" height="0.150"/>
+<rect x="38.000" y="-26.525" width="12.000" height="0.250"/>
+<rect x="38.000" y="-24.000" width="12.000" height="0.400"/>
+<text x="37.000" y="-20.500" font-size="2.200000" fill="#c72" stroke="none">moat</text>
+</g>
+<g id="hole24" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<circle cx="9.000" cy="-15.000" r="0.500000"/>
+<circle cx="14.000" cy="-15.000" r="1.200000"/>
+<circle cx="21.000" cy="-15.000" r="3.300000"/>
+<text x="1.500" y="-14.000" font-size="2.400000" fill="#93c" stroke="none">24x</text>
+</g>
+<g id="hole48" data-priority="5" stroke="#666" fill="none" stroke-width="0.1">
+<circle cx="9.000" cy="-8.000" r="0.500000"/>
+<circle cx="14.000" cy="-8.000" r="1.200000"/>
+<circle cx="21.000" cy="-8.000" r="3.300000"/>
+<text x="1.500" y="-7.000" font-size="2.400000" fill="#666" stroke="none">48x</text>
+</g>
+<g id="cut48" data-priority="6" stroke="#c39" fill="none" stroke-width="0.1">
+<rect x="32.000" y="-14.000" width="16.000" height="8.000"/>
+<text x="33.000" y="-4.000" font-size="2.200000" fill="#c39" stroke="none">cut 48x</text>
+</g>
+</svg>

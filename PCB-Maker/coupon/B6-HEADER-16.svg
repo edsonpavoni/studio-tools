@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="48.550mm" height="28.900mm" viewBox="0.000 -31.700 48.550 28.900">
+<g id="A_sequential" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="8.000" cy="-24.000" r="0.450000"/>
+<circle cx="10.540" cy="-24.000" r="0.450000"/>
+<circle cx="13.080" cy="-24.000" r="0.450000"/>
+<circle cx="15.620" cy="-24.000" r="0.450000"/>
+<circle cx="18.160" cy="-24.000" r="0.450000"/>
+<circle cx="20.700" cy="-24.000" r="0.450000"/>
+<circle cx="23.240" cy="-24.000" r="0.450000"/>
+<circle cx="25.780" cy="-24.000" r="0.450000"/>
+<circle cx="28.320" cy="-24.000" r="0.450000"/>
+<circle cx="30.860" cy="-24.000" r="0.450000"/>
+<circle cx="33.400" cy="-24.000" r="0.450000"/>
+<circle cx="35.940" cy="-24.000" r="0.450000"/>
+<circle cx="38.480" cy="-24.000" r="0.450000"/>
+<circle cx="41.020" cy="-24.000" r="0.450000"/>
+<circle cx="43.560" cy="-24.000" r="0.450000"/>
+<circle cx="46.100" cy="-24.000" r="0.450000"/>
+</g>
+<g id="B_odd" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="8.000" cy="-12.000" r="0.450000"/>
+<circle cx="13.080" cy="-12.000" r="0.450000"/>
+<circle cx="18.160" cy="-12.000" r="0.450000"/>
+<circle cx="23.240" cy="-12.000" r="0.450000"/>
+<circle cx="28.320" cy="-12.000" r="0.450000"/>
+<circle cx="33.400" cy="-12.000" r="0.450000"/>
+<circle cx="38.480" cy="-12.000" r="0.450000"/>
+<circle cx="43.560" cy="-12.000" r="0.450000"/>
+</g>
+<g id="B_even" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<circle cx="10.540" cy="-12.000" r="0.450000"/>
+<circle cx="15.620" cy="-12.000" r="0.450000"/>
+<circle cx="20.700" cy="-12.000" r="0.450000"/>
+<circle cx="25.780" cy="-12.000" r="0.450000"/>
+<circle cx="30.860" cy="-12.000" r="0.450000"/>
+<circle cx="35.940" cy="-12.000" r="0.450000"/>
+<circle cx="41.020" cy="-12.000" r="0.450000"/>
+<circle cx="46.100" cy="-12.000" r="0.450000"/>
+</g>
+<g id="LABELS" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<text x="2.000" y="-28.500" font-size="2.400000" fill="#c72" stroke="none">A  in order</text>
+<text x="2.000" y="-6.000" font-size="2.400000" fill="#c72" stroke="none">B  odds first, then evens</text>
+</g>
+</svg>

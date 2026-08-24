@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="69.200mm" height="59.900mm" viewBox="8.000 -70.600 69.200 59.900">
+<g id="none-8x" data-priority="0" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="10.300" cy="-62.000" r="0.300000"/>
+<circle cx="13.300" cy="-62.000" r="0.500000"/>
+<circle cx="17.200" cy="-62.000" r="1.200000"/>
+<circle cx="23.900" cy="-62.000" r="3.300000"/>
+<text x="10.000" y="-67.500" font-size="2.200000" fill="#d33" stroke="none">none 8x</text>
+</g>
+<g id="none-16x" data-priority="1" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="34.300" cy="-62.000" r="0.300000"/>
+<circle cx="37.300" cy="-62.000" r="0.500000"/>
+<circle cx="41.200" cy="-62.000" r="1.200000"/>
+<circle cx="47.900" cy="-62.000" r="3.300000"/>
+<text x="34.000" y="-67.500" font-size="2.200000" fill="#39c" stroke="none">none 16x</text>
+</g>
+<g id="none-24x" data-priority="2" stroke="#2a2" fill="none" stroke-width="0.1">
+<circle cx="58.300" cy="-62.000" r="0.300000"/>
+<circle cx="61.300" cy="-62.000" r="0.500000"/>
+<circle cx="65.200" cy="-62.000" r="1.200000"/>
+<circle cx="71.900" cy="-62.000" r="3.300000"/>
+<text x="58.000" y="-67.500" font-size="2.200000" fill="#2a2" stroke="none">none 24x</text>
+</g>
+<g id="w10-8x" data-priority="3" stroke="#c72" fill="none" stroke-width="0.1">
+<circle cx="10.300" cy="-48.000" r="0.300000"/>
+<circle cx="13.300" cy="-48.000" r="0.500000"/>
+<circle cx="17.200" cy="-48.000" r="1.200000"/>
+<circle cx="23.900" cy="-48.000" r="3.300000"/>
+<text x="10.000" y="-53.500" font-size="2.200000" fill="#c72" stroke="none">w10 8x</text>
+</g>
+<g id="w10-16x" data-priority="4" stroke="#93c" fill="none" stroke-width="0.1">
+<circle cx="34.300" cy="-48.000" r="0.300000"/>
+<circle cx="37.300" cy="-48.000" r="0.500000"/>
+<circle cx="41.200" cy="-48.000" r="1.200000"/>
+<circle cx="47.900" cy="-48.000" r="3.300000"/>
+<text x="34.000" y="-53.500" font-size="2.200000" fill="#93c" stroke="none">w10 16x</text>
+</g>
+<g id="w10-24x" data-priority="5" stroke="#666" fill="none" stroke-width="0.1">
+<circle cx="58.300" cy="-48.000" r="0.300000"/>
+<circle cx="61.300" cy="-48.000" r="0.500000"/>
+<circle cx="65.200" cy="-48.000" r="1.200000"/>
+<circle cx="71.900" cy="-48.000" r="3.300000"/>
+<text x="58.000" y="-53.500" font-size="2.200000" fill="#666" stroke="none">w10 24x</text>
+</g>
+<g id="w20-8x" data-priority="6" stroke="#c39" fill="none" stroke-width="0.1">
+<circle cx="10.300" cy="-34.000" r="0.300000"/>
+<circle cx="13.300" cy="-34.000" r="0.500000"/>
+<circle cx="17.200" cy="-34.000" r="1.200000"/>
+<circle cx="23.900" cy="-34.000" r="3.300000"/>
+<text x="10.000" y="-39.500" font-size="2.200000" fill="#c39" stroke="none">w20 8x</text>
+</g>
+<g id="w20-16x" data-priority="7" stroke="#3aa" fill="none" stroke-width="0.1">
+<circle cx="34.300" cy="-34.000" r="0.300000"/>
+<circle cx="37.300" cy="-34.000" r="0.500000"/>
+<circle cx="41.200" cy="-34.000" r="1.200000"/>
+<circle cx="47.900" cy="-34.000" r="3.300000"/>
+<text x="34.000" y="-39.500" font-size="2.200000" fill="#3aa" stroke="none">w20 16x</text>
+</g>
+<g id="w20-24x" data-priority="8" stroke="#d33" fill="none" stroke-width="0.1">
+<circle cx="58.300" cy="-34.000" r="0.300000"/>
+<circle cx="61.300" cy="-34.000" r="0.500000"/>
+<circle cx="65.200" cy="-34.000" r="1.200000"/>
+<circle cx="71.900" cy="-34.000" r="3.300000"/>
+<text x="58.000" y="-39.500" font-size="2.200000" fill="#d33" stroke="none">w20 24x</text>
+</g>
+<g id="slow60-32x" data-priority="9" stroke="#39c" fill="none" stroke-width="0.1">
+<circle cx="10.300" cy="-16.000" r="0.300000"/>
+<circle cx="13.300" cy="-16.000" r="0.500000"/>
+<circle cx="17.200" cy="-16.000" r="1.200000"/>
+<circle cx="23.900" cy="-16.000" r="3.300000"/>
+<text x="10.000" y="-21.500" font-size="2.200000" fill="#39c" stroke="none">60% 100mm/s 32x</text>
+</g>
+<g id="slow60-64x" data-priority="10" stroke="#2a2" fill="none" stroke-width="0.1">
+<circle cx="44.300" cy="-16.000" r="0.300000"/>
+<circle cx="47.300" cy="-16.000" r="0.500000"/>
+<circle cx="51.200" cy="-16.000" r="1.200000"/>
+<circle cx="57.900" cy="-16.000" r="3.300000"/>
+<text x="44.000" y="-21.500" font-size="2.200000" fill="#2a2" stroke="none">60% 100mm/s 64x</text>
+</g>
+</svg>
