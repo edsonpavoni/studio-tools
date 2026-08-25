@@ -47,10 +47,11 @@
      they are already distinguished by colour, alignment and the mono figures. */
   .tag{font:500 9px ui-monospace,monospace;letter-spacing:.08em;color:var(--ok);
     background:rgba(93,190,138,.1);border-radius:4px;padding:3px 6px}
-  .kv{display:flex;align-items:baseline;gap:10px;padding:4px 0;line-height:1.35}
-  .kv b{flex:none;width:74px;font:400 11px ui-monospace,monospace;color:var(--ink3);
+  /* sized to sit level with the net list, not to shout over it */
+  .kv{display:flex;align-items:baseline;gap:10px;padding:2.5px 0;line-height:1.35}
+  .kv b{flex:none;width:66px;font:400 10px ui-monospace,monospace;color:var(--ink3);
     white-space:nowrap}
-  .kv span{flex:1;text-align:right;font:400 12px ui-monospace,monospace;
+  .kv span{flex:1;text-align:right;font:400 11px ui-monospace,monospace;
     color:var(--ink2);font-variant-numeric:tabular-nums}
   .kv span.bad{color:var(--stop)} .kv span.ok{color:var(--ok)}
   .kv.head span{color:var(--ink)}
@@ -59,8 +60,8 @@
     border:1px solid var(--rule);text-align:left}
   button.exp svg{width:15px;height:15px;flex:none;color:var(--ink3)}
   button.exp span{display:flex;flex-direction:column;gap:2px;min-width:0}
-  button.exp b{font:500 12px -apple-system,sans-serif;letter-spacing:.01em}
-  button.exp i{font:normal 10px/1.35 ui-monospace,monospace;color:var(--ink3)}
+  button.exp b{font:500 11.5px -apple-system,sans-serif;letter-spacing:.01em}
+  button.exp i{font:normal 9.5px/1.35 ui-monospace,monospace;color:var(--ink3)}
   button.exp:active{background:#3A3A3A}
   button.exp.busy{opacity:.5}
   button.exp.ok{border-color:var(--selhi)}
@@ -69,10 +70,11 @@
   .opt:active{background:var(--panel2)}
   .opt input{accent-color:var(--selhi);width:14px;height:14px;flex:none;margin-top:2px}
   .opt span{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .opt b{font:500 11.5px -apple-system,sans-serif;color:var(--ink2)}
-  .opt i{font:normal 10px/1.45 ui-monospace,monospace;color:var(--ink3)}
+  .opt b{font:500 11px -apple-system,sans-serif;color:var(--ink2)}
+  .opt i{font:normal 9.5px/1.4 ui-monospace,monospace;color:var(--ink3)}
   .opt.sel{background:rgba(18,138,88,.1)}
   .opt.sel b{color:var(--ink)}
+  #expSect{border-bottom:0}      /* nothing follows it, so no rule hanging below */
   #burnLog{padding:0 16px}
   #burnLog:empty{display:none}
   #burnLog pre{white-space:pre-wrap;font:400 10.5px/1.5 ui-monospace,monospace;
@@ -83,12 +85,6 @@
     background:rgba(224,112,92,.08);border-left:2px solid var(--stop);
     border-radius:0 6px 6px 0;padding:9px 10px;margin:12px 0 8px}
   #burnLog .why b{font-weight:600;display:block;margin-bottom:3px}
-  .pf{font:400 11px/1.6 ui-monospace,monospace;color:var(--ink3);
-    list-style:none;padding:0}
-  .pf li{padding-left:14px;position:relative}
-  .pf li::before{content:"·";position:absolute;left:4px;color:var(--ink3)}
-  .pf li.last{color:var(--warn);margin-top:4px}
-  .pf li.last::before{color:var(--warn)}
   /* panels swap with the view: the sidebar always shows what you are doing */
   .panel{display:none;flex:1;min-height:0;flex-direction:column}
   .panel.show{display:flex}
@@ -367,15 +363,12 @@
         <div class="lab">How the copper comes off</div>
         <label class="opt"><input type="radio" name="clearmode" value="clear" checked>
           <span><b>Copper full clear</b>
-            <i>Every piece of copper that is not a trace or a pad is removed.
-              What V4 and V5 were cut with.</i></span></label>
+            <i>All copper off but traces and pads</i></span></label>
         <label class="opt"><input type="radio" name="clearmode" value="moat">
           <span><b>Minimal isolation clear</b>
-            <i>Only a 0.5 mm ring around each trace and pad; the rest stays as a
-              ground plane. Far less laser time — but that copper is connected,
-              so the board has to be drawn for it.</i></span></label>
+            <i>0.5 mm ring only, rest stays as ground</i></span></label>
       </div>
-      <div class="sect">
+      <div class="sect" id="expSect">
         <div class="lab">Export</div>
         <button class="exp" id="expLbrn">
           <svg><use href="#i-down"/></svg>
@@ -391,17 +384,6 @@
         </button>
       </div>
       <div id="burnLog"></div>
-      <div class="sect" id="preflight">
-        <div class="lab">Before you press go</div>
-        <ul class="pf">
-          <li>dimensions have sources</li>
-          <li>cardboard fit test on a new layout</li>
-          <li>eyes on the file in LightBurn</li>
-          <li>board off the bed, air ON</li>
-          <li class="last">stand at the machine for the cutout — it releases on
-            pass 6 with nothing to spare</li>
-        </ul>
-      </div>
     </div>
   </div>
 </div>
