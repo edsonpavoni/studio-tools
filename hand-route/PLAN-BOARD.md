@@ -1,7 +1,12 @@
 # The Board tool — drawing the board itself
 
 *Planned 2026-08-25 with Edson. Confidence: medium (software is low-risk, the
-physics of organic cutouts is the open bet). Status: not started.*
+physics of organic cutouts is the open bet).*
+
+**Status 2026-08-25: P1–P4 BUILT and passing their gates. P6's 3D extrusion came
+along for free. P5 — the physical proof — is the whole remaining risk and needs
+a bench day.** Nothing here has been cut in copper yet: every claim below is a
+software claim until the P5 coupon runs.
 
 ## Why this exists
 
@@ -59,35 +64,47 @@ board (outline, free holes, and all drawn copper).**
 
 ## Phases
 
-**P1 — plumbing.** `board` section round-trips `.handroute`; `netmap` applies
-it; converter cuts it; verifier gains: outline closed + simple (no
-self-intersection), every pad inside with ≥0.5 mm margin.
-*Gate:* a hand-edited `.handroute` with a triangle outline yields a `.lbrn2`
-whose CUTOUT is that triangle; a pad outside the outline refuses the build.
+**P1 — plumbing. ✅ DONE 2026-08-25.** `board` section round-trips `.handroute`;
+`netmap.apply_board()` applies it; converter cuts it; `verify.check_board()`
+gained the object rules.
+*Gate PASSED:* a hexagon written into a `.handroute` produced a `.lbrn2` whose
+CUTOUT is exactly that hexagon (6 vertices, coordinates to 2 dp); the same
+hexagon one size smaller refused the build with "a drawn trace leaves the board".
+Eight verifier rules unit-tested.
 
-**P2 — drawing the outline.** Board tool + sub-island (outline pen / rect /
-circle). Live W×H readout while drawing. Undo. Copper fades in board mode.
-*Gate:* an organic outline drawn on the iPad autosaves, converts, and verifies;
-the fit-test file carries the same shape.
+**P2 — drawing the outline. ✅ DONE 2026-08-25.** Board tool + sub-island
+(freehand / rect / circle). Live W×H readout. Undo through outlines. Copper
+fades to 16% while shaping.
+*Gate PASSED:* an 83-point organic outline drawn in the UI autosaved, converted,
+verified, and the cardboard fit-test carried the identical 83-point shape.
+*Bug found and fixed here:* a hand that travels all the way round finishes on its
+own start, and the degenerate closing edge read as a self-crossing. Ends now weld
+(0.6 mm), and the crossing test is a proper-crossing test in both UI and Python —
+a genuine bowtie is still caught.
 
-**P3 — holes.** Palette: M2 / M2.5 / M3 (bite + clearance, from The Source
-`pcb-v3/PARTS.md`) + custom Ø. Place, drag, delete. Verifier gains: hole vs
-copper clearance ≥ floor, hole vs edge web ≥ 1.0 mm (assumption — see below),
-unproven diameters warn like they already do.
-*Gate:* verifier refuses a hole 0.2 mm from a trace and accepts a legal one;
-hole kerf compensation applies to authored holes identically.
+**P3 — holes. ✅ DONE 2026-08-25.** M2/M2.5/M3 palette, clearance and bite, in a
+popover behind the hole chevron. Place, drag, erase (in board mode the eraser
+takes holes, never copper). Verifier: hole↔copper ≥ floor, hole↔edge web ≥ 1.0 mm.
+*Gate PASSED:* a hole 0.2 mm from a trace refuses, a legal one passes, and the
+0.24 mm wobble-kerf compensation applies to authored holes identically (Ø3.2
+drawn lands as a 2.96 ellipse in the file).
 
-**P4 — measurements.** Typed exact sizes and positions (tap a dimension to
-edit), optional 0.5 mm grid snap, two-point measure.
-*Gate:* a rect requested 60×40 lands 60.00×40.00 in the `.lbrn2`.
+**P4 — measurements. ✅ DONE 2026-08-25.** Tap the board line in the panel to
+type an exact width and height (scales about the centre); 0.5 mm snap toggle for
+primitives and hole placement.
+*Gate PASSED:* a board typed 104 × 72 lands 104.00 × 72.00 in the `.lbrn2`; snap
+rounds -50.17 → -50.00 and 31.71 → 31.50.
+*Not built:* two-point measure. Add it if the bench wants it.
 
-**P5 — physical proof (bench day).** One coupon: organic perimeter ≥150 mm +
-edge-web ladder (0.6/0.8/1.0/1.5 mm webs). Then cut one real Pencil-drawn board.
+**P5 — physical proof (bench day). ⬜ THE REMAINING RISK.** One coupon: organic
+perimeter ≥150 mm + edge-web ladder (0.6/0.8/1.0/1.5 mm webs). Then cut one real
+Pencil-drawn board. Pair it with the cutout border-burn test — same session.
 *Gate:* the freeform board releases clean on the proven cutout recipe, webs
-intact. Results go to `MATERIAL-QIMOO-FR4.md`.
+intact. Results go to `MATERIAL-QIMOO-FR4.md`, and the 1.0 mm `--edge-web`
+default gets confirmed or raised.
 
-**P6 — polish.** 3D view extrudes the real outline (today: bbox slab). Warnings
-for acute slivers. Maybe SVG outline import.
+**P6 — polish.** ✅ 3D view extrudes the real outline (was a bbox slab).
+⬜ Warnings for acute slivers. ⬜ Maybe SVG outline import.
 
 ## Assumptions
 

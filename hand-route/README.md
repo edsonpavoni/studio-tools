@@ -107,7 +107,35 @@ it; a floating button brings it back.
 | pinch | zoom |
 | Pencil (eraser tool) | delete traces (slide to erase many) |
 | Pencil drag (move tool) | reposition a component, pads and all |
+| Pencil (board tool) | draw the board's outline, or place holes |
 | tap a net in the checklist | focus it — everything else greys; tap again to release |
+| tap the board dimension | type an exact width and height |
+
+### The board is drawn here too
+
+The **board tool** opens a second island: freehand outline, rectangle, circle,
+hole placement (with an M2/M2.5/M3 palette behind its chevron), and a 0.5 mm
+snap toggle. While it is active the copper fades to a whisper, so what you see
+is the object — outline, its holes, the component holes.
+
+A freehand outline closes itself: the tool welds the ends and keeps a consistent
+winding, so the cutout polygon never depends on which way your hand travelled.
+Live width × height shows while you draw; tapping the board line in the side
+panel lets you type the exact size, which scales the shape about its centre.
+
+**This is the split that matters: tscircuit is the source of the circuit —
+components, nets, pads. hand-route is the source of the board — outline, free
+holes, and all drawn copper.** An authored board lives in the `board` section of
+`board.handroute` and overrides circuit.json's outline and free holes;
+component holes are never touched, because those belong to footprints.
+
+The board is checked as an object, live in the panel and again in `verify.py`
+before any laser file is written: the outline may not cross itself, every pad
+and trace must sit inside it with 0.5 mm to spare, and a hole must leave a
+1.0 mm web to the rim (⚠️ that web is an **assumption** until the PLAN-BOARD
+Phase 5 coupon measures where it actually tears — `--edge-web` overrides it).
+Moving a shape never moves what is on it: the warnings tell you what is now
+wrong, and fixing it by hand is the honest fix.
 
 Stroke ends **snap to pads** within ~1 mm, and to existing traces for junctions.
 Strokes are simplified and smoothed (RDP + Chaikin) so the line stays organic without

@@ -76,7 +76,25 @@
     background:var(--panel2);border:1px solid var(--rule);border-radius:13px;
     padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.4)}
   .pop.show{display:flex}
-  #wPop{flex-direction:column;gap:2px}
+  #islBoard{display:none}
+  #islBoard.show{display:flex}
+  #readout{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;
+    display:none;background:var(--panel2);border:1px solid var(--rule);border-radius:8px;
+    padding:5px 12px;font:600 12px ui-monospace,monospace;color:var(--ink);
+    pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+  #readout.show{display:block}
+  #sizePop{align-items:center;gap:6px;bottom:auto;top:96px;right:16px;left:auto}
+  #sizePop label{font:600 11px ui-monospace,monospace;color:var(--ink3)}
+  #sizePop input{width:62px;height:30px;background:var(--panel);color:var(--ink);
+    border:1px solid var(--rule);border-radius:6px;padding:0 8px;
+    font:600 12px ui-monospace,monospace;-webkit-user-select:text;user-select:text}
+  #sizePop button{width:30px;height:30px;background:var(--sel);color:#fff}
+  .stat.tappable{cursor:pointer}
+  .stat.tappable:active{opacity:.6}
+  #wPop,#hPop{flex-direction:column;gap:2px}
+  #hPop button{width:74px;height:32px;gap:8px;justify-content:flex-start;padding:0 8px;
+    font:600 10px ui-monospace,monospace}
+  #hPop button.on{color:#fff}
   #wPop button{width:56px;height:32px;gap:8px;justify-content:flex-start;padding:0 8px}
   #wPop .wdot{border-radius:50%;background:currentColor;flex:none}
   #wPop .wmm{font:600 10px ui-monospace,monospace;color:var(--ink2)}
@@ -131,6 +149,11 @@
   <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></symbol>
   <symbol id="i-net" viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M6.8 17.2 17.2 6.8"/></symbol>
+  <symbol id="i-shape" viewBox="0 0 24 24"><path d="M4 8c0-2.5 3-5 8-5s8 3 8 6-2 4-2 6 1 2 1 4-3 2-7 2-8-2-8-5 2-4 1-6-1-1.5-1-2Z"/></symbol>
+  <symbol id="i-rect" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/></symbol>
+  <symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></symbol>
+  <symbol id="i-hole" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M3 17 17 3l4 4L7 21Z"/><path d="m7 9 2 2"/><path d="m11 5 2 2"/><path d="m11 13 2 2"/></symbol>
   <symbol id="i-short" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></symbol>
   <symbol id="i-gap" viewBox="0 0 24 24"><path d="M4 4v16"/><path d="M20 4v16"/><path d="m10 9-3 3 3 3"/><path d="m14 9 3 3-3 3"/></symbol>
 </svg>
@@ -147,6 +170,15 @@
         <button id="smoothB" title="Smoothness"><svg><use href="#i-smooth"/></svg></button>
         <button id="toolErase" title="Erase"><svg><use href="#i-erase"/></svg></button>
         <button id="toolMove" title="Move component"><svg><use href="#i-move"/></svg></button>
+        <button id="toolBoard" title="Board: outline + holes"><svg><use href="#i-shape"/></svg></button>
+      </div>
+      <div class="island" id="islBoard">
+        <button id="bShape" class="on" title="Draw the outline freehand"><svg><use href="#i-shape"/></svg></button>
+        <button id="bRect" title="Rectangle outline"><svg><use href="#i-rect"/></svg></button>
+        <button id="bCircle" title="Circle outline"><svg><use href="#i-circle"/></svg></button>
+        <button id="bHole" title="Place holes"><svg><use href="#i-hole"/></svg></button>
+        <button id="bHoleArrow" class="mini" title="Hole size"><svg><use href="#i-chevron"/></svg></button>
+        <button id="bSnap" title="Snap to 0.5 mm"><svg><use href="#i-ruler"/></svg></button>
       </div>
       <div class="island" id="islView">
         <button id="viewDraw" class="on" title="Draw view"><svg><use href="#i-board"/></svg></button>
@@ -156,6 +188,13 @@
       </div>
     </div>
     <div class="pop" id="wPop"></div>
+    <div class="pop" id="hPop"></div>
+    <div class="pop" id="sizePop">
+      <label>W</label><input id="sizeW" type="number" step="0.1" inputmode="decimal">
+      <label>H</label><input id="sizeH" type="number" step="0.1" inputmode="decimal">
+      <button id="sizeApply" title="Apply">✓</button>
+    </div>
+    <div id="readout"></div>
     <div class="pop" id="smoothPop">
       <div id="smooth"><div class="track"></div><div class="fill"></div><div class="knob"></div></div>
     </div>
@@ -172,6 +211,7 @@
       <div class="stat"><svg><use href="#i-net"/></svg><span id="cNets">–</span></div>
       <div class="stat"><svg><use href="#i-short"/></svg><span id="cShorts">–</span></div>
       <div class="stat"><svg><use href="#i-gap"/></svg><span id="cGaps">–</span></div>
+      <div class="stat" id="rowBoard"><svg><use href="#i-shape"/></svg><span id="cBoard">–</span></div>
     </div>
     <div id="nets"></div>
     <div id="alerts"></div>
@@ -193,6 +233,17 @@ let eraseSession = null;            // strokes deleted during one erase gesture
 let moveMode = false;               // Move button: pencil drags components
 let dragComp = null;                // {c, sx, sy, m0} during a component drag
 let focusNet = null;                // tap a net in the checklist: the rest greys
+// ---- the board itself: outline drawn here WINS over circuit.json ----------
+let boardMode = false;              // Board tool: the pencil shapes the object
+let boardTool = "shape";            // shape | rect | circle | hole
+let drawnOutline = null;            // [[x,y]...] authored here, null = tscircuit's
+let boardHoles = [];                // [{x,y,d}] free holes placed here
+let holeD = 3.2;                    // next hole diameter (M3 clearance)
+let dragHole = null;                // {h, dx, dy} while sliding a placed hole
+let prim = null;                    // {x0,y0,x1,y1} while dragging a primitive
+let snap = false;                   // 0.5 mm grid while shaping the board
+const SNAP = 0.5;
+function sn(v){ return snap ? Math.round(v / SNAP) * SNAP : v; }
 let marker = null;                  // {x,y} crosshair dropped by tapping an alert
 let conn = null;                    // last connectivity result
 const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
@@ -229,6 +280,65 @@ function compCorners(c){
   return [[-w,-h],[w,-h],[w,h],[-w,h]]
     .map(([dx,dy]) => [c.x + dx*ct - dy*st, c.y + dx*st + dy*ct]);
 }
+/* ===================== the board as a drawn object ====================== */
+function outlineNow(){ return drawnOutline || B.outline; }
+function holesOwnedHere(){ return !!drawnOutline || boardHoles.length > 0; }
+function primOutline(p){
+  // rect and circle from one drag: corner to corner, or bbox-inscribed ellipse
+  const x0 = Math.min(p.x0,p.x1), x1 = Math.max(p.x0,p.x1);
+  const y0 = Math.min(p.y0,p.y1), y1 = Math.max(p.y0,p.y1);
+  if (boardTool === "rect") return [[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+  const cx=(x0+x1)/2, cy=(y0+y1)/2, rx=(x1-x0)/2, ry=(y1-y0)/2, N=64;
+  const out=[];
+  for (let i=0;i<N;i++){
+    const a = i*2*Math.PI/N;
+    out.push([+(cx+rx*Math.cos(a)).toFixed(3), +(cy+ry*Math.sin(a)).toFixed(3)]);
+  }
+  return out;
+}
+function polyArea(p){
+  let a = 0;
+  for (let i=0;i<p.length;i++){
+    const [x1,y1]=p[i], [x2,y2]=p[(i+1)%p.length];
+    a += x1*y2 - x2*y1;
+  }
+  return a/2;
+}
+function polySize(p){
+  const xs=p.map(q=>q[0]), ys=p.map(q=>q[1]);
+  return [Math.max(...xs)-Math.min(...xs), Math.max(...ys)-Math.min(...ys)];
+}
+function setOutline(pts){
+  // Weld the ends. A hand that travels all the way round finishes ON its own
+  // start, and the implicit closing edge between two coincident points is
+  // degenerate - it reads as the outline crossing itself. Drop the tail that
+  // has already arrived.
+  pts = pts.slice();
+  while (pts.length > 3 &&
+         Math.hypot(pts[pts.length-1][0]-pts[0][0],
+                    pts[pts.length-1][1]-pts[0][1]) < 0.6) pts.pop();
+  // keep a consistent winding so the cutout polygon never depends on which way
+  // the hand happened to travel
+  if (polyArea(pts) < 0) pts = pts.slice().reverse();
+  undoStack.push({op:"outline", prev: drawnOutline});
+  drawnOutline = pts.map(q=>[+q[0].toFixed(3), +q[1].toFixed(3)]);
+  const [w,h] = polySize(drawnOutline);
+  markDirty(); analyze(); draw();
+  toast(`Board ${w.toFixed(1)} × ${h.toFixed(1)} mm`);
+}
+function holeAt(wx, wy){
+  for (let i=boardHoles.length-1;i>=0;i--){
+    const h = boardHoles[i];
+    if (Math.hypot(wx-h.x, wy-h.y) < h.d/2 + 0.8) return h;
+  }
+  return null;
+}
+function showReadout(txt){
+  const el = document.getElementById("readout");
+  if (txt === null){ el.classList.remove("show"); return; }
+  el.textContent = txt; el.classList.add("show");
+}
+
 function compAt(wx, wy){
   for (const c of (B.comps || [])){
     const r = (c.rot || 0) * Math.PI/180;
@@ -508,8 +618,93 @@ function analyze(){
   const shortLocs = shorts.map(g => closestBetween(g[0], g[1]));
   const fusionLocs = fusions.map(g => closestBetween(g[0], g[1]));
 
-  conn = { strokeState, netDone, shorts, shortLocs, gaps, fusions, fusionLocs };
+  conn = { strokeState, netDone, shorts, shortLocs, gaps, fusions, fusionLocs,
+           board: boardCheck() };
   renderSide();
+}
+
+/* The board checked as an OBJECT, live. Mirrors verify.check_board(), which is
+   what actually gates the laser file - this is the fast warning, not the truth. */
+const BOARD_MARGIN = 0.5, EDGE_WEB = 1.0;
+function ptInPoly(px, py, poly){
+  let inside = false;
+  for (let i=0;i<poly.length;i++){
+    const [x1,y1] = poly[i], [x2,y2] = poly[(i+1)%poly.length];
+    if ((y1 > py) !== (y2 > py)){
+      const xin = x1 + (py - y1) * (x2 - x1) / (y2 - y1);
+      if (px < xin) inside = !inside;
+    }
+  }
+  return inside;
+}
+function distToPoly(px, py, poly){
+  let m = 1e9;
+  for (let i=0;i<poly.length;i++){
+    const [x1,y1] = poly[i], [x2,y2] = poly[(i+1)%poly.length];
+    m = Math.min(m, distPtSeg(px,py,x1,y1,x2,y2));
+  }
+  return m;
+}
+function boardCheck(){
+  const out = [];
+  const ol = outlineNow();
+  if (!ol || ol.length < 3) return out;
+  // PROPER crossing only, exactly as verify._seg_hits does it. A zero DISTANCE
+  // is not a crossing: neighbouring segments legitimately touch at their shared
+  // vertex, and treating that as a fault condemns every closed shape.
+  for (let i=0;i<ol.length && !out.length;i++){
+    const [ax,ay]=ol[i], [bx,by]=ol[(i+1)%ol.length];
+    for (let j=i+1;j<ol.length;j++){
+      if (j===i || (j+1)%ol.length===i || (i+1)%ol.length===j) continue;
+      const [cx,cy]=ol[j], [dx,dy]=ol[(j+1)%ol.length];
+      const d1=ccw(cx,cy,dx,dy,ax,ay), d2v=ccw(cx,cy,dx,dy,bx,by),
+            d3=ccw(ax,ay,bx,by,cx,cy), d4=ccw(ax,ay,bx,by,dx,dy);
+      if (((d1>0)!==(d2v>0)) && ((d3>0)!==(d4>0))){
+        out.push({msg:"outline crosses itself", x:ax, y:ay});
+        break;
+      }
+    }
+  }
+  for (const p of B.pads){
+    const r = Math.max(p.d, p.pad_w||0, p.pad_h||0)/2;
+    if (!ptInPoly(p.x, p.y, ol))
+      out.push({msg:`pad ${p.name} is off the board`, x:p.x, y:p.y});
+    else if (distToPoly(p.x, p.y, ol) - r < BOARD_MARGIN)
+      out.push({msg:`pad ${p.name} is too close to the edge`, x:p.x, y:p.y});
+  }
+  strokes.forEach(s=>{
+    for (const [qx,qy] of s.pts){
+      if (!ptInPoly(qx, qy, ol)){
+        out.push({msg:"a trace leaves the board", x:qx, y:qy}); return;
+      }
+      if (distToPoly(qx, qy, ol) - s.w/2 < BOARD_MARGIN){
+        out.push({msg:"a trace runs off the edge", x:qx, y:qy}); return;
+      }
+    }
+  });
+  for (const h of (holesOwnedHere() ? boardHoles : B.holes)){
+    const hr = h.d/2;
+    if (!ptInPoly(h.x, h.y, ol)){
+      out.push({msg:"hole is off the board", x:h.x, y:h.y}); continue;
+    }
+    if (distToPoly(h.x, h.y, ol) - hr < EDGE_WEB)
+      out.push({msg:`hole leaves a thin web to the edge`, x:h.x, y:h.y});
+    for (const p of B.pads){
+      const g = Math.hypot(h.x-p.x, h.y-p.y) - hr - Math.max(p.d, p.pad_w||0, p.pad_h||0)/2;
+      if (g < B.min_gap){
+        out.push({msg:`hole is ${g.toFixed(2)} mm from pad ${p.name}`, x:h.x, y:h.y});
+        break;
+      }
+    }
+    for (const s of strokes){
+      const g = distPtStroke(h.x, h.y, s) - hr - s.w/2;
+      if (g < B.min_gap){
+        out.push({msg:`hole is ${g.toFixed(2)} mm from a trace`, x:h.x, y:h.y});
+        break;
+      }
+    }
+  }
+  return out;
 }
 
 /* ============================ rendering ================================ */
@@ -534,9 +729,25 @@ function draw(){
   if (!B) return;
   const px = mm => mm*view.s*DPR;
 
-  // board
-  poly(B.outline, true); ctx.fillStyle = C("--board"); ctx.fill();
-  ctx.lineWidth = px(0.3); ctx.strokeStyle = "#0d0a08"; ctx.stroke();
+  // board. In board mode the copper fades to a whisper so the OBJECT is what
+  // you see: outline, its holes, and the component holes. That is the filter -
+  // done by context, not by another global toggle.
+  const shaping = boardMode && !copperView;
+  poly(outlineNow(), true); ctx.fillStyle = C("--board"); ctx.fill();
+  ctx.lineWidth = px(shaping ? 0.5 : 0.3);
+  ctx.strokeStyle = shaping ? C("--selhi") : "#0d0a08";
+  ctx.stroke();
+  if (shaping){
+    // the outline's own vertices, so a drawn shape can be read as geometry
+    const ol = outlineNow();
+    if (drawnOutline && ol.length < 40){
+      ctx.fillStyle = C("--selhi");
+      for (const [vx,vy] of ol){
+        const [sx,sy] = W2S(vx,vy);
+        ctx.beginPath(); ctx.arc(sx,sy,2.5*DPR,0,7); ctx.fill();
+      }
+    }
+  }
 
   // autoroute ghost, coloured by net so it works as a routing guide.
   // (hidden entirely in copper view - the real board has no ghosts)
@@ -544,7 +755,8 @@ function draw(){
   // not an obstacle: checks only apply between drawn strokes. To keep the promise
   // readable, ghosts of nets that are already complete disappear - every dotted
   // line still visible means "this corridor is still owed to an undrawn net".
-  if (showAuto && !copperView){
+  if (shaping) ctx.globalAlpha = 0.16;      // copper recedes while shaping
+  if (showAuto && !copperView && !shaping){
     // hairline, fine dash: a ghost should whisper. px(0.3) with long dashes read
     // as clutter next to real 0.3 mm copper (Edson, 2026-08-25).
     ctx.lineWidth = Math.max(0.8*DPR, px(0.15)); ctx.lineCap = ctx.lineJoin = "round";
@@ -561,13 +773,24 @@ function draw(){
     ctx.globalAlpha = 1;
   }
 
-  // mounting holes
-  for (const h of B.holes){
+  // mounting holes: circuit.json's, unless this board authored its own
+  // Authoring the board means owning its free holes: circuit.json's belonged to
+  // the old rectangle. Matches apply_board(), which drops them the same way.
+  const holesNow = holesOwnedHere() ? boardHoles : B.holes;
+  ctx.globalAlpha = 1;                       // holes belong to the object, never faded
+  for (const h of holesNow){
     const [x,y]=W2S(h.x,h.y);
     ctx.beginPath(); ctx.arc(x,y,px(h.d/2),0,7);
     ctx.fillStyle = C("--bg"); ctx.fill();
-    ctx.lineWidth = px(0.2); ctx.strokeStyle = "#0d0a08"; ctx.stroke();
+    ctx.lineWidth = px(shaping ? 0.25 : 0.2);
+    ctx.strokeStyle = shaping ? C("--selhi") : "#0d0a08"; ctx.stroke();
+    if (shaping && view.s > 4){
+      ctx.font = `600 ${10*DPR}px ui-monospace,monospace`;
+      ctx.fillStyle = "rgba(239,231,220,.75)";
+      ctx.fillText("⌀" + h.d.toFixed(1), x + px(h.d/2) + 3*DPR, y - 3*DPR);
+    }
   }
+  if (shaping) ctx.globalAlpha = 0.16;
 
   // strokes
   strokes.forEach((s, si)=>{
@@ -596,11 +819,25 @@ function draw(){
     }
   });
 
-  // live stroke
+  ctx.globalAlpha = 1;
+
+  // live stroke — an outline in progress draws in the accent, a trace in ink
   if (cur && cur.length > 1){
-    ctx.lineWidth = px(drawW); ctx.lineCap = ctx.lineJoin = "round";
-    ctx.strokeStyle = "rgba(239,231,220,.9)";
-    poly(cur); ctx.stroke();
+    if (boardMode){
+      ctx.lineWidth = Math.max(1.5*DPR, px(0.4)); ctx.setLineDash([px(1), px(0.8)]);
+      ctx.strokeStyle = C("--selhi");
+      poly(cur); ctx.stroke(); ctx.setLineDash([]);
+    } else {
+      ctx.lineWidth = px(drawW); ctx.lineCap = ctx.lineJoin = "round";
+      ctx.strokeStyle = "rgba(239,231,220,.9)";
+      poly(cur); ctx.stroke();
+    }
+  }
+  // primitive being dragged out
+  if (prim){
+    ctx.lineWidth = Math.max(1.5*DPR, px(0.4)); ctx.setLineDash([px(1), px(0.8)]);
+    ctx.strokeStyle = C("--selhi");
+    poly(primOutline(prim), true); ctx.stroke(); ctx.setLineDash([]);
   }
 
   // crosshair from a tapped alert
@@ -707,6 +944,14 @@ function renderSide(){
   const gp = document.getElementById("cGaps");
   gp.textContent = `${conn.gaps.length} gap alert${conn.gaps.length === 1 ? "" : "s"}`;
   gp.className = conn.gaps.length ? "warn" : "ok";
+  // the board line: size when it is sound, the count of problems when it is not
+  const bp = conn.board || [];
+  const bEl = document.getElementById("cBoard");
+  const [bw, bh] = polySize(outlineNow());
+  bEl.textContent = bp.length
+    ? `${bp.length} board issue${bp.length === 1 ? "" : "s"}`
+    : `${bw.toFixed(1)} × ${bh.toFixed(1)} mm`;
+  bEl.className = bp.length ? "bad" : "ok";
 
   const al = document.getElementById("alerts");
   al.innerHTML = "";
@@ -720,6 +965,7 @@ function renderSide(){
                                    conn.shortLocs[i]));
   (conn.fusions||[]).forEach((f,i)=> row("short", "✕ ORNAMENT will weld: " + f.join(" + "),
                                          conn.fusionLocs[i]));
+  (conn.board||[]).forEach(b=> row("short", "✕ BOARD: " + b.msg, [b.x, b.y]));
   conn.gaps.forEach(g=> row("gap", "△ " + g.msg,
                             (g.x!==undefined) ? [g.x, g.y] : null));
 }
@@ -743,6 +989,22 @@ cv.addEventListener("pointerdown", e=>{
   }
   // pen or mouse
   const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+  if (boardMode){
+    cv.setPointerCapture(e.pointerId);
+    if (boardTool === "hole"){
+      const h = holeAt(wx, wy);
+      if (h){ dragHole = {h, dx: wx-h.x, dy: wy-h.y, x0: h.x, y0: h.y}; }
+      else {
+        boardHoles.push({x:+sn(wx).toFixed(2), y:+sn(wy).toFixed(2), d:holeD});
+        undoStack.push({op:"holeadd"});
+        markDirty(); analyze(); draw();
+      }
+      return;
+    }
+    if (boardTool === "shape"){ cur = [[wx,wy]]; return; }
+    prim = {x0:sn(wx), y0:sn(wy), x1:sn(wx), y1:sn(wy)};    // rect / circle
+    return;
+  }
   if (moveMode){
     const c = compAt(wx, wy);
     if (c){
@@ -784,6 +1046,23 @@ cv.addEventListener("pointermove", e=>{
     }
     return;
   }
+  if (dragHole){
+    const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+    dragHole.moved = true;
+    dragHole.h.x = +sn(wx - dragHole.dx).toFixed(2);
+    dragHole.h.y = +sn(wy - dragHole.dy).toFixed(2);
+    showReadout(`⌀${dragHole.h.d.toFixed(1)}  at ${dragHole.h.x.toFixed(1)}, ${dragHole.h.y.toFixed(1)}`);
+    draw();
+    return;
+  }
+  if (prim){
+    const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+    prim.x1 = sn(wx); prim.y1 = sn(wy);
+    const [w,h] = polySize(primOutline(prim));
+    showReadout(`${w.toFixed(1)} × ${h.toFixed(1)} mm`);
+    draw();
+    return;
+  }
   if (dragComp){
     const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
     dragComp.moved = true;
@@ -800,7 +1079,14 @@ cv.addEventListener("pointermove", e=>{
   if (!cur) return;
   const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
   const last = cur[cur.length-1];
-  if (d2(wx,wy,last[0],last[1]) > 0.02) { cur.push([wx,wy]); draw(); }
+  if (d2(wx,wy,last[0],last[1]) > 0.02) {
+    cur.push([wx,wy]);
+    if (boardMode && cur.length > 2){
+      const [w,h] = polySize(cur);
+      showReadout(`${w.toFixed(1)} × ${h.toFixed(1)} mm`);
+    }
+    draw();
+  }
 });
 function endTouch(e){
   fingers.delete(e.pointerId);
@@ -809,6 +1095,32 @@ function endTouch(e){
 cv.addEventListener("pointerup", e=>{
   e.preventDefault();
   if (e.pointerType === "touch"){ endTouch(e); return; }
+  if (dragHole){
+    showReadout(null);
+    if (dragHole.moved){
+      undoStack.push({op:"holemove", h: dragHole.h, x: dragHole.x0, y: dragHole.y0});
+      markDirty(); analyze();
+    }
+    dragHole = null; draw();
+    return;
+  }
+  if (prim){
+    const p = prim; prim = null; showReadout(null);
+    const [w,h] = polySize(primOutline(p));
+    if (w < 2 || h < 2){ draw(); return; }        // a tap, not a shape
+    setOutline(primOutline(p));
+    return;
+  }
+  if (boardMode && cur){
+    const pts = cur; cur = null; showReadout(null);
+    if (pts.length < 8){ draw(); return; }        // too short to be an outline
+    // an outline closes itself: the hand never returns exactly to the start
+    let o = rdp(pts, 0.12 + smoothVal * 0.5);
+    for (let k = 0; k < Math.round(smoothVal*3); k++) o = smooth(o);
+    o = rdp(o, 0.08);
+    if (o.length >= 3) setOutline(o); else draw();
+    return;
+  }
   if (dragComp){
     const nm = dragComp.c.name, m = moves[nm];
     if (dragComp.moved){
@@ -905,6 +1217,18 @@ function markDirty(){
 
 function eraseAt(wx, wy){
   let hit = false;
+  // in board mode the eraser takes holes, not traces: the tool you are in
+  // decides what is erasable, so copper can never be lost while shaping
+  if (boardMode){
+    const h = holeAt(wx, wy);
+    if (h){
+      const i = boardHoles.indexOf(h);
+      boardHoles.splice(i, 1);
+      undoStack.push({op:"holedel", i, h});
+      markDirty(); analyze(); draw();
+    }
+    return;
+  }
   for (let i=strokes.length-1;i>=0;i--)
     if (distPtStroke(wx,wy,strokes[i]) < strokes[i].w/2 + 0.8){
       eraseSession.push({i, s: strokes[i]});
@@ -927,6 +1251,10 @@ document.getElementById("undoB").onclick = ()=>{
     else delete moves[u.name];
     applyMoves();
   }
+  else if (u.op === "outline") drawnOutline = u.prev;
+  else if (u.op === "holeadd")  boardHoles.pop();
+  else if (u.op === "holedel")  boardHoles.splice(u.i, 0, u.h);
+  else if (u.op === "holemove"){ u.h.x = u.x; u.h.y = u.y; }
   else strokes.splice(u.i, 0, u.s);
   markDirty(); analyze(); draw();
 };
@@ -935,14 +1263,92 @@ function setTool(t){
   closePops();
   erase = t === "erase";
   moveMode = t === "move";
-  for (const id of ["toolDraw","toolErase","toolMove"])
+  boardMode = t === "board";
+  for (const id of ["toolDraw","toolErase","toolMove","toolBoard"])
     document.getElementById(id).classList.toggle("on",
       id === "tool" + t[0].toUpperCase() + t.slice(1));
+  // the board sub-island appears only while shaping the object
+  document.getElementById("islBoard").classList.toggle("show", boardMode);
+  showReadout(null);
   draw();
 }
 document.getElementById("toolDraw").onclick  = ()=>setTool("draw");
 document.getElementById("toolErase").onclick = ()=>setTool("erase");
 document.getElementById("toolMove").onclick  = ()=>setTool("move");
+document.getElementById("toolBoard").onclick = ()=>setTool("board");
+
+function setBoardTool(t){
+  boardTool = t;
+  for (const [id,key] of [["bShape","shape"],["bRect","rect"],
+                          ["bCircle","circle"],["bHole","hole"]])
+    document.getElementById(id).classList.toggle("on", t === key);
+  closePops();
+}
+document.getElementById("bShape").onclick  = ()=>setBoardTool("shape");
+document.getElementById("bRect").onclick   = ()=>setBoardTool("rect");
+document.getElementById("bCircle").onclick = ()=>setBoardTool("circle");
+document.getElementById("bHole").onclick   = ()=>setBoardTool("hole");
+document.getElementById("bHoleArrow").onclick = ()=>{
+  setBoardTool("hole"); togglePop("hPop", "bHoleArrow");
+};
+document.getElementById("bSnap").onclick = e=>{
+  snap = !snap;
+  e.currentTarget.classList.toggle("on", snap);
+  toast(snap ? "Snapping to 0.5 mm" : "Free placement");
+};
+
+/* ---- typed size: tap the board dimension, get the exact number ---------- */
+function scaleOutlineTo(w, h){
+  const ol = outlineNow();
+  const xs = ol.map(p=>p[0]), ys = ol.map(p=>p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const cw = x1-x0, ch = y1-y0;
+  if (cw <= 0 || ch <= 0) return;
+  const cx = (x0+x1)/2, cy = (y0+y1)/2;
+  const kx = w/cw, ky = h/ch;
+  // scale about the CENTRE: the parts stay where they are relative to the
+  // middle of the board, which is what "make it 60 wide" means by hand
+  setOutline(ol.map(([x,y]) => [cx + (x-cx)*kx, cy + (y-cy)*ky]));
+}
+document.getElementById("rowBoard").classList.add("tappable");
+document.getElementById("rowBoard").onclick = ()=>{
+  const [w,h] = polySize(outlineNow());
+  document.getElementById("sizeW").value = w.toFixed(1);
+  document.getElementById("sizeH").value = h.toFixed(1);
+  const pop = document.getElementById("sizePop");
+  const was = pop.classList.contains("show");
+  closePops();
+  if (!was){ pop.classList.add("show"); pop.style.left = ""; }
+};
+document.getElementById("sizeApply").onclick = ()=>{
+  const w = parseFloat(document.getElementById("sizeW").value);
+  const h = parseFloat(document.getElementById("sizeH").value);
+  if (!(w > 1) || !(h > 1)){ toast("Give a width and height in mm"); return; }
+  scaleOutlineTo(w, h);
+  closePops();
+};
+
+// Mount-hole standards, from The Source pcb-v3/PARTS.md. Clearance = the screw
+// passes through; bite = a thread cuts into FR4. Clearance is the safe default.
+const HOLE_SIZES = [
+  {d: 2.2, nm: "M2 clr"}, {d: 2.7, nm: "M2.5 clr"}, {d: 3.2, nm: "M3 clr"},
+  {d: 1.7, nm: "M2 bite"}, {d: 2.2, nm: "M2.5 bite"}, {d: 2.6, nm: "M3 bite"},
+];
+const hPop = document.getElementById("hPop");
+HOLE_SIZES.forEach(s=>{
+  const b = document.createElement("button");
+  const dd = Math.max(5, Math.min(15, s.d*4));
+  b.innerHTML = `<span class="wdot" style="width:${dd}px;height:${dd}px"></span>` +
+                `<span class="wmm">${s.nm}</span>`;
+  if (s.d === holeD && s.nm === "M3 clr") b.classList.add("on");
+  b.onclick = ()=>{
+    holeD = s.d;
+    [...hPop.children].forEach(c=>c.classList.toggle("on", c===b));
+    closePops(); toast(`${s.nm} · ⌀${s.d.toFixed(1)} mm`);
+  };
+  hPop.appendChild(b);
+});
 /* Views: draw (working colours), route (honest copper), 3d. One always active. */
 let curView = "draw";
 function setView(m){
@@ -964,8 +1370,8 @@ document.getElementById("view3d").onclick    = ()=>setView("3d");
 
 /* ---- popovers (pencil size, smoothness) ------------------------------- */
 function closePops(){
-  document.getElementById("wPop").classList.remove("show");
-  document.getElementById("smoothPop").classList.remove("show");
+  for (const id of ["wPop","smoothPop","hPop","sizePop"])
+    document.getElementById(id).classList.remove("show");
 }
 function togglePop(popId, anchorId){
   const pop = document.getElementById(popId);
@@ -997,19 +1403,23 @@ document.getElementById("sideShow").onclick = ()=>{
 document.getElementById("autoB").onclick = e=>{
   showAuto = !showAuto; e.target.classList.toggle("on", showAuto); draw();
 };
+function payload(){
+  const p = {strokes, moves, saved: Date.now()};
+  if (drawnOutline || boardHoles.length)
+    p.board = {outline: drawnOutline, holes: boardHoles};
+  return p;
+}
 async function save(){
   clearTimeout(saveT);
   try{
-    const r = await fetch("/save", {method:"POST",
-      body: JSON.stringify({strokes, moves, saved: Date.now()})});
+    const r = await fetch("/save", {method:"POST", body: JSON.stringify(payload())});
     if ((await r.json()).ok){ dirty = false; return; }
   }catch(e){ /* fall through to the failure toast */ }
   toast("AUTOSAVE FAILED — is the server running?");
 }
 setInterval(()=>{ if (dirty) save(); }, 15000);
 window.addEventListener("pagehide", ()=>{
-  if (dirty) navigator.sendBeacon("/save",
-    JSON.stringify({strokes, moves, saved: Date.now()}));
+  if (dirty) navigator.sendBeacon("/save", JSON.stringify(payload()));
 });
 document.addEventListener("visibilitychange", ()=>{
   if (document.visibilityState === "hidden" && dirty) save();
@@ -1124,11 +1534,23 @@ function render3d(){
       labels.push([name, mx, my]);
     }
   }
-  // board slab first - everything sits on top of it, so it never occludes
-  const ol = B.outline;
+  // board slab first - everything sits on top of it, so it never occludes.
+  // The REAL outline is extruded, so a hand-drawn board looks like itself here.
+  const ol = outlineNow();
   const bx0 = Math.min(...ol.map(p=>p[0])), bx1 = Math.max(...ol.map(p=>p[0]));
   const by0 = Math.min(...ol.map(p=>p[1])), by1 = Math.max(...ol.map(p=>p[1]));
-  box((bx0+bx1)/2, (by0+by1)/2, bx1-bx0, by1-by0, -1.6, 0, "#7a5a3c", 0, null);
+  {
+    const top = ol.map(([x,y]) => P3(x, y, 0));
+    const bot = ol.map(([x,y]) => P3(x, y, -1.6));
+    for (let i=0;i<ol.length;i++){
+      const j = (i+1) % ol.length;
+      faces.push({d: (top[i][2]+top[j][2])/2,
+                  pts: [bot[i],bot[j],top[j],top[i]],
+                  fill: shade("#7a5a3c", 0.62), stroke: "rgba(0,0,0,.4)"});
+    }
+    faces.push({d: Math.min(...top.map(p=>p[2])) - 0.001,
+                pts: top, fill: "#7a5a3c", stroke: "rgba(0,0,0,.5)"});
+  }
   faces.sort((a,b)=>b.d-a.d);
   for (const f of faces) face(f.pts, f.fill, f.stroke);
   faces.length = 0;
@@ -1138,7 +1560,7 @@ function render3d(){
     c3.beginPath(); c3.arc(sx, sy, Math.max(1.5*DPR, 0.8*S), 0, 7);
     c3.fillStyle = C3("--cu"); c3.fill();
   }
-  for (const h of B.holes){
+  for (const h of (holesOwnedHere() ? boardHoles : B.holes)){
     const [sx,sy] = P3(h.x, h.y, 0.02);
     c3.beginPath(); c3.arc(sx, sy, (h.d/2)*S, 0, 7);
     c3.fillStyle = "#14100c"; c3.fill();
@@ -1231,12 +1653,14 @@ async function boot(){
   const t = await (await fetch("/traces")).json();
   strokes = t.strokes || [];
   moves = t.moves || {};
+  drawnOutline = (t.board && t.board.outline) || null;
+  boardHoles = (t.board && t.board.holes) || [];
   // remember design positions so moves stay offsets, never accumulate
   for (const p of B.pads){ p.bx = p.x; p.by = p.y; }
   for (const c of (B.comps||[])){ c.bx = c.x; c.by = c.y; }
   applyMoves();
   // fit view
-  const xs = B.outline.map(p=>p[0]), ys = B.outline.map(p=>p[1]);
+  const xs = outlineNow().map(p=>p[0]), ys = outlineNow().map(p=>p[1]);
   const bw = Math.max(...xs)-Math.min(...xs), bh = Math.max(...ys)-Math.min(...ys);
   const fit = ()=>{
     view.s = Math.min(cv.clientWidth/(bw*1.15), cv.clientHeight/(bh*1.15));

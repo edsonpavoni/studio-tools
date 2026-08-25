@@ -183,6 +183,13 @@ def main():
     ap.add_argument("--floor", type=float, default=0.171,
                     help="minimum manufacturable gap in mm; sub-floor gaps between "
                          "nets refuse the build (default 0.171, the proven value)")
+    ap.add_argument("--board-margin", type=float, default=0.5, metavar="MM",
+                    help="how far pads and drawn copper must stay from a UI-drawn "
+                         "board edge (default 0.5)")
+    ap.add_argument("--edge-web", type=float, default=1.0, metavar="MM",
+                    help="minimum FR4 web between a hand-placed hole and the board "
+                         "edge (default 1.0). ASSUMPTION until the PLAN-BOARD P5 "
+                         "coupon measures where the web actually tears.")
     ap.add_argument("--clearance", type=float, default=0.5,
                     help="moat width in mm for --moat (default 0.5)")
     ap.add_argument("--fit-test", action="store_true",
@@ -224,6 +231,7 @@ def main():
     # must reposition the geometry before ANYTHING reads it -------------------
     manual = None
     moves = {}
+    drawn_board = {}
     mpath = None
     if args.manual_traces:
         mpath = args.manual_traces
@@ -235,6 +243,7 @@ def main():
         mdata = json.load(open(mpath))
         manual = mdata["strokes"]
         moves = mdata.get("moves") or {}
+        drawn_board = mdata.get("board") or {}
         if moves:
             import netmap as _nm
             try:
@@ -246,6 +255,20 @@ def main():
                   % (len(moves), n_moved,
                      ", ".join("%s %+.2f,%+.2f" % (k, v[0], v[1])
                                for k, v in sorted(moves.items()))))
+        if drawn_board:
+            import netmap as _nm
+            try:
+                did_outline, n_bh = _nm.apply_board(cj, drawn_board)
+            except ValueError as e:
+                sys.exit("REFUSED: %s — fix the board in %s" % (e, mpath))
+            bits = []
+            if did_outline:
+                bits.append("outline drawn in the UI (%d points)"
+                            % len(drawn_board["outline"]))
+            if drawn_board.get("holes") is not None:
+                bits.append("%d hand-placed hole(s)" % n_bh)
+            if bits:
+                print("board   : %s" % ", ".join(bits))
 
     outline, board = board_outline(cj)
     hs = holes(cj)
@@ -288,11 +311,25 @@ def main():
 
         import netmap as _nm
         import verify as _vf
-        bd = _nm.extract(args.circuit_json, moves=moves)
+        bd = _nm.extract(args.circuit_json, moves=moves, board=drawn_board)
         # GND is only a pour in --moat mode; in full-clear it must be drawn and
         # complete like every other net.
         bd["pour_net"] = "GND" if args.moat else None
         v = _vf.check(bd, manual, min_gap=args.floor)
+        # A drawn board is checked as an OBJECT, independently of the circuit:
+        # closed and simple, everything inside with margin, holes with a web.
+        board_problems = []
+        if drawn_board.get("outline"):
+            board_problems = _vf.check_board(
+                {"outline": [tuple(p) for p in drawn_board["outline"]],
+                 "pads": bd["pads"], "holes": drawn_board.get("holes") or []},
+                manual, pad_margin=args.board_margin, edge_web=args.edge_web,
+                min_gap=args.floor)
+            print("board   : %s" % ("outline OK, everything inside"
+                                    if not board_problems
+                                    else "%d PROBLEM(S)" % len(board_problems)))
+            for p in board_problems[:10]:
+                print("          %s" % p)
         print("verify  : %s" % ("ALL NETS COMPLETE, no shorts"
                                 if v["complete"] else "PROBLEMS"))
         for n in v["incomplete"]:
@@ -301,11 +338,17 @@ def main():
             print("          SHORT %s" % " + ".join(sh))
         for g in v["gaps"][:10]:
             print("          gap  %s" % g)
-        if not v["complete"] or v["gaps"]:
-            print("\nRefusing to write a laser file: %s. Finish the drawing first, "
-                  "or lower --floor if the coupon has proven a finer gap."
-                  % ("incomplete/shorted" if not v["complete"]
-                     else "%d gap(s) below the %.3f mm floor" % (len(v["gaps"]), args.floor)))
+        if not v["complete"] or v["gaps"] or board_problems:
+            if board_problems:
+                print("\nRefusing to write a laser file: the board itself is not "
+                      "manufacturable (%d problem(s) above). Reshape the outline or "
+                      "move what is too close to the edge." % len(board_problems))
+            else:
+                print("\nRefusing to write a laser file: %s. Finish the drawing first, "
+                      "or lower --floor if the coupon has proven a finer gap."
+                      % ("incomplete/shorted" if not v["complete"]
+                         else "%d gap(s) below the %.3f mm floor"
+                              % (len(v["gaps"]), args.floor)))
             return 1
 
     print("circuit : %s" % os.path.basename(args.circuit_json))

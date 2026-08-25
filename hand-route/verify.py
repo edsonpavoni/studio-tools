@@ -84,6 +84,117 @@ def _stroke_pad_surf(s, p):
     return _dist_pt_stroke(p["x"], p["y"], pts) - s["w"] / 2.0 - _pad_r(p)
 
 
+def _seg_hits(ax, ay, bx, by, cx, cy, dx, dy):
+    """True if segments AB and CD properly cross (shared endpoints don't count)."""
+    def ccw(px, py, qx, qy, rx, ry):
+        return (qx - px) * (ry - py) - (qy - py) * (rx - px)
+    d1 = ccw(cx, cy, dx, dy, ax, ay)
+    d2 = ccw(cx, cy, dx, dy, bx, by)
+    d3 = ccw(ax, ay, bx, by, cx, cy)
+    d4 = ccw(ax, ay, bx, by, dx, dy)
+    return ((d1 > 0) != (d2 > 0)) and ((d3 > 0) != (d4 > 0))
+
+
+def _point_in_poly(px, py, poly):
+    inside = False
+    n = len(poly)
+    for i in range(n):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % n]
+        if (y1 > py) != (y2 > py):
+            xin = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
+            if px < xin:
+                inside = not inside
+    return inside
+
+
+def _dist_pt_poly(px, py, poly):
+    n = len(poly)
+    return min(_dist_pt_seg(px, py, poly[i][0], poly[i][1],
+                            poly[(i + 1) % n][0], poly[(i + 1) % n][1])
+               for i in range(n))
+
+
+def check_board(board, strokes, pad_margin=0.5, edge_web=1.0, min_gap=0.171):
+    """Rules for a board whose OUTLINE and free holes were drawn in the UI.
+
+    Separate from check() because these are about the object, not the circuit:
+    a laser cannot cut a self-crossing outline, copper that runs off the edge is
+    copper that does not exist, and a hole too close to the rim tears its web of
+    FR4 out. Returns a list of problem strings; empty means manufacturable.
+
+    edge_web default 1.0 mm is an ASSUMPTION awaiting the PLAN-BOARD P5 coupon.
+    Raise it there if the ladder says so."""
+    problems = []
+    outline = board.get("outline")
+    if not outline or len(outline) < 3:
+        return ["board outline has fewer than 3 points"] if outline is not None else []
+    n = len(outline)
+
+    # 1. simple polygon: no edge may cross a non-adjacent edge
+    for i in range(n):
+        ax, ay = outline[i]
+        bx, by = outline[(i + 1) % n]
+        for j in range(i + 1, n):
+            if j == i or (j + 1) % n == i or (i + 1) % n == j:
+                continue
+            cx, cy = outline[j]
+            dx, dy = outline[(j + 1) % n]
+            if _seg_hits(ax, ay, bx, by, cx, cy, dx, dy):
+                problems.append("outline crosses itself near (%.1f, %.1f)" % (ax, ay))
+                break
+        if problems:
+            break
+
+    # 2. every pad inside, with margin. A pad off the edge is not a board.
+    for p in board.get("pads", []):
+        r = _pad_r(p)
+        if not _point_in_poly(p["x"], p["y"], outline):
+            problems.append("pad %s is outside the board outline" % p["name"])
+        elif _dist_pt_poly(p["x"], p["y"], outline) - r < pad_margin:
+            problems.append("pad %s sits %.2f mm from the board edge (need %.2f)"
+                            % (p["name"],
+                               _dist_pt_poly(p["x"], p["y"], outline) - r, pad_margin))
+
+    # 3. drawn copper inside, same margin
+    for si, s in enumerate(strokes):
+        for (qx, qy) in s["pts"]:
+            if not _point_in_poly(qx, qy, outline):
+                problems.append("a drawn trace leaves the board near (%.1f, %.1f)"
+                                % (qx, qy))
+                break
+            if _dist_pt_poly(qx, qy, outline) - s["w"] / 2.0 < pad_margin:
+                problems.append("a drawn trace runs %.2f mm from the board edge "
+                                "near (%.1f, %.1f)"
+                                % (_dist_pt_poly(qx, qy, outline) - s["w"] / 2.0,
+                                   qx, qy))
+                break
+
+    # 4. holes: inside, web to the rim, clearance to copper
+    for h in board.get("holes", []):
+        hr = h["d"] / 2.0
+        if not _point_in_poly(h["x"], h["y"], outline):
+            problems.append("hole at (%.1f, %.1f) is outside the board"
+                            % (h["x"], h["y"]))
+            continue
+        web = _dist_pt_poly(h["x"], h["y"], outline) - hr
+        if web < edge_web:
+            problems.append("hole at (%.1f, %.1f) leaves a %.2f mm web to the edge "
+                            "(need %.2f)" % (h["x"], h["y"], web, edge_web))
+        for p in board.get("pads", []):
+            gap = math.hypot(h["x"] - p["x"], h["y"] - p["y"]) - hr - _pad_r(p)
+            if gap < min_gap:
+                problems.append("hole at (%.1f, %.1f) is %.2f mm from pad %s"
+                                % (h["x"], h["y"], gap, p["name"]))
+        for s in strokes:
+            gap = _dist_pt_stroke(h["x"], h["y"], s["pts"]) - hr - s["w"] / 2.0
+            if gap < min_gap:
+                problems.append("hole at (%.1f, %.1f) is %.2f mm from a drawn trace"
+                                % (h["x"], h["y"], gap))
+                break
+    return problems
+
+
 def check(board, strokes, min_gap=0.171):
     """board: netmap.extract() output. strokes: [{'pts':[[x,y]..],'w':mm}].
     -> dict(complete, incomplete=[net..], shorts=[[netA,netB]..], gaps=[msg..])"""

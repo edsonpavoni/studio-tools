@@ -6,15 +6,16 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 
 ## Next
 
-1. **⭐ The Board tool** — draw the board OUTLINE with the Pencil (or exact
-   primitives), place mount holes, live measurements, copper fades while shaping.
-   This is the feature that makes hand-route the expressive art tool. Full plan,
-   phases and gates: **`PLAN-BOARD.md`** (2026-08-25). Absorbs the old "UI hole
-   placement" item.
-2. **Border burn on the cutout edge** — Edson's one critique of V4. Candidate: lower
-   cutout power (the S85 square on `make_mount_coupon.py` tests 85%/8; the hole
-   ladder proved less power = less char). Run the square, compare edges, decide.
-   Pairs naturally with the Board tool's P5 perimeter coupon — one bench session.
+1. **🔴 BENCH DAY: prove a drawn board in copper** — the Board tool is BUILT
+   (P1–P4, `PLAN-BOARD.md`) but nothing hand-shaped has been cut yet. One
+   session, three questions: (a) does an organic perimeter ≥150 mm release
+   clean on the proven cutout recipe, (b) where does the FR4 web between a hole
+   and the rim actually tear — ladder 0.6/0.8/1.0/1.5 mm, which confirms or
+   raises the assumed `--edge-web 1.0`, (c) **border burn on the cutout edge**,
+   Edson's one critique of V4 — run the S85 square from `make_mount_coupon.py`
+   (85%/8; the hole ladder proved less power = less char), compare edges.
+   Then cut one real Pencil-drawn board. Score everything into
+   `MATERIAL-QIMOO-FR4.md`.
 3. **`--pad-grow`** — fatten footprint pads in the negative when a footprint's
    annulus is too thin around the finished hole. V4's rings were saved by the hole
    dial-in; the next dense board may need the pad-side lever too.
@@ -47,6 +48,10 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 
 ## Done (highlights — details in PLAN.md)
 
+- 2026-08-25: **the Board tool, P1–P4** — the board outline is drawn here now,
+  freehand or as exact primitives, with mount holes, typed sizes, 0.5 mm snap,
+  and copper fading while shaping. Verified as an object in the UI and again in
+  `verify.py`. 3D extrudes the real shape. **Not yet cut in copper: P5.**
 - 2026-08-25: UI restyled Figma-like per Edson's direction — deep green accent,
   three floating icon islands (drawing / views / undo+save), pencil-size and
   vertical-smoothness popovers, sidebar reduced to connections with a hide toggle.

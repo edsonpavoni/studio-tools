@@ -75,15 +75,67 @@ def apply_moves(cj, moves):
     return n
 
 
-def extract(circuit_json_path, moves=None):
+def apply_board(cj, board):
+    """Replace the board outline and the free (non-component) holes with the ones
+    drawn in the hand-route UI: {"outline": [[x,y]...], "holes": [{x,y,d}]}.
+
+    The authored board WINS over circuit.json. tscircuit is the source of the
+    circuit — components, nets, pads; hand-route is the source of the board —
+    outline and free holes. Component holes (pcb_plated_hole) are never touched:
+    those belong to footprints and moving them would break the parts.
+
+    Mutates cj in place; returns (outline_replaced, n_holes)."""
+    board = board or {}
+    outline = board.get("outline")
+    holes = board.get("holes")
+    if not outline and holes is None:
+        return (False, 0)
+
+    did_outline = False
+    if outline:
+        if len(outline) < 3:
+            raise ValueError("board outline needs at least 3 points, got %d"
+                             % len(outline))
+        for e in cj:
+            if e.get("type") == "pcb_board":
+                e["outline"] = [{"x": float(p[0]), "y": float(p[1])} for p in outline]
+                xs = [p[0] for p in outline]
+                ys = [p[1] for p in outline]
+                e["width"] = round(max(xs) - min(xs), 4)
+                e["height"] = round(max(ys) - min(ys), 4)
+                e["center"] = {"x": round((max(xs) + min(xs)) / 2.0, 4),
+                               "y": round((max(ys) + min(ys)) / 2.0, 4)}
+                did_outline = True
+
+    n_holes = 0
+    if holes is not None:
+        # free holes are wholly ours: drop circuit.json's and write the drawn set
+        cj[:] = [e for e in cj if e.get("type") != "pcb_hole"]
+        for i, h in enumerate(holes):
+            d = float(h.get("d", 0))
+            if d <= 0:
+                raise ValueError("board hole %d has no diameter" % i)
+            cj.append({"type": "pcb_hole",
+                       "pcb_hole_id": "handroute_hole_%d" % i,
+                       "x": float(h["x"]), "y": float(h["y"]),
+                       "hole_diameter": d,
+                       "hole_shape": "circle"})
+            n_holes += 1
+    return (did_outline, n_holes)
+
+
+def extract(circuit_json_path, moves=None, board=None):
     """-> dict with pads, nets, outline, holes, and the autoroute for background.
 
     pads: [{x, y, d, name, net}]          d = drill or pad size, mm
     nets: {net_name: [pad_index, ...]}     only pads that belong to a named net
     moves: optional {component: [dx, dy]} from the hand-route UI, applied first.
+    board: optional {"outline": [...], "holes": [...]} drawn in the UI; overrides
+           circuit.json's board outline and free holes.
     """
     cj = json.load(open(circuit_json_path))
     apply_moves(cj, moves or {})
+    apply_board(cj, board)
     by = lambda t: [e for e in cj if e.get("type") == t]
 
     comp_name = {c["source_component_id"]: c.get("name", "?")
