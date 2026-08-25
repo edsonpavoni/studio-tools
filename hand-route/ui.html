@@ -64,12 +64,15 @@
   button.exp:active{background:#3A3A3A}
   button.exp.busy{opacity:.5}
   button.exp.ok{border-color:var(--selhi)}
-  .moatrow{display:flex;align-items:flex-start;gap:9px;margin-top:10px;padding:0 1px}
-  .moatrow input{accent-color:var(--selhi);width:14px;height:14px;flex:none;
-    margin-top:1px}
-  .moatrow span{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .moatrow b{font:500 11px -apple-system,sans-serif;color:var(--ink2)}
-  .moatrow i{font:normal 10px/1.45 ui-monospace,monospace;color:var(--ink3)}
+  .opt{display:flex;align-items:flex-start;gap:9px;padding:7px 8px;border-radius:7px;
+    margin:0 -2px 2px}
+  .opt:active{background:var(--panel2)}
+  .opt input{accent-color:var(--selhi);width:14px;height:14px;flex:none;margin-top:2px}
+  .opt span{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .opt b{font:500 11.5px -apple-system,sans-serif;color:var(--ink2)}
+  .opt i{font:normal 10px/1.45 ui-monospace,monospace;color:var(--ink3)}
+  .opt.sel{background:rgba(18,138,88,.1)}
+  .opt.sel b{color:var(--ink)}
   #burnLog{padding:0 16px}
   #burnLog:empty{display:none}
   #burnLog pre{white-space:pre-wrap;font:400 10.5px/1.5 ui-monospace,monospace;
@@ -361,6 +364,18 @@
         <div id="burnRecipe"></div>
       </div>
       <div class="sect">
+        <div class="lab">How the copper comes off</div>
+        <label class="opt"><input type="radio" name="clearmode" value="clear" checked>
+          <span><b>Copper full clear</b>
+            <i>Every piece of copper that is not a trace or a pad is removed.
+              What V4 and V5 were cut with.</i></span></label>
+        <label class="opt"><input type="radio" name="clearmode" value="moat">
+          <span><b>Minimal isolation clear</b>
+            <i>Only a 0.5 mm ring around each trace and pad; the rest stays as a
+              ground plane. Far less laser time — but that copper is connected,
+              so the board has to be drawn for it.</i></span></label>
+      </div>
+      <div class="sect">
         <div class="lab">Export</div>
         <button class="exp" id="expLbrn">
           <svg><use href="#i-down"/></svg>
@@ -374,12 +389,6 @@
           <svg><use href="#i-down"/></svg>
           <span><b>.handroute</b><i>the drawing itself</i></span>
         </button>
-        <label class="moatrow"><input type="checkbox" id="expMoat">
-          <span><b>Isolation moat</b>
-            <i>Clear only a 0.5 mm ring around each trace and pad; all the other
-              copper stays put as a ground plane. Far less laser time — but the
-              leftover copper is connected, so only use it on a board drawn for
-              it. V4 and V5 were cut with the full clear.</i></span></label>
       </div>
       <div id="burnLog"></div>
       <div class="sect" id="preflight">
@@ -1886,10 +1895,18 @@ async function exportFile(btn, url, fallbackName){
     btn.classList.remove("busy");
   }
 }
+function markClearMode(){
+  for (const inp of document.querySelectorAll("input[name=clearmode]"))
+    inp.closest(".opt").classList.toggle("sel", inp.checked);
+}
+for (const inp of document.querySelectorAll("input[name=clearmode]"))
+  inp.addEventListener("change", markClearMode);
+markClearMode();
+
 document.getElementById("expLbrn").onclick = e=>{
-  const moat = document.getElementById("expMoat").checked;
-  exportFile(e.currentTarget, "/export?kind=lbrn&mode=" + (moat ? "moat" : "clear"),
-             "board.lbrn2");
+  const mode = (document.querySelector("input[name=clearmode]:checked") || {}).value
+               || "clear";
+  exportFile(e.currentTarget, "/export?kind=lbrn&mode=" + mode, "board.lbrn2");
 };
 document.getElementById("expFit").onclick = e=>
   exportFile(e.currentTarget, "/export?kind=fittest", "board-FITTEST.lbrn2");

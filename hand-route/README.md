@@ -128,12 +128,15 @@ reason is stated in the panel and in the toast, and the converter's whole log
 follows underneath. Any unsaved change is flushed before the file is built, so
 what you download is what is on screen.
 
-**Full clear vs isolation moat.** The default clears *all* the copper that is
-not a trace or a pad — that is what V4 and V5 were cut with. The moat checkbox
-clears only a 0.5 mm ring around each piece of signal copper and leaves the rest
-standing as a ground plane: far less laser time, but the leftover copper is
-electrically connected and GND stops being a net you draw. It only suits a board
-designed for it.
+**How the copper comes off** is chosen above the export buttons, because it
+changes what the LightBurn job does:
+
+- **Copper full clear** (default) — every piece of copper that is not a trace or
+  a pad is removed. What V4 and V5 were cut with.
+- **Minimal isolation clear** — only a 0.5 mm ring around each trace and pad;
+  the rest stays as a ground plane. Far less laser time, but that copper is
+  electrically connected and GND stops being a net you draw, so the board has to
+  be designed for it.
 
 There is no save button: every change autosaves 2 s after the pen lifts (with a
 15 s retry heartbeat and a flush when the page hides); only a failure announces
