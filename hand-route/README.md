@@ -90,13 +90,16 @@ python3 server.py /path/to/board/dist/index/circuit.json
 
 Open the printed URL in Safari on the iPad (same WiFi). Then:
 
+The tool strip on the canvas (left edge) sets what the Pencil does — Draw, Erase or
+Move, always exactly one — with Undo below it.
+
 | gesture | does |
 |---|---|
-| Pencil | draw a trace |
+| Pencil (Draw) | draw a trace |
 | one finger drag | pan |
 | pinch | zoom |
-| Erase button + Pencil | delete traces (slide to erase many) |
-| Move button + Pencil drag | reposition a component, pads and all |
+| Pencil (Erase) | delete traces (slide to erase many) |
+| Pencil drag (Move) | reposition a component, pads and all |
 | tap a net in the checklist | focus it — everything else greys; tap again to release |
 
 Stroke ends **snap to pads** within ~1 mm, and to existing traces for junctions.

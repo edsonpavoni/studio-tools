@@ -50,6 +50,7 @@
     border-radius:8px;padding:9px 12px;font:600 13px -apple-system,sans-serif}
   button.on{background:var(--sel);color:#0c1c22;border-color:var(--sel)}
   button:active{opacity:.7}
+  #saveB{flex:1 1 100%}
   #saveB.dirty{background:var(--warn);color:#231a08;border-color:var(--warn)}
   #wsel{display:flex;gap:4px}
   #wsel button{padding:9px 8px;font-family:ui-monospace,monospace}
@@ -65,6 +66,10 @@
     background:var(--ink);border:2px solid var(--sel);margin-left:-11px}
   #tabs{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:5}
   #tabs button{min-width:74px}
+  #toolstrip{position:absolute;top:60px;left:12px;display:flex;flex-direction:column;
+    gap:6px;z-index:5}
+  #toolstrip button{min-width:74px;text-align:left}
+  #toolstrip #undoB{margin-top:10px}
   #cv3{position:absolute;inset:0;width:100%;height:100%;touch-action:none;
     display:none;background:var(--bg)}
   #legend{position:absolute;left:12px;bottom:34px;z-index:5;display:none;
@@ -89,8 +94,14 @@
   <div id="stage">
     <canvas id="cv"></canvas><canvas id="cv3"></canvas>
     <div id="tabs">
-      <button id="tabDraw" class="on">Draw</button>
-      <button id="tabView">View</button>
+      <button id="tabDraw" class="on">Board</button>
+      <button id="tabView">3D</button>
+    </div>
+    <div id="toolstrip">
+      <button id="toolDraw" class="on">✎ Draw</button>
+      <button id="toolErase">⌫ Erase</button>
+      <button id="toolMove">✥ Move</button>
+      <button id="undoB">↩ Undo</button>
     </div>
     <div id="legend"></div>
     <div id="toast"></div>
@@ -105,13 +116,10 @@
     <div id="nets"></div>
     <div id="alerts"></div>
     <div id="bar">
+      <div id="wsel"></div>
       <div id="smoothWrap"><label>Smooth</label>
         <div id="smooth"><div class="track"></div><div class="fill"></div><div class="knob"></div></div>
       </div>
-      <button id="undoB">Undo</button>
-      <button id="eraseB">Erase</button>
-      <button id="moveB">Move</button>
-      <div id="wsel"></div>
       <button id="autoB" class="on">Ghost</button>
       <button id="copperB">Copper</button>
       <button id="saveB">Save</button>
@@ -861,19 +869,18 @@ document.getElementById("undoB").onclick = ()=>{
   else strokes.splice(u.i, 0, u.s);
   markDirty(); analyze(); draw();
 };
-document.getElementById("eraseB").onclick = e=>{
-  erase = !erase; e.target.classList.toggle("on", erase);
-  if (erase && moveMode){
-    moveMode = false; document.getElementById("moveB").classList.remove("on"); draw();
-  }
-};
-document.getElementById("moveB").onclick = e=>{
-  moveMode = !moveMode; e.target.classList.toggle("on", moveMode);
-  if (moveMode && erase){
-    erase = false; document.getElementById("eraseB").classList.remove("on");
-  }
+// Draw / Erase / Move are one choice: the pencil is always exactly one tool.
+function setTool(t){
+  erase = t === "erase";
+  moveMode = t === "move";
+  for (const id of ["toolDraw","toolErase","toolMove"])
+    document.getElementById(id).classList.toggle("on",
+      id === "tool" + t[0].toUpperCase() + t.slice(1));
   draw();
-};
+}
+document.getElementById("toolDraw").onclick  = ()=>setTool("draw");
+document.getElementById("toolErase").onclick = ()=>setTool("erase");
+document.getElementById("toolMove").onclick  = ()=>setTool("move");
 document.getElementById("copperB").onclick = e=>{
   copperView = !copperView; e.target.classList.toggle("on", copperView); draw();
 };
@@ -883,6 +890,7 @@ function setMode(m){
   const v = m === "view";
   document.getElementById("cv3").style.display = v ? "block" : "none";
   document.getElementById("legend").classList.toggle("show", v);
+  document.getElementById("toolstrip").style.display = v ? "none" : "flex";
   cv.style.display = v ? "none" : "block";
   document.getElementById("tabDraw").classList.toggle("on", !v);
   document.getElementById("tabView").classList.toggle("on", v);
@@ -969,7 +977,7 @@ function render3d(){
   const S = zoom3 * DPR, ox = cv3.width/2, oy = cv3.height/2;
   const ca = Math.cos(yaw), sa = Math.sin(yaw);
   const cp = Math.cos(pitch), sp = Math.sin(pitch);
-  // +y on the board renders UP, matching the Draw tab. z lifts up.
+  // +y on the board renders UP, matching the Board tab. z lifts up.
   function P3(x, y, z){
     const x1 = x*ca - y*sa, y1 = x*sa + y*ca;
     return [ox + x1*S, oy - (y1*cp + z*sp)*S, y1];
