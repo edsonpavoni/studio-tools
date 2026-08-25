@@ -90,16 +90,21 @@ python3 server.py /path/to/board/dist/index/circuit.json
 
 Open the printed URL in Safari on the iPad (same WiFi). Then:
 
-The tool strip on the canvas (left edge) sets what the Pencil does — Draw, Erase or
-Move, always exactly one — with Undo below it.
+The chrome is Figma-flavoured (2026-08-25): three floating icon islands at the
+bottom of the canvas, deep green accent, no labels. **Island 1, drawing**: pen (the
+chevron beside it opens the pencil-size popover), smoothness (opens a vertical
+slider), eraser, move. **Island 2, views**: draw / copper / 3D, plus the ghost
+toggle. **Island 3**: undo and save. The right panel holds only the connections —
+chips, net checklist, alerts — and the icon at its top hides it; a floating button
+brings it back.
 
 | gesture | does |
 |---|---|
-| Pencil (Draw) | draw a trace |
+| Pencil (pen tool) | draw a trace |
 | one finger drag | pan |
 | pinch | zoom |
-| Pencil (Erase) | delete traces (slide to erase many) |
-| Pencil drag (Move) | reposition a component, pads and all |
+| Pencil (eraser tool) | delete traces (slide to erase many) |
+| Pencil drag (move tool) | reposition a component, pads and all |
 | tap a net in the checklist | focus it — everything else greys; tap again to release |
 
 Stroke ends **snap to pads** within ~1 mm, and to existing traces for junctions.

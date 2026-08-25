@@ -15,9 +15,6 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 3. **`--pad-grow`** — fatten footprint pads in the negative when a footprint's
    annulus is too thin around the finished hole. V4's rings were saved by the hole
    dial-in; the next dense board may need the pad-side lever too.
-4. **Right-sidebar redesign** — the bar grew one button at a time (Smooth, Undo,
-   Erase, Move, six widths, Ghost, Copper, Save) and needs organizing into groups.
-   Review with Edson first.
 
 ## Later
 
@@ -47,6 +44,9 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 
 ## Done (highlights — details in PLAN.md)
 
+- 2026-08-25: UI restyled Figma-like per Edson's direction — deep green accent,
+  three floating icon islands (drawing / views / undo+save), pencil-size and
+  vertical-smoothness popovers, sidebar reduced to connections with a hide toggle.
 - 2026-08-25: renamed PCB-Maker → hand-route, UI files flattened to the project
   root, save file is now `board.handroute` (legacy traces.json still read).
   Three UI features shipped: net **focus** (tap a net in the checklist, the rest
