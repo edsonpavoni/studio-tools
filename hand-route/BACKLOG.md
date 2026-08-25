@@ -6,12 +6,15 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 
 ## Next
 
-1. **Border burn on the cutout edge** — Edson's one critique of V4. Candidate: lower
+1. **⭐ The Board tool** — draw the board OUTLINE with the Pencil (or exact
+   primitives), place mount holes, live measurements, copper fades while shaping.
+   This is the feature that makes hand-route the expressive art tool. Full plan,
+   phases and gates: **`PLAN-BOARD.md`** (2026-08-25). Absorbs the old "UI hole
+   placement" item.
+2. **Border burn on the cutout edge** — Edson's one critique of V4. Candidate: lower
    cutout power (the S85 square on `make_mount_coupon.py` tests 85%/8; the hole
    ladder proved less power = less char). Run the square, compare edges, decide.
-2. **UI: hole placement** — palette to drop mount holes (M2/M2.5/M3 standard table,
-   bite + clearance, see The Source `pcb-v3/PARTS.md`) onto the board in the iPad
-   UI; saved in the `.handroute` file like component moves, merged by circuit2lbrn.
+   Pairs naturally with the Board tool's P5 perimeter coupon — one bench session.
 3. **`--pad-grow`** — fatten footprint pads in the negative when a footprint's
    annulus is too thin around the finished hole. V4's rings were saved by the hole
    dial-in; the next dense board may need the pad-side lever too.
