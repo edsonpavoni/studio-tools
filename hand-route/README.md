@@ -1,4 +1,6 @@
-# PCB-Maker
+# hand-route
+
+*(named PCB-Maker until 2026-08-25; same tool, same recipe)*
 
 Make circuit boards on the ComMarker B6 MOPA, in the studio, the same way twice.
 
@@ -13,13 +15,15 @@ the converter's defaults produce it automatically.
 The pipeline, in one line:
 
 ```
-tsci build → handroute (iPad+Pencil over a ghost autoroute) → circuit2lbrn.py → LightBurn → B6
+tsci build → hand-route UI (iPad+Pencil over a ghost autoroute) → circuit2lbrn.py → LightBurn → B6
 ```
 
 The autorouter's spacing is not cuttable on this process, so traces are drawn by hand:
-**`handroute/`** serves the board to the iPad, checks connections live, and an
-independent verifier refuses incomplete or shorted drawings. The result is a board
-that is also a drawing — V4 carries "the cave" written into the copper.
+**`server.py`** serves the board to the iPad, checks connections live, and an
+independent verifier refuses incomplete or shorted drawings. The drawing saves as a
+**`.handroute`** file (strokes + component moves) next to the board's circuit.json.
+The result is a board that is also a drawing — V4 carries "the cave" written into
+the copper.
 
 **Open work lives in `BACKLOG.md`. Build history lives in `PLAN.md`.**
 
@@ -34,7 +38,8 @@ that is also a drawing — V4 carries "the cave" written into the copper.
 | `circuit2lbrn.py` | **The main converter.** tscircuit `circuit.json` in, one laser-ready `.lbrn2` out, preflight checks included. `--fit-test` makes the cardboard fit-check file. |
 | `lbrn.py` | Writes `.lbrn2` files and carries the recipe as layer defaults. Pure standard library, no installs. Format reverse-engineered from the reference file. |
 | `negative.py` | Computes the copper-clear region: rasterise copper, grow by the kerf pullback, subtract from the board, march the boundary back out to polygons. Rebuilds its own fill to catch structural mismatch. |
-| `handroute/` | The iPad hand-routing server: ghost autoroute, live connection checklist, independent verifier. See its README. |
+| `server.py` + `ui.html` | The iPad drawing app: ghost autoroute, live connection checklist, net focus, component moves. See **Drawing on the iPad** below. |
+| `netmap.py` / `verify.py` | Pads + netlist out of circuit.json, and the independent checker the converter runs. Shared by UI and converter: one source of truth. |
 | `gerber2lbrn.py` | The Gerber route, for boards that come from Flux or KiCad instead. |
 | `make_holes5.py` / `make_mount_coupon.py` / `make_width_coupon.py` | The live coupon generators: the dialed hole cell, mount sizes + cutout squares, and the unrun 0.2 mm width proof. |
 | `coupon/` | Generated coupons and their filled score sheets — the measurement record. |
@@ -51,7 +56,7 @@ that is also a drawing — V4 carries "the cave" written into the copper.
 # a real board, from tscircuit source
 cd your-board-project
 tsci build                                    # writes dist/<name>/circuit.json
-python3 /path/to/PCB-Maker/circuit2lbrn.py \
+python3 /path/to/hand-route/circuit2lbrn.py \
         dist/index/circuit.json --clear --manual-traces auto \
         -o board.lbrn2
 # defaults already carry the measured recipe: 200 ns, 0.05 mm interval,
@@ -68,6 +73,69 @@ last, in the run order recovered from the 2025 board. Open it in LightBurn and p
 
 For boards that came from Flux or KiCad rather than tscircuit, `gerber2lbrn.py` takes
 the Gerber set instead and uses pcb2gcode for the isolation geometry.
+
+---
+
+## Drawing on the iPad
+
+The autorouter connects things; it does not compose them. This replaces it with your
+hand: the board's pads and netlist load into a canvas, you draw each connection with
+the Apple Pencil, and a live checklist ticks nets off as they complete. The routing
+becomes part of the object, the way the 2025 TRIBE board's big sweeping curve was.
+
+```bash
+cd tools/hand-route
+python3 server.py /path/to/board/dist/index/circuit.json
+```
+
+Open the printed URL in Safari on the iPad (same WiFi). Then:
+
+| gesture | does |
+|---|---|
+| Pencil | draw a trace |
+| one finger drag | pan |
+| pinch | zoom |
+| Erase button + Pencil | delete traces (slide to erase many) |
+| Move button + Pencil drag | reposition a component, pads and all |
+| tap a net in the checklist | focus it — everything else greys; tap again to release |
+
+Stroke ends **snap to pads** within ~1 mm, and to existing traces for junctions.
+Strokes are simplified and smoothed (RDP + Chaikin) so the line stays organic without
+the jitter. Width buttons set the trace width for the next stroke.
+
+**Focus** exists for the moment that matters: pick the net you are routing and see
+only its pads, its ghost, and its copper in colour. Shorts stay red even in focus —
+a short is never allowed to hide.
+
+**Move** drags a whole component (its outline shows as a handle; orange = moved,
+with the offset in mm). No auto rerouting, on purpose: strokes never move with the
+part, the checklist unticks by itself when a pad leaves its drawn copper, and
+redrawing the connection is the honest fix. Drag a part back over its design
+position to zero the move.
+
+**The checklist** shows every net. A net ticks green when all its pads are connected
+through drawn copper. A stroke that bridges two different nets turns red and raises
+a SHORT alert. A stroke that passes closer than **0.171 mm** to foreign copper gets
+an orange halo and a gap warning.
+
+The faint dashed lines are the autoroute, as a reference of what connects to what;
+the Ghost button hides them, and a completed net's ghost disappears on its own.
+Saves are automatic every 20 s and on the Save button. Everything saves to
+**`board.handroute`** next to the circuit.json — strokes and component moves in one
+JSON file — and every save keeps a timestamped copy in `handroute-history/`.
+(Boards drawn before 2026-08-25 had a `traces.json`; it is read as a fallback and
+migrates to `.handroute` on the first save.)
+
+**The UI is not trusted.** The converter re-verifies the saved file independently
+(`verify.py`): every net complete, no two nets bridged, no gap under `--floor`
+(default 0.171 mm, the proven value), with any component moves applied identically
+on both sides. It refuses to write a laser file otherwise. Two constants were tuned
+the hard way and matter:
+
+- contact tolerance is **0.08 mm** — it must be *below* the minimum clearance, or a
+  trace passing legally close to a foreign pad reads as touching it
+- hand-drawn widths are **never widened** by `--min-trace`; the verifier validated
+  the drawn geometry and widening afterwards would invalidate it
 
 ### Why tscircuit rather than Gerber
 

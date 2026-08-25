@@ -5,14 +5,15 @@ server.py — serve the hand-routing UI to the iPad.
     python3 server.py /path/to/dist/index/circuit.json
 
 Then open the printed URL in Safari on the iPad (same WiFi). Draw with the Pencil,
-pan and zoom with fingers. Every save writes traces.json NEXT TO the circuit.json,
-which is where the converter looks for it:
+pan and zoom with fingers. Every save writes board.handroute NEXT TO the
+circuit.json (strokes + component moves), which is where the converter looks:
 
     python3 circuit2lbrn.py circuit.json --manual-traces auto --moat -o board.lbrn2
 
-Pure standard library, no installs. Saves are atomic and every save also writes a
-timestamped copy under traces-history/ so a slip of the Pencil can't destroy an
-afternoon of drawing.
+A legacy traces.json (pre-2026-08-25 boards) is read if no .handroute file exists
+yet; the first save migrates it. Pure standard library, no installs. Saves are
+atomic and every save also writes a timestamped copy under handroute-history/ so
+a slip of the Pencil can't destroy an afternoon of drawing.
 """
 
 import http.server
@@ -39,11 +40,18 @@ def lan_ip():
 
 
 def main():
-    if len(sys.argv) < 2:
+    args = list(sys.argv[1:])
+    port = 8477
+    if "--port" in args:
+        i = args.index("--port")
+        port = int(args[i + 1])
+        del args[i:i + 2]
+    if not args:
         sys.exit(__doc__)
-    cj_path = os.path.abspath(sys.argv[1])
-    out_path = os.path.join(os.path.dirname(cj_path), "traces.json")
-    hist_dir = os.path.join(os.path.dirname(cj_path), "traces-history")
+    cj_path = os.path.abspath(args[0])
+    out_path = os.path.join(os.path.dirname(cj_path), "board.handroute")
+    legacy_path = os.path.join(os.path.dirname(cj_path), "traces.json")
+    hist_dir = os.path.join(os.path.dirname(cj_path), "handroute-history")
 
     board = netmap.extract(cj_path)
     board["min_gap"] = 0.171          # proven floor; the UI warns below this
@@ -74,6 +82,8 @@ def main():
             elif self.path == "/traces":
                 if os.path.exists(out_path):
                     self._send(200, open(out_path, "rb").read())
+                elif os.path.exists(legacy_path):
+                    self._send(200, open(legacy_path, "rb").read())
                 else:
                     self._send(200, json.dumps({"strokes": []}))
             else:
@@ -88,19 +98,23 @@ def main():
             try:
                 parsed = json.loads(data)
                 assert isinstance(parsed.get("strokes"), list)
+                mv = parsed.get("moves", {})
+                assert isinstance(mv, dict)
+                for v in mv.values():
+                    assert isinstance(v, list) and len(v) == 2
             except Exception:
                 self._send(400, json.dumps({"ok": False, "err": "bad payload"}))
                 return
             os.makedirs(hist_dir, exist_ok=True)
             stamp = time.strftime("%Y%m%d-%H%M%S")
-            open(os.path.join(hist_dir, "traces-%s.json" % stamp), "wb").write(data)
+            open(os.path.join(hist_dir, "board-%s.handroute" % stamp), "wb").write(data)
             tmp = out_path + ".tmp"
             open(tmp, "wb").write(data)
             os.replace(tmp, out_path)
             self._send(200, json.dumps({"ok": True,
-                                        "strokes": len(parsed["strokes"])}))
+                                        "strokes": len(parsed["strokes"]),
+                                        "moves": len(parsed.get("moves", {}))}))
 
-    port = 8477
     srv = http.server.ThreadingHTTPServer(("0.0.0.0", port), H)
     print("Hand-route server for: %s" % cj_path)
     print("Saves to             : %s" % out_path)

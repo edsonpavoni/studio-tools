@@ -34,13 +34,56 @@ class Find:
             self.p[ra] = rb
 
 
-def extract(circuit_json_path):
+def apply_moves(cj, moves):
+    """Translate components by the offsets the hand-route UI saved: {name: [dx, dy]}
+    in mm. Moves the pcb_component centre and every pad/port that belongs to it.
+    Mutates cj in place, returns how many elements moved. UI, converter and
+    verifier all apply the SAME offsets, so there is exactly one geometry.
+
+    A move naming a component that does not exist refuses loudly: silently
+    ignoring it would leave pads at the design position while the strokes were
+    drawn against the moved one."""
+    if not moves:
+        return 0
+    by = lambda t: [e for e in cj if e.get("type") == t]
+    src_name = {c["source_component_id"]: c.get("name", "?")
+                for c in by("source_component")}
+    unknown = set(moves) - set(src_name.values())
+    if unknown:
+        raise ValueError("moves reference unknown component(s): %s"
+                         % ", ".join(sorted(unknown)))
+    moved_pcb_ids = {}
+    n = 0
+    for e in by("pcb_component"):
+        nm = src_name.get(e.get("source_component_id"))
+        if nm in moves:
+            moved_pcb_ids[e.get("pcb_component_id")] = nm
+            dx, dy = moves[nm]
+            c = e.get("center") or {}
+            if "x" in c:
+                c["x"] += dx
+                c["y"] += dy
+                n += 1
+    for t in ("pcb_smtpad", "pcb_plated_hole", "pcb_port", "pcb_silkscreen_text"):
+        for e in by(t):
+            nm = moved_pcb_ids.get(e.get("pcb_component_id"))
+            if nm and "x" in e and "y" in e:
+                dx, dy = moves[nm]
+                e["x"] += dx
+                e["y"] += dy
+                n += 1
+    return n
+
+
+def extract(circuit_json_path, moves=None):
     """-> dict with pads, nets, outline, holes, and the autoroute for background.
 
     pads: [{x, y, d, name, net}]          d = drill or pad size, mm
     nets: {net_name: [pad_index, ...]}     only pads that belong to a named net
+    moves: optional {component: [dx, dy]} from the hand-route UI, applied first.
     """
     cj = json.load(open(circuit_json_path))
+    apply_moves(cj, moves or {})
     by = lambda t: [e for e in cj if e.get("type") == t]
 
     comp_name = {c["source_component_id"]: c.get("name", "?")

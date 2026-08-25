@@ -170,10 +170,12 @@ def main():
                          "nearby traces. Default 0.05.")
     ap.add_argument("--manual-traces", default=None, metavar="PATH",
                     help="use hand-drawn traces from the hand-route UI instead of the "
-                         "autoroute. 'auto' looks for traces.json next to circuit.json. "
-                         "The strokes are re-verified here independently of the UI: "
-                         "completeness, shorts and clearance all checked before any "
-                         "geometry is written.")
+                         "autoroute. 'auto' looks for board.handroute (falling back to "
+                         "a legacy traces.json) next to circuit.json. Component moves "
+                         "saved in the file are applied to every layer. The strokes are "
+                         "re-verified here independently of the UI: completeness, "
+                         "shorts and clearance all checked before any geometry is "
+                         "written.")
     ap.add_argument("--moat", action="store_true",
                     help="isolation-moat mode: clear only a ring around signal copper "
                          "and leave the rest as the ground pour. This is the strategy "
@@ -218,6 +220,33 @@ def main():
         cj = cj.get("circuit_json") or cj.get("elements") or []
     out = args.out or os.path.splitext(args.circuit_json)[0] + ".lbrn2"
 
+    # ---- hand-routed file loads FIRST: it may carry component moves, and those
+    # must reposition the geometry before ANYTHING reads it -------------------
+    manual = None
+    moves = {}
+    mpath = None
+    if args.manual_traces:
+        mpath = args.manual_traces
+        if mpath == "auto":
+            d = os.path.dirname(os.path.abspath(args.circuit_json))
+            mpath = os.path.join(d, "board.handroute")
+            if not os.path.exists(mpath):                 # pre-2026-08-25 boards
+                mpath = os.path.join(d, "traces.json")
+        mdata = json.load(open(mpath))
+        manual = mdata["strokes"]
+        moves = mdata.get("moves") or {}
+        if moves:
+            import netmap as _nm
+            try:
+                n_moved = _nm.apply_moves(cj, moves)
+            except ValueError as e:
+                sys.exit("REFUSED: %s — stale move after a component rename? Fix %s"
+                         % (e, mpath))
+            print("moves   : %d component(s) repositioned in the UI (%d elements): %s"
+                  % (len(moves), n_moved,
+                     ", ".join("%s %+.2f,%+.2f" % (k, v[0], v[1])
+                               for k, v in sorted(moves.items()))))
+
     outline, board = board_outline(cj)
     hs = holes(cj)
     cu = copper_shapes(cj)
@@ -251,23 +280,15 @@ def main():
         return
 
     # ---- hand-drawn traces replace the autoroute --------------------------
-    manual = None
-    if args.manual_traces:
-        mpath = args.manual_traces
-        if mpath == "auto":
-            mpath = os.path.join(os.path.dirname(os.path.abspath(args.circuit_json)),
-                                 "traces.json")
-        manual = json.load(open(mpath))["strokes"]
+    if manual is not None:
         tr = [([tuple(q) for q in st["pts"]], st["w"]) for st in manual]
         po = []          # tscircuit's pour was shaped around the OLD autoroute
         print("manual  : %d hand-drawn traces from %s"
               % (len(manual), os.path.basename(mpath)))
 
-        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                        "handroute"))
         import netmap as _nm
         import verify as _vf
-        bd = _nm.extract(args.circuit_json)
+        bd = _nm.extract(args.circuit_json, moves=moves)
         # GND is only a pour in --moat mode; in full-clear it must be drawn and
         # complete like every other net.
         bd["pour_net"] = "GND" if args.moat else None
@@ -323,7 +344,7 @@ def main():
                       % args.min_trace)
 
     layers = {l.name: l for l in pcb_layers(qpulse=args.qpulse, interval=args.interval)}
-    doc = LbrnDoc(notes="PCB-Maker from %s" % os.path.basename(args.circuit_json))
+    doc = LbrnDoc(notes="hand-route from %s" % os.path.basename(args.circuit_json))
     for l in layers.values():
         doc.add_layer(l)
 

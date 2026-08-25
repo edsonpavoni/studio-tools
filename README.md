@@ -50,8 +50,9 @@ A transcript filed away from its source drifts from it. Write the output into th
 
 ## Making circuit boards
 
-### PCB-Maker → `tools/PCB-Maker/`
-**Use when:** a sculpture needs a board and the fab house's shipping date does not fit. tscircuit source → hand-routed artwork on the iPad → one LightBurn file for the ComMarker B6 MOPA, so a board can be made in the studio on a Tuesday — and the traces are a drawing.
+### hand-route → `tools/hand-route/`
+*(named PCB-Maker until 2026-08-25)*
+**Use when:** a sculpture needs a board and the fab house's shipping date does not fit. tscircuit source → hand-routed artwork on the iPad → one LightBurn file for the ComMarker B6 MOPA, so a board can be made in the studio on a Tuesday — and the traces are a drawing. The board's routing saves as a `.handroute` file next to its circuit.json.
 
 **Status v0.1 (2026-08-24): proven end to end.** V4 (The Source P1b) cut with a fully
 measured recipe: every laser number came off a coupon and lives in `B6-PCB-RECIPE.md`

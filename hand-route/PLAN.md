@@ -1,4 +1,4 @@
-# PCB-Maker — build plan (history)
+# hand-route — build plan (history)
 
 > **This file is the build history. The live to-do list is `BACKLOG.md`.**
 > Superseded coupon generators moved to `archive/` (2026-08-24 cleanup).
@@ -113,7 +113,7 @@ Until that happens, treat the recipe as an archive of what worked once rather th
 Everything "left" above happened, and then some. Six coupon runs produced the measured
 recipe now in `B6-PCB-RECIPE.md` (75%/1500 fill, 400 mm/s holes with wobble,
 interleaved checkerboarding, labels on a feather layer). The tscircuit autorouter's
-hardcoded 0.100 mm clearance forced the build of `handroute/`: iPad+Pencil drawing
+hardcoded 0.100 mm clearance forced the build of the iPad drawing UI: iPad+Pencil drawing
 over a ghost autoroute, live connection checking, and an independent verifier that
 refuses incomplete or shorted boards. Edson drew the whole board as artwork.
 

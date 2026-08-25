@@ -37,6 +37,8 @@
   .net.done{background:rgba(127,177,131,.08)} .net.done .st{color:var(--ok)}
   .net.short{background:rgba(224,112,92,.12)} .net.short .st{color:var(--stop)}
   .net .st.todo{color:var(--ink3)}
+  .net.focus{background:rgba(111,179,199,.14);outline:1px solid var(--sel)}
+  .net.dim{opacity:.35}
   #alerts{max-height:150px;overflow-y:auto;border-top:1px solid var(--rule);padding:8px 16px;touch-action:pan-y}
   #alerts div{font-size:12px;padding:5px 0;cursor:pointer;
     border-bottom:1px dashed var(--rule)}
@@ -108,6 +110,7 @@
       </div>
       <button id="undoB">Undo</button>
       <button id="eraseB">Erase</button>
+      <button id="moveB">Move</button>
       <div id="wsel"></div>
       <button id="autoB" class="on">Ghost</button>
       <button id="copperB">Copper</button>
@@ -120,6 +123,7 @@
 /* ============================ state ==================================== */
 let B = null;                       // board data from /board
 let strokes = [];                   // [{pts:[[x,y]...], w}]  mm, y-up
+let moves = {};                     // {compName: [dx,dy]} mm — component repositions
 let undoStack = [];
 let view = {x: 0, y: 0, s: 8};      // world->screen: sx=(x-vx)*s, sy=(vy-y)*s
 let drawW = 0.5, erase = false, showAuto = true, dirty = false;
@@ -127,6 +131,9 @@ let copperView = false;             // true = render as real copper on FR4
 let smoothVal = 0.35;             // 0 = raw line, 1 = very smooth
 let cur = null;                     // in-progress stroke pts
 let eraseSession = null;            // strokes deleted during one erase gesture
+let moveMode = false;               // Move button: pencil drags components
+let dragComp = null;                // {c, sx, sy, m0} during a component drag
+let focusNet = null;                // tap a net in the checklist: the rest greys
 let marker = null;                  // {x,y} crosshair dropped by tapping an alert
 let conn = null;                    // last connectivity result
 const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
@@ -139,6 +146,39 @@ function netColor(net){
   if (net === B.pour_net) return "#8a7a6a";
   let h = 0; for (const c of net) h = (h*31 + c.charCodeAt(0)) >>> 0;
   return PALETTE[h % PALETTE.length];
+}
+
+/* ===================== component moves ================================= */
+// A move translates a component and ALL its pads. Strokes are never moved with
+// it - the checklist unticks by itself when a pad leaves its drawn copper, and
+// redrawing is the honest fix. Saved beside the strokes; the converter applies
+// the same offsets so UI, converter and verifier see one geometry.
+function padComp(p){ const i = p.name.indexOf("."); return i > 0 ? p.name.slice(0, i) : null; }
+function applyMoves(){
+  for (const p of B.pads){
+    const m = moves[padComp(p)];
+    p.x = p.bx + (m ? m[0] : 0); p.y = p.by + (m ? m[1] : 0);
+  }
+  for (const c of (B.comps || [])){
+    const m = moves[c.name];
+    c.x = c.bx + (m ? m[0] : 0); c.y = c.by + (m ? m[1] : 0);
+  }
+}
+function compCorners(c){
+  const r = (c.rot || 0) * Math.PI/180, ct = Math.cos(r), st = Math.sin(r);
+  const w = Math.max(c.w, 2)/2, h = Math.max(c.h, 2)/2;
+  return [[-w,-h],[w,-h],[w,h],[-w,h]]
+    .map(([dx,dy]) => [c.x + dx*ct - dy*st, c.y + dx*st + dy*ct]);
+}
+function compAt(wx, wy){
+  for (const c of (B.comps || [])){
+    const r = (c.rot || 0) * Math.PI/180;
+    const dx = wx - c.x, dy = wy - c.y;
+    const lx = dx*Math.cos(-r) - dy*Math.sin(-r), ly = dx*Math.sin(-r) + dy*Math.cos(-r);
+    if (Math.abs(lx) <= Math.max(c.w, 2)/2 + 0.6 &&
+        Math.abs(ly) <= Math.max(c.h, 2)/2 + 0.6) return c;
+  }
+  return null;
 }
 
 /* ============================ geometry ================================= */
@@ -446,12 +486,15 @@ function draw(){
   // readable, ghosts of nets that are already complete disappear - every dotted
   // line still visible means "this corridor is still owed to an undrawn net".
   if (showAuto && !copperView){
-    ctx.lineWidth = px(0.3); ctx.lineCap = ctx.lineJoin = "round";
-    ctx.setLineDash([px(1.2), px(0.9)]);
-    ctx.globalAlpha = 0.45;
+    // hairline, fine dash: a ghost should whisper. px(0.3) with long dashes read
+    // as clutter next to real 0.3 mm copper (Edson, 2026-08-25).
+    ctx.lineWidth = Math.max(0.8*DPR, px(0.15)); ctx.lineCap = ctx.lineJoin = "round";
+    ctx.setLineDash([px(0.8), px(0.7)]);
+    ctx.globalAlpha = 0.38;
     for (const t of B.auto){
       if (t.net === B.pour_net) continue;                    // pour: never drawn
       if (conn && t.net && conn.netDone[t.net]) continue;    // finished: ghost gone
+      if (focusNet && t.net !== focusNet) continue;          // focus: only its ghost
       ctx.strokeStyle = t.net ? netColor(t.net) : "rgba(220,200,180,0.5)";
       poly(t.pts); ctx.stroke();
     }
@@ -478,6 +521,12 @@ function draw(){
       else if (st.fusedNet) col = netColor(st.fusedNet); // ornament adopted by a net
       else if (st.floating) col = "#8a8075";
       else col = netColor(st.nets[0]);
+      // focus mode greys every stroke not on the focused net - shorts stay red,
+      // a short is never allowed to hide
+      if (focusNet && !st.short && !st.fuseShort){
+        const en = st.nets.length ? st.nets : (st.fusedNet ? [st.fusedNet] : []);
+        if (!en.includes(focusNet)) col = "#4e463f";
+      }
     }
     ctx.lineWidth = px(s.w); ctx.lineCap = ctx.lineJoin = "round";
     ctx.strokeStyle = col;
@@ -516,6 +565,7 @@ function draw(){
     const [x,y]=W2S(p.x,p.y);
     const isPour = p.net === B.pour_net;
     const done = conn && p.net && conn.netDone[p.net];
+    const dimmed = focusNet && !copperView && p.net !== focusNet;
     const r = px(Math.max(p.d, p.pad_w||0)/2);
     // Draw the pad's TRUE footprint. Square pads were rendered as circles until
     // 2026-08-23, hiding the corner - which reaches 0.41r beyond the circle and
@@ -528,22 +578,42 @@ function draw(){
       else ctx.arc(x,y,r+grow,0,7);
     }
     padPath(0);
-    ctx.fillStyle = isPour ? "#6a5a4c" : C("--cu"); ctx.fill();
+    ctx.fillStyle = dimmed ? "#57493d" : isPour ? "#6a5a4c" : C("--cu"); ctx.fill();
     if (!copperView){
       ctx.lineWidth = Math.max(1.2*DPR, px(0.12));
-      ctx.strokeStyle = p.net ? (isPour ? "#4a3e33" : netColor(p.net)) : "#555";
+      ctx.strokeStyle = dimmed ? "#3a322b"
+        : p.net ? (isPour ? "#4a3e33" : netColor(p.net)) : "#555";
       ctx.stroke();
     }
     ctx.beginPath(); ctx.arc(x,y,Math.max(1.5*DPR, px(p.d/4)),0,7);
     ctx.fillStyle = "#120e0b"; ctx.fill();
-    if (done && !isPour && !copperView){
+    if (done && !isPour && !copperView && !dimmed){
       padPath(2.5*DPR);
       ctx.lineWidth = 1.6*DPR; ctx.strokeStyle = C("--ok"); ctx.stroke();
     }
-    if (zoomed && p.net && !copperView){
+    if (zoomed && p.net && !copperView && !dimmed){
       ctx.font = `${10*DPR}px ui-monospace,monospace`;
       ctx.fillStyle = "rgba(239,231,220,.55)";
       ctx.fillText(p.name, x + r + 3*DPR, y - 3*DPR);
+    }
+  }
+
+  // component handles: only in Move mode. The rect is what the Pencil grabs.
+  if (moveMode && !copperView){
+    for (const c of (B.comps||[])){
+      const cor = compCorners(c);
+      poly(cor, true);
+      ctx.fillStyle = "rgba(111,179,199,.10)"; ctx.fill();
+      ctx.lineWidth = 1.4*DPR;
+      ctx.strokeStyle = moves[c.name] ? "rgba(224,165,82,.9)" : "rgba(111,179,199,.8)";
+      ctx.stroke();
+      const [lx,ly] = W2S(c.x, c.y);
+      ctx.font = `700 ${11*DPR}px ui-monospace,monospace`;
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(239,231,220,.9)";
+      ctx.fillText(c.name + (moves[c.name]
+        ? ` ${moves[c.name][0].toFixed(1)},${moves[c.name][1].toFixed(1)}` : ""), lx, ly);
+      ctx.textAlign = "left";
     }
   }
 }
@@ -558,11 +628,14 @@ function renderSide(){
     const done = conn.netDone[n];
     const inShort = conn.shorts.some(s=>s.includes(n));
     const div = document.createElement("div");
-    div.className = "net" + (inShort ? " short" : done ? " done" : "");
+    div.className = "net" + (inShort ? " short" : done ? " done" : "")
+      + (focusNet === n ? " focus" : focusNet ? " dim" : "");
     const padNames = B.nets[n].map(i=>B.pads[i].name).join("  ");
     div.innerHTML = `<span class="dot" style="background:${netColor(n)}"></span>
       <span><div class="nm">${n}</div><div class="pads">${padNames}</div></span>
       <span class="st ${done?"":"todo"}">${inShort ? "SHORT" : done ? "✓" : "·"}</span>`;
+    // tap = focus this net, board greys everything else; tap again = release
+    div.onclick = ()=>{ focusNet = (focusNet === n) ? null : n; renderSide(); draw(); };
     el.appendChild(div);
   }
   document.getElementById("cNets").textContent = `${doneN}/${nets.length} nets`;
@@ -609,6 +682,15 @@ cv.addEventListener("pointerdown", e=>{
   }
   // pen or mouse
   const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+  if (moveMode){
+    const c = compAt(wx, wy);
+    if (c){
+      dragComp = { c, sx: wx, sy: wy,
+                   m0: moves[c.name] ? [...moves[c.name]] : [0, 0] };
+      cv.setPointerCapture(e.pointerId);
+    }
+    return;
+  }
   if (erase){
     // continuous erasing: hold and slide, everything the tip crosses goes.
     // Deletions collect into ONE undo entry per gesture.
@@ -641,6 +723,14 @@ cv.addEventListener("pointermove", e=>{
     }
     return;
   }
+  if (dragComp){
+    const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
+    dragComp.moved = true;
+    moves[dragComp.c.name] = [ +(dragComp.m0[0] + wx - dragComp.sx).toFixed(2),
+                               +(dragComp.m0[1] + wy - dragComp.sy).toFixed(2) ];
+    applyMoves(); draw();       // analyze() waits for pointerup: it is O(n2)
+    return;
+  }
   if (erase && eraseSession !== null){
     const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
     eraseAt(wx, wy);
@@ -658,6 +748,19 @@ function endTouch(e){
 cv.addEventListener("pointerup", e=>{
   e.preventDefault();
   if (e.pointerType === "touch"){ endTouch(e); return; }
+  if (dragComp){
+    const nm = dragComp.c.name, m = moves[nm];
+    if (dragComp.moved){
+      if (m && !m[0] && !m[1]) delete moves[nm];      // dragged back home
+      undoStack.push({op:"move", name:nm, prev:dragComp.m0});
+      markDirty(); analyze();
+      toast(m && (m[0] || m[1])
+        ? `${nm} at ${m[0].toFixed(1)}, ${m[1].toFixed(1)} mm from design`
+        : `${nm} back at design position`);
+    }
+    dragComp = null; draw();
+    return;
+  }
   if (erase){
     if (eraseSession && eraseSession.length)
       undoStack.push({op:"delmulti", items: eraseSession});
@@ -668,7 +771,15 @@ cv.addEventListener("pointerup", e=>{
   finishStroke();
 });
 cv.addEventListener("pointercancel", e=>{
-  if (e.pointerType === "touch") endTouch(e); else cur = null;
+  if (e.pointerType === "touch") endTouch(e);
+  else {
+    cur = null;
+    if (dragComp){       // abort the drag: put the component back where it was
+      if (dragComp.m0[0] || dragComp.m0[1]) moves[dragComp.c.name] = dragComp.m0;
+      else delete moves[dragComp.c.name];
+      applyMoves(); dragComp = null;
+    }
+  }
   draw();
 });
 cv.addEventListener("wheel", e=>{      // desktop testing
@@ -742,11 +853,26 @@ document.getElementById("undoB").onclick = ()=>{
     for (let k=u.items.length-1;k>=0;k--)
       strokes.splice(u.items[k].i, 0, u.items[k].s);
   }
+  else if (u.op === "move"){
+    if (u.prev[0] || u.prev[1]) moves[u.name] = u.prev;
+    else delete moves[u.name];
+    applyMoves();
+  }
   else strokes.splice(u.i, 0, u.s);
   markDirty(); analyze(); draw();
 };
 document.getElementById("eraseB").onclick = e=>{
   erase = !erase; e.target.classList.toggle("on", erase);
+  if (erase && moveMode){
+    moveMode = false; document.getElementById("moveB").classList.remove("on"); draw();
+  }
+};
+document.getElementById("moveB").onclick = e=>{
+  moveMode = !moveMode; e.target.classList.toggle("on", moveMode);
+  if (moveMode && erase){
+    erase = false; document.getElementById("eraseB").classList.remove("on");
+  }
+  draw();
 };
 document.getElementById("copperB").onclick = e=>{
   copperView = !copperView; e.target.classList.toggle("on", copperView); draw();
@@ -767,10 +893,11 @@ document.getElementById("autoB").onclick = e=>{
 };
 async function save(){
   const r = await fetch("/save", {method:"POST",
-    body: JSON.stringify({strokes, saved: Date.now()})});
+    body: JSON.stringify({strokes, moves, saved: Date.now()})});
   if ((await r.json()).ok){
     dirty = false; document.getElementById("saveB").classList.remove("dirty");
-    toast("Saved " + strokes.length + " traces");
+    const nm = Object.keys(moves).length;
+    toast("Saved " + strokes.length + " traces" + (nm ? `, ${nm} moved part${nm>1?"s":""}` : ""));
   } else toast("SAVE FAILED");
 }
 document.getElementById("saveB").onclick = save;
@@ -989,6 +1116,11 @@ async function boot(){
   B = await (await fetch("/board")).json();
   const t = await (await fetch("/traces")).json();
   strokes = t.strokes || [];
+  moves = t.moves || {};
+  // remember design positions so moves stay offsets, never accumulate
+  for (const p of B.pads){ p.bx = p.x; p.by = p.y; }
+  for (const c of (B.comps||[])){ c.bx = c.x; c.by = c.y; }
+  applyMoves();
   // fit view
   const xs = B.outline.map(p=>p[0]), ys = B.outline.map(p=>p[1]);
   const bw = Math.max(...xs)-Math.min(...xs), bh = Math.max(...ys)-Math.min(...ys);
