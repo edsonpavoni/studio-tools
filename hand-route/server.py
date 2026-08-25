@@ -53,6 +53,7 @@ def main():
     legacy_path = os.path.join(os.path.dirname(cj_path), "traces.json")
     hist_dir = os.path.join(os.path.dirname(cj_path), "handroute-history")
 
+    hist_last = {"t": 0.0}
     board = netmap.extract(cj_path)
     board["min_gap"] = 0.171          # proven floor; the UI warns below this
     board["default_width"] = 0.5
@@ -105,9 +106,15 @@ def main():
             except Exception:
                 self._send(400, json.dumps({"ok": False, "err": "bad payload"}))
                 return
-            os.makedirs(hist_dir, exist_ok=True)
-            stamp = time.strftime("%Y%m%d-%H%M%S")
-            open(os.path.join(hist_dir, "board-%s.handroute" % stamp), "wb").write(data)
+            # The UI autosaves every stroke; a history snapshot per save would
+            # bury the folder. At most one snapshot per minute still recovers
+            # any slip of the Pencil, and the live file is always current.
+            now = time.time()
+            if now - hist_last["t"] > 60:
+                hist_last["t"] = now
+                os.makedirs(hist_dir, exist_ok=True)
+                stamp = time.strftime("%Y%m%d-%H%M%S")
+                open(os.path.join(hist_dir, "board-%s.handroute" % stamp), "wb").write(data)
             tmp = out_path + ".tmp"
             open(tmp, "wb").write(data)
             os.replace(tmp, out_path)

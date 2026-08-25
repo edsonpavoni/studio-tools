@@ -28,10 +28,12 @@
   #sideHead{display:flex;align-items:center;padding:10px 8px 6px 16px}
   #side h1{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
     color:var(--ink2);flex:1}
-  #chips{display:flex;gap:6px;padding:2px 16px 10px;flex-wrap:wrap}
-  .chip{font:600 11px/1 ui-monospace,monospace;padding:5px 9px;border-radius:6px;
-    background:var(--panel2)}
-  .chip.ok{color:var(--ok)} .chip.bad{color:var(--stop)} .chip.warn{color:var(--warn)}
+  #status{padding:2px 0 10px}
+  .stat{display:flex;align-items:center;gap:10px;padding:4px 18px;
+    font:600 12px/1 ui-monospace,monospace}
+  .stat svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round;opacity:.92;flex:none}
+  .stat .ok{color:var(--ok)} .stat .bad{color:var(--stop)} .stat .warn{color:var(--warn)}
   #nets{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 8px 10px;touch-action:pan-y}
   .net{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;margin:1px 0}
   .net .dot{width:11px;height:11px;border-radius:3px;flex:none}
@@ -61,7 +63,6 @@
   button.on{background:var(--sel);color:#fff}
   button.mini{width:16px;border-radius:6px}
   button.mini svg{width:11px;height:11px}
-  #saveB.dirty{color:var(--warn)}
 
   /* ---- floating islands --------------------------------------------- */
   #islands{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
@@ -128,13 +129,18 @@
   <symbol id="i-cube" viewBox="0 0 24 24"><path d="M21 8v8l-9 5-9-5V8l9-5 9 5Z"/><path d="m3 8 9 5 9-5"/><path d="M12 22V13"/></symbol>
   <symbol id="i-ghost" viewBox="0 0 24 24"><path d="M3 14c2.5-6 5-6 7.5 0s5 6 7.5 0" stroke-dasharray="2.6 2.8"/></symbol>
   <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
-  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M6.8 17.2 17.2 6.8"/></symbol>
+  <symbol id="i-short" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></symbol>
+  <symbol id="i-gap" viewBox="0 0 24 24"><path d="M4 4v16"/><path d="M20 4v16"/><path d="m10 9-3 3 3 3"/><path d="m14 9 3 3-3 3"/></symbol>
 </svg>
 <div id="app">
   <div id="stage">
     <canvas id="cv"></canvas><canvas id="cv3"></canvas>
     <div id="islands">
+      <div class="island" id="islAct">
+        <button id="undoB" title="Undo"><svg><use href="#i-undo"/></svg></button>
+      </div>
       <div class="island" id="islDraw">
         <button id="toolDraw" class="on" title="Draw"><svg><use href="#i-pen"/></svg></button>
         <button id="wArrow" class="mini" title="Pencil size"><svg><use href="#i-chevron"/></svg></button>
@@ -147,10 +153,6 @@
         <button id="viewRoute" title="Copper view"><svg><use href="#i-route"/></svg></button>
         <button id="view3d" title="3D view"><svg><use href="#i-cube"/></svg></button>
         <button id="autoB" class="on" title="Ghost autoroute"><svg><use href="#i-ghost"/></svg></button>
-      </div>
-      <div class="island" id="islAct">
-        <button id="undoB" title="Undo"><svg><use href="#i-undo"/></svg></button>
-        <button id="saveB" title="Save"><svg><use href="#i-save"/></svg></button>
       </div>
     </div>
     <div class="pop" id="wPop"></div>
@@ -166,10 +168,10 @@
       <h1>Connections</h1>
       <button id="sideHide" title="Hide panel"><svg><use href="#i-panel"/></svg></button>
     </div>
-    <div id="chips">
-      <span class="chip" id="cNets">–</span>
-      <span class="chip" id="cShorts">–</span>
-      <span class="chip" id="cGaps">–</span>
+    <div id="status">
+      <div class="stat"><svg><use href="#i-net"/></svg><span id="cNets">–</span></div>
+      <div class="stat"><svg><use href="#i-short"/></svg><span id="cShorts">–</span></div>
+      <div class="stat"><svg><use href="#i-gap"/></svg><span id="cGaps">–</span></div>
     </div>
     <div id="nets"></div>
     <div id="alerts"></div>
@@ -695,15 +697,16 @@ function renderSide(){
     div.onclick = ()=>{ focusNet = (focusNet === n) ? null : n; renderSide(); draw(); };
     el.appendChild(div);
   }
-  document.getElementById("cNets").textContent = `${doneN}/${nets.length} nets`;
-  document.getElementById("cNets").className = "chip " + (doneN===nets.length ? "ok" : "");
+  const nEl = document.getElementById("cNets");
+  nEl.textContent = `${doneN}/${nets.length} nets`;
+  nEl.className = doneN === nets.length ? "ok" : "";
   const nShort = conn.shorts.length + (conn.fusions ? conn.fusions.length : 0);
   const sh = document.getElementById("cShorts");
-  sh.textContent = nShort ? `${nShort} short` : "no shorts";
-  sh.className = "chip " + (nShort ? "bad" : "ok");
+  sh.textContent = `${nShort} short${nShort === 1 ? "" : "s"}`;
+  sh.className = nShort ? "bad" : "ok";
   const gp = document.getElementById("cGaps");
-  gp.textContent = conn.gaps.length ? `${conn.gaps.length} gap` : "gaps ok";
-  gp.className = "chip " + (conn.gaps.length ? "warn" : "ok");
+  gp.textContent = `${conn.gaps.length} gap alert${conn.gaps.length === 1 ? "" : "s"}`;
+  gp.className = conn.gaps.length ? "warn" : "ok";
 
   const al = document.getElementById("alerts");
   al.innerHTML = "";
@@ -890,7 +893,15 @@ function toast(msg){
   t.textContent = msg; t.style.opacity = 1;
   clearTimeout(t._h); t._h = setTimeout(()=>t.style.opacity=0, 1600);
 }
-function markDirty(){ dirty = true; document.getElementById("saveB").classList.add("dirty"); }
+/* Autosave: there is no Save button. Every change schedules a save 2 s after the
+   pen lifts; a 15 s heartbeat retries anything that failed; leaving the page
+   flushes via sendBeacon. Success is silent - only failure speaks. */
+let saveT = null;
+function markDirty(){
+  dirty = true;
+  clearTimeout(saveT);
+  saveT = setTimeout(save, 2000);
+}
 
 function eraseAt(wx, wy){
   let hit = false;
@@ -987,16 +998,22 @@ document.getElementById("autoB").onclick = e=>{
   showAuto = !showAuto; e.target.classList.toggle("on", showAuto); draw();
 };
 async function save(){
-  const r = await fetch("/save", {method:"POST",
-    body: JSON.stringify({strokes, moves, saved: Date.now()})});
-  if ((await r.json()).ok){
-    dirty = false; document.getElementById("saveB").classList.remove("dirty");
-    const nm = Object.keys(moves).length;
-    toast("Saved " + strokes.length + " traces" + (nm ? `, ${nm} moved part${nm>1?"s":""}` : ""));
-  } else toast("SAVE FAILED");
+  clearTimeout(saveT);
+  try{
+    const r = await fetch("/save", {method:"POST",
+      body: JSON.stringify({strokes, moves, saved: Date.now()})});
+    if ((await r.json()).ok){ dirty = false; return; }
+  }catch(e){ /* fall through to the failure toast */ }
+  toast("AUTOSAVE FAILED — is the server running?");
 }
-document.getElementById("saveB").onclick = save;
-setInterval(()=>{ if (dirty) save(); }, 20000);
+setInterval(()=>{ if (dirty) save(); }, 15000);
+window.addEventListener("pagehide", ()=>{
+  if (dirty) navigator.sendBeacon("/save",
+    JSON.stringify({strokes, moves, saved: Date.now()}));
+});
+document.addEventListener("visibilitychange", ()=>{
+  if (document.visibilityState === "hidden" && dirty) save();
+});
 
 // 0.3 mm is PROVEN: V3 (2026-08-23) carried three 0.3-drawn strokes, one 7.4 mm
 // long, and all read continuous — 0.40 mm finished after the 2x0.05 kerf pullback.

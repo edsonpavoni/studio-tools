@@ -91,12 +91,14 @@ python3 server.py /path/to/board/dist/index/circuit.json
 Open the printed URL in Safari on the iPad (same WiFi). Then:
 
 The chrome is Figma-flavoured (2026-08-25): three floating icon islands at the
-bottom of the canvas, deep green accent, no labels. **Island 1, drawing**: pen (the
-chevron beside it opens the pencil-size popover), smoothness (opens a vertical
-slider), eraser, move. **Island 2, views**: draw / copper / 3D, plus the ghost
-toggle. **Island 3**: undo and save. The right panel holds only the connections —
-chips, net checklist, alerts — and the icon at its top hides it; a floating button
-brings it back.
+bottom of the canvas, deep green accent, no labels. **Leftmost island**: undo.
+**Drawing island**: pen (the chevron beside it opens the pencil-size popover),
+smoothness (opens a vertical slider), eraser, move. **Views island**: draw /
+copper / 3D, plus the ghost toggle. There is no save button: every change
+autosaves 2 s after the pen lifts (with a 15 s retry heartbeat and a flush when
+the page hides); only a failure announces itself. The right panel holds only the
+connections — status lines, net checklist, alerts — and the icon at its top hides
+it; a floating button brings it back.
 
 | gesture | does |
 |---|---|
@@ -128,11 +130,11 @@ an orange halo and a gap warning.
 
 The faint dashed lines are the autoroute, as a reference of what connects to what;
 the Ghost button hides them, and a completed net's ghost disappears on its own.
-Saves are automatic every 20 s and on the Save button. Everything saves to
-**`board.handroute`** next to the circuit.json — strokes and component moves in one
-JSON file — and every save keeps a timestamped copy in `handroute-history/`.
-(Boards drawn before 2026-08-25 had a `traces.json`; it is read as a fallback and
-migrates to `.handroute` on the first save.)
+Everything saves to **`board.handroute`** next to the circuit.json — strokes and
+component moves in one JSON file — with a timestamped snapshot in
+`handroute-history/` at most once a minute. (Boards drawn before 2026-08-25 had a
+`traces.json`; it is read as a fallback and migrates to `.handroute` on the first
+save.)
 
 **The UI is not trusted.** The converter re-verifies the saved file independently
 (`verify.py`): every net complete, no two nets bridged, no gap under `--floor`
