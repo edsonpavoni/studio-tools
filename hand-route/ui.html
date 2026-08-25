@@ -28,6 +28,42 @@
   #sideHead{display:flex;align-items:center;padding:10px 8px 6px 16px}
   #side h1{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
     color:var(--ink2);flex:1}
+  /* panels swap with the view: the sidebar always shows what you are doing */
+  .panel{display:none;flex:1;min-height:0;flex-direction:column}
+  .panel.show{display:flex}
+  .sect{padding:12px 16px;border-bottom:1px solid var(--rule)}
+  .lab{display:flex;align-items:center;font:600 10px/1 ui-monospace,monospace;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:9px}
+  .spacer{flex:1}
+  .toolrow{display:flex;gap:2px;align-items:center}
+  .fields{display:flex;gap:8px;align-items:center}
+  .f{display:flex;align-items:center;gap:6px;background:var(--panel2);
+    border:1px solid var(--rule);border-radius:6px;padding:0 8px;height:30px;flex:1}
+  .f i{font:600 10px ui-monospace,monospace;color:var(--ink3);font-style:normal;flex:none}
+  .f input{width:100%;background:none;border:0;color:var(--ink);outline:none;
+    font:600 12px ui-monospace,monospace;-webkit-user-select:text;user-select:text}
+  .f input::-webkit-outer-spin-button,.f input::-webkit-inner-spin-button{
+    -webkit-appearance:none;margin:0}
+  #bHoleSize{flex:1;height:30px;background:var(--panel2);color:var(--ink);
+    border:1px solid var(--rule);border-radius:6px;padding:0 8px;
+    font:600 12px ui-monospace,monospace}
+  button.mini2{width:26px;height:22px;border-radius:5px;background:var(--panel2)}
+  button.mini2 svg{width:13px;height:13px}
+  button.del{width:30px;height:30px;background:var(--panel2);flex:none}
+  button.del svg{width:14px;height:14px;stroke:var(--stop)}
+  .hint{font:11px ui-monospace,monospace;color:var(--ink3);margin-top:8px}
+  #holeList{max-height:150px;overflow-y:auto;touch-action:pan-y;margin-top:8px}
+  .hrow{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;
+    font:600 11px ui-monospace,monospace;color:var(--ink2);cursor:pointer}
+  .hrow:active{opacity:.6}
+  .hrow.sel{background:rgba(18,138,88,.18);color:#fff;outline:1px solid var(--selhi)}
+  .hrow .hd{color:var(--ink3)}
+  #selSect{display:none}
+  #selSect.show{display:block}
+  #boardAlerts{overflow-y:auto;padding:8px 16px;touch-action:pan-y}
+  #boardAlerts div{font-size:11px;padding:5px 0;color:var(--stop);cursor:pointer;
+    border-bottom:1px dashed var(--rule)}
+  #boardAlerts div::after{content:" \2192";color:var(--ink3)}
   #status{padding:2px 0 10px}
   .stat{display:flex;align-items:center;gap:10px;padding:4px 18px;
     font:600 12px/1 ui-monospace,monospace}
@@ -76,25 +112,12 @@
     background:var(--panel2);border:1px solid var(--rule);border-radius:13px;
     padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.4)}
   .pop.show{display:flex}
-  #islBoard{display:none}
-  #islBoard.show{display:flex}
   #readout{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;
     display:none;background:var(--panel2);border:1px solid var(--rule);border-radius:8px;
     padding:5px 12px;font:600 12px ui-monospace,monospace;color:var(--ink);
     pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.4)}
   #readout.show{display:block}
-  #sizePop{align-items:center;gap:6px;bottom:auto;top:96px;right:16px;left:auto}
-  #sizePop label{font:600 11px ui-monospace,monospace;color:var(--ink3)}
-  #sizePop input{width:62px;height:30px;background:var(--panel);color:var(--ink);
-    border:1px solid var(--rule);border-radius:6px;padding:0 8px;
-    font:600 12px ui-monospace,monospace;-webkit-user-select:text;user-select:text}
-  #sizePop button{width:30px;height:30px;background:var(--sel);color:#fff}
-  .stat.tappable{cursor:pointer}
-  .stat.tappable:active{opacity:.6}
-  #wPop,#hPop{flex-direction:column;gap:2px}
-  #hPop button{width:74px;height:32px;gap:8px;justify-content:flex-start;padding:0 8px;
-    font:600 10px ui-monospace,monospace}
-  #hPop button.on{color:#fff}
+  #wPop{flex-direction:column;gap:2px}
   #wPop button{width:56px;height:32px;gap:8px;justify-content:flex-start;padding:0 8px}
   #wPop .wdot{border-radius:50%;background:currentColor;flex:none}
   #wPop .wmm{font:600 10px ui-monospace,monospace;color:var(--ink2)}
@@ -161,7 +184,7 @@
   <div id="stage">
     <canvas id="cv"></canvas><canvas id="cv3"></canvas>
     <div id="islands">
-      <div class="island" id="islAct">
+      <div class="island">
         <button id="undoB" title="Undo"><svg><use href="#i-undo"/></svg></button>
       </div>
       <div class="island" id="islDraw">
@@ -169,31 +192,19 @@
         <button id="wArrow" class="mini" title="Pencil size"><svg><use href="#i-chevron"/></svg></button>
         <button id="smoothB" title="Smoothness"><svg><use href="#i-smooth"/></svg></button>
         <button id="toolErase" title="Erase"><svg><use href="#i-erase"/></svg></button>
-        <button id="toolMove" title="Move component"><svg><use href="#i-move"/></svg></button>
-        <button id="toolBoard" title="Board: outline + holes"><svg><use href="#i-shape"/></svg></button>
+        <button id="toolMove" title="Move a component"><svg><use href="#i-move"/></svg></button>
       </div>
-      <div class="island" id="islBoard">
-        <button id="bShape" class="on" title="Draw the outline freehand"><svg><use href="#i-shape"/></svg></button>
-        <button id="bRect" title="Rectangle outline"><svg><use href="#i-rect"/></svg></button>
-        <button id="bCircle" title="Circle outline"><svg><use href="#i-circle"/></svg></button>
-        <button id="bHole" title="Place holes"><svg><use href="#i-hole"/></svg></button>
-        <button id="bHoleArrow" class="mini" title="Hole size"><svg><use href="#i-chevron"/></svg></button>
-        <button id="bSnap" title="Snap to 0.5 mm"><svg><use href="#i-ruler"/></svg></button>
-      </div>
-      <div class="island" id="islView">
+      <div class="island">
+        <button id="viewBoard" title="Board view"><svg><use href="#i-shape"/></svg></button>
         <button id="viewDraw" class="on" title="Draw view"><svg><use href="#i-board"/></svg></button>
-        <button id="viewRoute" title="Copper view"><svg><use href="#i-route"/></svg></button>
         <button id="view3d" title="3D view"><svg><use href="#i-cube"/></svg></button>
+      </div>
+      <div class="island">
+        <button id="copperB" title="Copper: how it really looks"><svg><use href="#i-route"/></svg></button>
         <button id="autoB" class="on" title="Ghost autoroute"><svg><use href="#i-ghost"/></svg></button>
       </div>
     </div>
     <div class="pop" id="wPop"></div>
-    <div class="pop" id="hPop"></div>
-    <div class="pop" id="sizePop">
-      <label>W</label><input id="sizeW" type="number" step="0.1" inputmode="decimal">
-      <label>H</label><input id="sizeH" type="number" step="0.1" inputmode="decimal">
-      <button id="sizeApply" title="Apply">✓</button>
-    </div>
     <div id="readout"></div>
     <div class="pop" id="smoothPop">
       <div id="smooth"><div class="track"></div><div class="fill"></div><div class="knob"></div></div>
@@ -204,17 +215,67 @@
   </div>
   <div id="side">
     <div id="sideHead">
-      <h1>Connections</h1>
+      <h1 id="sideTitle">Connections</h1>
       <button id="sideHide" title="Hide panel"><svg><use href="#i-panel"/></svg></button>
     </div>
-    <div id="status">
-      <div class="stat"><svg><use href="#i-net"/></svg><span id="cNets">–</span></div>
-      <div class="stat"><svg><use href="#i-short"/></svg><span id="cShorts">–</span></div>
-      <div class="stat"><svg><use href="#i-gap"/></svg><span id="cGaps">–</span></div>
-      <div class="stat" id="rowBoard"><svg><use href="#i-shape"/></svg><span id="cBoard">–</span></div>
+
+    <!-- DRAW VIEW: the circuit's state -->
+    <div class="panel" id="panelDraw">
+      <div id="status">
+        <div class="stat"><svg><use href="#i-net"/></svg><span id="cNets">–</span></div>
+        <div class="stat"><svg><use href="#i-short"/></svg><span id="cShorts">–</span></div>
+        <div class="stat"><svg><use href="#i-gap"/></svg><span id="cGaps">–</span></div>
+        <div class="stat" id="rowBoard"><svg><use href="#i-shape"/></svg><span id="cBoard">–</span></div>
+      </div>
+      <div id="nets"></div>
+      <div id="alerts"></div>
     </div>
-    <div id="nets"></div>
-    <div id="alerts"></div>
+
+    <!-- BOARD VIEW: the object's properties -->
+    <div class="panel" id="panelBoard">
+      <div class="sect">
+        <div class="lab">Shape</div>
+        <div class="toolrow">
+          <button id="bShape" class="on" title="Draw the outline freehand"><svg><use href="#i-pen"/></svg></button>
+          <button id="bRect" title="Rectangle"><svg><use href="#i-rect"/></svg></button>
+          <button id="bCircle" title="Circle"><svg><use href="#i-circle"/></svg></button>
+          <span class="spacer"></span>
+          <button id="bSnap" title="Snap to 0.5 mm"><svg><use href="#i-ruler"/></svg></button>
+        </div>
+      </div>
+      <div class="sect">
+        <div class="lab">Size</div>
+        <div class="fields">
+          <span class="f"><i>W</i><input id="bW" type="number" step="0.1" inputmode="decimal"></span>
+          <span class="f"><i>H</i><input id="bH" type="number" step="0.1" inputmode="decimal"></span>
+        </div>
+        <div class="lab" style="margin-top:8px">Position</div>
+        <div class="fields">
+          <span class="f"><i>X</i><input id="bX" type="number" step="0.1" inputmode="decimal"></span>
+          <span class="f"><i>Y</i><input id="bY" type="number" step="0.1" inputmode="decimal"></span>
+        </div>
+        <div class="hint" id="bHint"></div>
+      </div>
+      <div class="sect">
+        <div class="lab">Holes<span class="spacer"></span>
+          <button id="bHole" class="mini2" title="Place holes"><svg><use href="#i-hole"/></svg></button>
+        </div>
+        <div class="fields"><select id="bHoleSize"></select></div>
+        <div id="holeList"></div>
+      </div>
+      <div class="sect" id="selSect">
+        <div class="lab">Selected hole</div>
+        <div class="fields">
+          <span class="f"><i>X</i><input id="hX" type="number" step="0.1" inputmode="decimal"></span>
+          <span class="f"><i>Y</i><input id="hY" type="number" step="0.1" inputmode="decimal"></span>
+        </div>
+        <div class="fields" style="margin-top:6px">
+          <span class="f"><i>⌀</i><input id="hD" type="number" step="0.1" inputmode="decimal"></span>
+          <button id="hDel" class="del" title="Delete this hole"><svg><use href="#i-erase"/></svg></button>
+        </div>
+      </div>
+      <div id="boardAlerts"></div>
+    </div>
   </div>
 </div>
 <script>
@@ -240,6 +301,7 @@ let drawnOutline = null;            // [[x,y]...] authored here, null = tscircui
 let boardHoles = [];                // [{x,y,d}] free holes placed here
 let holeD = 3.2;                    // next hole diameter (M3 clearance)
 let dragHole = null;                // {h, dx, dy} while sliding a placed hole
+let selHole = null;                 // the hole the inspector is editing
 let prim = null;                    // {x0,y0,x1,y1} while dragging a primitive
 let snap = false;                   // 0.5 mm grid while shaping the board
 const SNAP = 0.5;
@@ -621,6 +683,7 @@ function analyze(){
   conn = { strokeState, netDone, shorts, shortLocs, gaps, fusions, fusionLocs,
            board: boardCheck() };
   renderSide();
+  renderBoardPanel();
 }
 
 /* The board checked as an OBJECT, live. Mirrors verify.check_board(), which is
@@ -729,6 +792,28 @@ function draw(){
   if (!B) return;
   const px = mm => mm*view.s*DPR;
 
+  // millimetre grid, so the eye has a scale before any number is read.
+  // 1 mm minor / 10 mm major, each fading in only once it is legible.
+  if (!copperView){
+    const [wx0, wy1] = S2W(0, 0), [wx1, wy0] = S2W(cv.width, cv.height);
+    for (const [step, alpha] of [[1, 0.05], [10, 0.13]]){
+      const sp = px(step);
+      if (sp < 7) continue;                       // too dense to read: skip it
+      ctx.strokeStyle = `rgba(255,255,255,${boardMode ? alpha*1.6 : alpha})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = Math.ceil(wx0/step)*step; x <= wx1; x += step){
+        const sx = Math.round(W2S(x, 0)[0]) + 0.5;
+        ctx.moveTo(sx, 0); ctx.lineTo(sx, cv.height);
+      }
+      for (let y = Math.ceil(wy0/step)*step; y <= wy1; y += step){
+        const sy = Math.round(W2S(0, y)[1]) + 0.5;
+        ctx.moveTo(0, sy); ctx.lineTo(cv.width, sy);
+      }
+      ctx.stroke();
+    }
+  }
+
   // board. In board mode the copper fades to a whisper so the OBJECT is what
   // you see: outline, its holes, and the component holes. That is the filter -
   // done by context, not by another global toggle.
@@ -784,10 +869,14 @@ function draw(){
     ctx.fillStyle = C("--bg"); ctx.fill();
     ctx.lineWidth = px(shaping ? 0.25 : 0.2);
     ctx.strokeStyle = shaping ? C("--selhi") : "#0d0a08"; ctx.stroke();
+    if (h === selHole && shaping){
+      ctx.beginPath(); ctx.arc(x, y, px(h.d/2) + 5*DPR, 0, 7);
+      ctx.lineWidth = 2*DPR; ctx.strokeStyle = C("--selhi"); ctx.stroke();
+    }
     if (shaping && view.s > 4){
       ctx.font = `600 ${10*DPR}px ui-monospace,monospace`;
-      ctx.fillStyle = "rgba(239,231,220,.75)";
-      ctx.fillText("⌀" + h.d.toFixed(1), x + px(h.d/2) + 3*DPR, y - 3*DPR);
+      ctx.fillStyle = h === selHole ? "#fff" : "rgba(239,231,220,.75)";
+      ctx.fillText("⌀" + h.d.toFixed(1), x + px(h.d/2) + 7*DPR, y - 3*DPR);
     }
   }
   if (shaping) ctx.globalAlpha = 0.16;
@@ -853,6 +942,21 @@ function draw(){
     ctx.moveTo(mx,my-px(3.2)); ctx.lineTo(mx,my-px(1.6));
     ctx.moveTo(mx,my+px(1.6)); ctx.lineTo(mx,my+px(3.2));
     ctx.stroke();
+  }
+
+  // In board view a pad is not copper you care about - it is a COMPONENT HOLE.
+  // Draw the drill and a hairline ring, nothing else: no net colours, no names,
+  // no completion rings. What is left on screen is the object.
+  if (shaping){
+    for (const p of B.pads){
+      const [x,y] = W2S(p.x, p.y);
+      ctx.beginPath(); ctx.arc(x, y, Math.max(1.2*DPR, px(p.d/2)), 0, 7);
+      ctx.fillStyle = "#241c16"; ctx.fill();
+      ctx.lineWidth = 1*DPR; ctx.strokeStyle = "rgba(208,134,90,.35)"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, y, Math.max(1*DPR, px(p.d/5)), 0, 7);
+      ctx.fillStyle = "#120e0b"; ctx.fill();
+    }
+    return;          // nothing below this belongs to shaping the object
   }
 
   // pads on top
@@ -991,16 +1095,25 @@ cv.addEventListener("pointerdown", e=>{
   const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
   if (boardMode){
     cv.setPointerCapture(e.pointerId);
-    if (boardTool === "hole"){
-      const h = holeAt(wx, wy);
-      if (h){ dragHole = {h, dx: wx-h.x, dy: wy-h.y, x0: h.x, y0: h.y}; }
-      else {
-        boardHoles.push({x:+sn(wx).toFixed(2), y:+sn(wy).toFixed(2), d:holeD});
-        undoStack.push({op:"holeadd"});
-        markDirty(); analyze(); draw();
-      }
+    // Touching a hole ALWAYS picks it up, whatever shape tool is selected.
+    // Nudging a hole is the commonest thing you do here; it must never be
+    // gated behind remembering which sub-tool you left on.
+    const h = holeAt(wx, wy);
+    if (h){
+      selHole = h;
+      dragHole = {h, dx: wx-h.x, dy: wy-h.y, x0: h.x, y0: h.y};
+      renderBoardPanel(); draw();
       return;
     }
+    if (boardTool === "hole"){
+      const nh = {x:+sn(wx).toFixed(2), y:+sn(wy).toFixed(2), d:holeD};
+      boardHoles.push(nh);
+      selHole = nh;
+      undoStack.push({op:"holeadd"});
+      markDirty(); analyze(); draw(); renderBoardPanel();
+      return;
+    }
+    selHole = null; renderBoardPanel();
     if (boardTool === "shape"){ cur = [[wx,wy]]; return; }
     prim = {x0:sn(wx), y0:sn(wy), x1:sn(wx), y1:sn(wy)};    // rect / circle
     return;
@@ -1051,7 +1164,9 @@ cv.addEventListener("pointermove", e=>{
     dragHole.moved = true;
     dragHole.h.x = +sn(wx - dragHole.dx).toFixed(2);
     dragHole.h.y = +sn(wy - dragHole.dy).toFixed(2);
-    showReadout(`⌀${dragHole.h.d.toFixed(1)}  at ${dragHole.h.x.toFixed(1)}, ${dragHole.h.y.toFixed(1)}`);
+    showReadout(`X ${dragHole.h.x.toFixed(2)}   Y ${dragHole.h.y.toFixed(2)}   ` +
+                `⌀ ${dragHole.h.d.toFixed(1)}`);
+    renderBoardPanel();          // the inspector counts up with the hand
     draw();
     return;
   }
@@ -1223,9 +1338,12 @@ function eraseAt(wx, wy){
     const h = holeAt(wx, wy);
     if (h){
       const i = boardHoles.indexOf(h);
-      boardHoles.splice(i, 1);
-      undoStack.push({op:"holedel", i, h});
-      markDirty(); analyze(); draw();
+      if (i >= 0){
+        boardHoles.splice(i, 1);
+        if (selHole === h) selHole = null;
+        undoStack.push({op:"holedel", i, h});
+        markDirty(); analyze(); draw(); renderBoardPanel();
+      }
     }
     return;
   }
@@ -1252,52 +1370,71 @@ document.getElementById("undoB").onclick = ()=>{
     applyMoves();
   }
   else if (u.op === "outline") drawnOutline = u.prev;
-  else if (u.op === "holeadd")  boardHoles.pop();
+  else if (u.op === "holeadd"){ const g = boardHoles.pop();
+                                if (selHole === g) selHole = null; }
   else if (u.op === "holedel")  boardHoles.splice(u.i, 0, u.h);
   else if (u.op === "holemove"){ u.h.x = u.x; u.h.y = u.y; }
+  else if (u.op === "holesize") u.h.d = u.d;
+  else if (u.op === "holeedit"){ u.h.x = u.x; u.h.y = u.y; u.h.d = u.d; }
   else strokes.splice(u.i, 0, u.s);
-  markDirty(); analyze(); draw();
+  markDirty(); analyze(); draw(); renderBoardPanel();
 };
 // Draw / Erase / Move are one choice: the pencil is always exactly one tool.
 function setTool(t){
   closePops();
   erase = t === "erase";
   moveMode = t === "move";
-  boardMode = t === "board";
-  for (const id of ["toolDraw","toolErase","toolMove","toolBoard"])
+  for (const id of ["toolDraw","toolErase","toolMove"])
     document.getElementById(id).classList.toggle("on",
       id === "tool" + t[0].toUpperCase() + t.slice(1));
-  // the board sub-island appears only while shaping the object
-  document.getElementById("islBoard").classList.toggle("show", boardMode);
   showReadout(null);
   draw();
 }
 document.getElementById("toolDraw").onclick  = ()=>setTool("draw");
 document.getElementById("toolErase").onclick = ()=>setTool("erase");
 document.getElementById("toolMove").onclick  = ()=>setTool("move");
-document.getElementById("toolBoard").onclick = ()=>setTool("board");
 
+/* ===================== the Board panel ================================== */
 function setBoardTool(t){
   boardTool = t;
   for (const [id,key] of [["bShape","shape"],["bRect","rect"],
                           ["bCircle","circle"],["bHole","hole"]])
     document.getElementById(id).classList.toggle("on", t === key);
-  closePops();
 }
 document.getElementById("bShape").onclick  = ()=>setBoardTool("shape");
 document.getElementById("bRect").onclick   = ()=>setBoardTool("rect");
 document.getElementById("bCircle").onclick = ()=>setBoardTool("circle");
 document.getElementById("bHole").onclick   = ()=>setBoardTool("hole");
-document.getElementById("bHoleArrow").onclick = ()=>{
-  setBoardTool("hole"); togglePop("hPop", "bHoleArrow");
-};
 document.getElementById("bSnap").onclick = e=>{
   snap = !snap;
   e.currentTarget.classList.toggle("on", snap);
   toast(snap ? "Snapping to 0.5 mm" : "Free placement");
 };
 
-/* ---- typed size: tap the board dimension, get the exact number ---------- */
+// Mount-hole standards, from The Source pcb-v3/PARTS.md. Clearance = the screw
+// passes through; bite = a thread cuts into FR4. Clearance is the safe default.
+const HOLE_SIZES = [
+  {d: 2.2, nm: "M2 clearance"}, {d: 2.7, nm: "M2.5 clearance"},
+  {d: 3.2, nm: "M3 clearance"}, {d: 1.7, nm: "M2 bite"},
+  {d: 2.2, nm: "M2.5 bite"},    {d: 2.6, nm: "M3 bite"},
+];
+const hSel = document.getElementById("bHoleSize");
+HOLE_SIZES.forEach((s,i)=>{
+  const o = document.createElement("option");
+  o.value = i; o.textContent = `${s.nm}  ⌀${s.d.toFixed(1)}`;
+  if (s.d === holeD && s.nm === "M3 clearance") o.selected = true;
+  hSel.appendChild(o);
+});
+hSel.onchange = ()=>{
+  holeD = HOLE_SIZES[+hSel.value].d;
+  // a selected hole follows the choice: pick the hole, pick the size
+  if (selHole){
+    undoStack.push({op:"holesize", h:selHole, d:selHole.d});
+    selHole.d = holeD; markDirty(); analyze(); draw();
+  }
+  renderBoardPanel();
+};
+
 function scaleOutlineTo(w, h){
   const ol = outlineNow();
   const xs = ol.map(p=>p[0]), ys = ol.map(p=>p[1]);
@@ -1311,66 +1448,152 @@ function scaleOutlineTo(w, h){
   // middle of the board, which is what "make it 60 wide" means by hand
   setOutline(ol.map(([x,y]) => [cx + (x-cx)*kx, cy + (y-cy)*ky]));
 }
-document.getElementById("rowBoard").classList.add("tappable");
-document.getElementById("rowBoard").onclick = ()=>{
-  const [w,h] = polySize(outlineNow());
-  document.getElementById("sizeW").value = w.toFixed(1);
-  document.getElementById("sizeH").value = h.toFixed(1);
-  const pop = document.getElementById("sizePop");
-  const was = pop.classList.contains("show");
-  closePops();
-  if (!was){ pop.classList.add("show"); pop.style.left = ""; }
-};
-document.getElementById("sizeApply").onclick = ()=>{
-  const w = parseFloat(document.getElementById("sizeW").value);
-  const h = parseFloat(document.getElementById("sizeH").value);
-  if (!(w > 1) || !(h > 1)){ toast("Give a width and height in mm"); return; }
-  scaleOutlineTo(w, h);
-  closePops();
+function moveOutlineTo(cx, cy){
+  const ol = outlineNow();
+  const xs = ol.map(p=>p[0]), ys = ol.map(p=>p[1]);
+  const ox = (Math.min(...xs)+Math.max(...xs))/2;
+  const oy = (Math.min(...ys)+Math.max(...ys))/2;
+  setOutline(ol.map(([x,y]) => [x + cx - ox, y + cy - oy]));
+}
+function outlineCentre(){
+  const ol = outlineNow();
+  const xs = ol.map(p=>p[0]), ys = ol.map(p=>p[1]);
+  return [(Math.min(...xs)+Math.max(...xs))/2, (Math.min(...ys)+Math.max(...ys))/2];
+}
+// A field commits on Enter or on blur, never on every keystroke: half-typed
+// numbers must not reshape the board under your hand.
+function onCommit(el, fn){
+  el.addEventListener("keydown", e=>{ if (e.key === "Enter") el.blur(); });
+  el.addEventListener("change", fn);
+}
+onCommit(document.getElementById("bW"), ()=>{
+  const w = parseFloat(document.getElementById("bW").value);
+  const [, h] = polySize(outlineNow());
+  if (w > 1) scaleOutlineTo(w, h); else renderBoardPanel();
+});
+onCommit(document.getElementById("bH"), ()=>{
+  const h = parseFloat(document.getElementById("bH").value);
+  const [w] = polySize(outlineNow());
+  if (h > 1) scaleOutlineTo(w, h); else renderBoardPanel();
+});
+onCommit(document.getElementById("bX"), ()=>{
+  const x = parseFloat(document.getElementById("bX").value);
+  const [, cy] = outlineCentre();
+  if (isFinite(x)) moveOutlineTo(x, cy); else renderBoardPanel();
+});
+onCommit(document.getElementById("bY"), ()=>{
+  const y = parseFloat(document.getElementById("bY").value);
+  const [cx] = outlineCentre();
+  if (isFinite(y)) moveOutlineTo(cx, y); else renderBoardPanel();
+});
+function editSel(field, min){
+  return ()=>{
+    if (!selHole) return;
+    const v = parseFloat(document.getElementById(field === "d" ? "hD"
+                          : field === "x" ? "hX" : "hY").value);
+    if (!isFinite(v) || (min !== undefined && v < min)){ renderBoardPanel(); return; }
+    undoStack.push({op:"holeedit", h:selHole, x:selHole.x, y:selHole.y, d:selHole.d});
+    selHole[field] = +v.toFixed(2);
+    markDirty(); analyze(); draw(); renderBoardPanel();
+  };
+}
+onCommit(document.getElementById("hX"), editSel("x"));
+onCommit(document.getElementById("hY"), editSel("y"));
+onCommit(document.getElementById("hD"), editSel("d", 0.4));
+document.getElementById("hDel").onclick = ()=>{
+  if (!selHole) return;
+  const i = boardHoles.indexOf(selHole);
+  if (i < 0) return;
+  undoStack.push({op:"holedel", i, h:selHole});
+  boardHoles.splice(i, 1);
+  selHole = null;
+  markDirty(); analyze(); draw(); renderBoardPanel();
 };
 
-// Mount-hole standards, from The Source pcb-v3/PARTS.md. Clearance = the screw
-// passes through; bite = a thread cuts into FR4. Clearance is the safe default.
-const HOLE_SIZES = [
-  {d: 2.2, nm: "M2 clr"}, {d: 2.7, nm: "M2.5 clr"}, {d: 3.2, nm: "M3 clr"},
-  {d: 1.7, nm: "M2 bite"}, {d: 2.2, nm: "M2.5 bite"}, {d: 2.6, nm: "M3 bite"},
-];
-const hPop = document.getElementById("hPop");
-HOLE_SIZES.forEach(s=>{
-  const b = document.createElement("button");
-  const dd = Math.max(5, Math.min(15, s.d*4));
-  b.innerHTML = `<span class="wdot" style="width:${dd}px;height:${dd}px"></span>` +
-                `<span class="wmm">${s.nm}</span>`;
-  if (s.d === holeD && s.nm === "M3 clr") b.classList.add("on");
-  b.onclick = ()=>{
-    holeD = s.d;
-    [...hPop.children].forEach(c=>c.classList.toggle("on", c===b));
-    closePops(); toast(`${s.nm} · ⌀${s.d.toFixed(1)} mm`);
-  };
-  hPop.appendChild(b);
-});
-/* Views: draw (working colours), route (honest copper), 3d. One always active. */
+function renderBoardPanel(){
+  if (!B || !document.getElementById("panelBoard").classList.contains("show")) return;
+  const [w,h] = polySize(outlineNow());
+  const [cx,cy] = outlineCentre();
+  const set = (id,v)=>{ const el=document.getElementById(id);
+                        if (document.activeElement !== el) el.value = v; };
+  set("bW", w.toFixed(1)); set("bH", h.toFixed(1));
+  set("bX", cx.toFixed(1)); set("bY", cy.toFixed(1));
+  document.getElementById("bHint").textContent = drawnOutline
+    ? `${drawnOutline.length} points, drawn here`
+    : "from the circuit — draw to replace it";
+
+  // hole list
+  const list = document.getElementById("holeList");
+  const hs = holesOwnedHere() ? boardHoles : B.holes;
+  list.innerHTML = "";
+  if (!hs.length){
+    list.innerHTML = `<div class="hint">none yet — tap the hole tool, then the board</div>`;
+  }
+  hs.forEach((hh,i)=>{
+    const d = document.createElement("div");
+    d.className = "hrow" + (hh === selHole ? " sel" : "");
+    d.innerHTML = `<span>⌀${hh.d.toFixed(1)}</span>` +
+                  `<span class="hd">${hh.x.toFixed(1)}, ${hh.y.toFixed(1)}</span>`;
+    d.onclick = ()=>{ selHole = (selHole === hh) ? null : hh;
+                      renderBoardPanel(); draw(); };
+    list.appendChild(d);
+  });
+
+  // selection inspector
+  const sect = document.getElementById("selSect");
+  sect.classList.toggle("show", !!selHole);
+  if (selHole){
+    set("hX", selHole.x.toFixed(2));
+    set("hY", selHole.y.toFixed(2));
+    set("hD", selHole.d.toFixed(2));
+  }
+
+  // board problems, in the board panel where they belong
+  const al = document.getElementById("boardAlerts");
+  al.innerHTML = "";
+  for (const b of (conn && conn.board) || []){
+    const d = document.createElement("div");
+    d.textContent = "✕ " + b.msg;
+    d.onclick = ()=>flyTo(b.x, b.y);
+    al.appendChild(d);
+  }
+}
+/* Three views, and the sidebar belongs to the view: board (shape the object),
+   draw (route the circuit), 3d (look at it). Copper and Ghost are overlays that
+   ride on top, not views of their own. */
 let curView = "draw";
 function setView(m){
   curView = m;
+  boardMode = m === "board";
   closePops();
   const v3 = m === "3d";
-  copperView = m === "route";
   document.getElementById("cv3").style.display = v3 ? "block" : "none";
   document.getElementById("legend").classList.toggle("show", v3);
   cv.style.display = v3 ? "none" : "block";
-  document.getElementById("islDraw").classList.toggle("dim3d", v3);
-  for (const [id, key] of [["viewDraw","draw"],["viewRoute","route"],["view3d","3d"]])
+  document.getElementById("islDraw").classList.toggle("dim3d", v3 || boardMode);
+  for (const [id, key] of [["viewBoard","board"],["viewDraw","draw"],["view3d","3d"]])
     document.getElementById(id).classList.toggle("on", m === key);
+  // the panel follows the view
+  document.getElementById("panelBoard").classList.toggle("show", boardMode);
+  document.getElementById("panelDraw").classList.toggle("show", !boardMode);
+  document.getElementById("sideTitle").textContent = boardMode ? "Board" : "Connections";
+  if (!boardMode) selHole = null;
+  showReadout(null);
+  renderBoardPanel();
   if (v3) render3d(); else draw();
 }
+document.getElementById("viewBoard").onclick = ()=>setView("board");
 document.getElementById("viewDraw").onclick  = ()=>setView("draw");
-document.getElementById("viewRoute").onclick = ()=>setView("route");
 document.getElementById("view3d").onclick    = ()=>setView("3d");
+document.getElementById("copperB").onclick = e=>{
+  copperView = !copperView;
+  e.currentTarget.classList.toggle("on", copperView);
+  if (curView === "3d") setView("draw"); else draw();
+};
 
 /* ---- popovers (pencil size, smoothness) ------------------------------- */
 function closePops(){
-  for (const id of ["wPop","smoothPop","hPop","sizePop"])
+  for (const id of ["wPop","smoothPop"])
     document.getElementById(id).classList.remove("show");
 }
 function togglePop(popId, anchorId){
@@ -1668,6 +1891,7 @@ async function boot(){
     view.y = Math.max(...ys) + (cv.clientHeight/view.s - bh)/2;
   };
   new ResizeObserver(()=>{ resize(); }).observe(cv);
+  document.getElementById("panelDraw").classList.add("show");
   fit(); resize(); analyze(); draw();
 }
 boot();

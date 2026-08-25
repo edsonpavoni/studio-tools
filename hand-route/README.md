@@ -90,15 +90,25 @@ python3 server.py /path/to/board/dist/index/circuit.json
 
 Open the printed URL in Safari on the iPad (same WiFi). Then:
 
-The chrome is Figma-flavoured (2026-08-25): three floating icon islands at the
-bottom of the canvas, deep green accent, no labels. **Leftmost island**: undo.
-**Drawing island**: pen (the chevron beside it opens the pencil-size popover),
-smoothness (opens a vertical slider), eraser, move. **Views island**: draw /
-copper / 3D, plus the ghost toggle. There is no save button: every change
-autosaves 2 s after the pen lifts (with a 15 s retry heartbeat and a flush when
-the page hides); only a failure announces itself. The right panel holds only the
-connections — status lines, net checklist, alerts — and the icon at its top hides
-it; a floating button brings it back.
+The chrome is Figma-flavoured (2026-08-25): four floating icon islands at the
+bottom of the canvas, deep green accent, no labels.
+
+| island | holds |
+|---|---|
+| 1 | undo |
+| 2 | pen (chevron beside it opens the size popover), smoothness (vertical slider), eraser, move a component |
+| 3 | **the three views**: board · draw · 3D |
+| 4 | overlays: copper, ghost autoroute |
+
+**The right panel belongs to the view.** Draw view shows the connections —
+status lines, net checklist, alerts. Board view shows the board's own
+properties. 3D keeps the component legend on the canvas. The icon at the panel's
+top hides it; a floating button brings it back. A millimetre grid sits under
+everything (1 mm and 10 mm, each fading in when it becomes legible).
+
+There is no save button: every change autosaves 2 s after the pen lifts (with a
+15 s retry heartbeat and a flush when the page hides); only a failure announces
+itself.
 
 | gesture | does |
 |---|---|
@@ -107,21 +117,31 @@ it; a floating button brings it back.
 | pinch | zoom |
 | Pencil (eraser tool) | delete traces (slide to erase many) |
 | Pencil drag (move tool) | reposition a component, pads and all |
-| Pencil (board tool) | draw the board's outline, or place holes |
+| Pencil (board view) | draw the board's outline, place holes, drag a hole |
 | tap a net in the checklist | focus it — everything else greys; tap again to release |
-| tap the board dimension | type an exact width and height |
 
-### The board is drawn here too
+### Board view: the object
 
-The **board tool** opens a second island: freehand outline, rectangle, circle,
-hole placement (with an M2/M2.5/M3 palette behind its chevron), and a 0.5 mm
-snap toggle. While it is active the copper fades to a whisper, so what you see
-is the object — outline, its holes, the component holes.
+Switch to **board view** and the canvas shows the object — outline, its holes,
+and the component holes as bare drills. Copper recedes to a whisper: it is not
+what you are working on. The side panel becomes the board's inspector:
+
+- **Shape** — freehand, rectangle, circle, and a 0.5 mm snap toggle.
+- **Size / Position** — the real numbers, typed. Width and height scale the
+  shape about its centre; X and Y move it under the parts. Committed on Enter
+  or blur, never mid-keystroke.
+- **Holes** — the M2/M2.5/M3 standards (clearance and bite) in a picker, a list
+  of every hole, and an inspector for the selected one with exact X, Y and Ø.
+- Board problems are listed underneath; tap one to fly to it.
+
+**Touching a hole always picks it up**, whatever shape tool is selected —
+nudging holes is the commonest thing you do here, and the numbers count up in
+the inspector as your hand moves. Selecting a hole and choosing a size from the
+picker resizes it.
 
 A freehand outline closes itself: the tool welds the ends and keeps a consistent
 winding, so the cutout polygon never depends on which way your hand travelled.
-Live width × height shows while you draw; tapping the board line in the side
-panel lets you type the exact size, which scales the shape about its centre.
+Live width × height shows while you draw.
 
 **This is the split that matters: tscircuit is the source of the circuit —
 components, nets, pads. hand-route is the source of the board — outline, free
