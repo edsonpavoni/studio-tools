@@ -33,43 +33,68 @@
   button.burn.on{background:var(--panel2);color:var(--ink2)}
   button.burn svg{stroke:none;fill:currentColor}
   button.burn.on svg{stroke:currentColor;fill:none}
-  #canvasCtl{position:absolute;right:12px;bottom:16px;z-index:6}
+  /* Bare icons floating on the canvas: the viewing tools, which change nothing
+     about the board, and undo, which is one gesture rather than a mode. */
+  #canvasCtl{position:absolute;right:10px;bottom:18px;z-index:6;display:flex;gap:2px}
+  #canvasCtl button, #canvasCtl button.on, button.bare, button.bare.on{background:none}
+  #canvasCtl button, button.bare{color:var(--ink3);
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.75))}
+  #canvasCtl button.on{color:var(--ok)}
+  #canvasCtl button:active, button.bare:active{color:var(--ink)}
 
   /* burn session */
-  .tag{font:600 9px ui-monospace,monospace;letter-spacing:.08em;color:var(--ok);
-    background:rgba(93,190,138,.12);border-radius:4px;padding:3px 6px}
-  .kv{display:flex;align-items:baseline;gap:8px;padding:3px 0;
-    font:12px ui-monospace,monospace}
-  .kv b{flex:1;font-weight:400;color:var(--ink3)}
-  .kv span{color:var(--ink);font-weight:600;text-align:right}
+  /* One weight for reading, one accent for meaning. The values carry no bold:
+     they are already distinguished by colour, alignment and the mono figures. */
+  .tag{font:500 9px ui-monospace,monospace;letter-spacing:.08em;color:var(--ok);
+    background:rgba(93,190,138,.1);border-radius:4px;padding:3px 6px}
+  .kv{display:flex;align-items:baseline;gap:10px;padding:4px 0;line-height:1.35}
+  .kv b{flex:none;width:74px;font:400 11px ui-monospace,monospace;color:var(--ink3);
+    white-space:nowrap}
+  .kv span{flex:1;text-align:right;font:400 12px ui-monospace,monospace;
+    color:var(--ink2);font-variant-numeric:tabular-nums}
   .kv span.bad{color:var(--stop)} .kv span.ok{color:var(--ok)}
-  button.exp{width:100%;height:auto;justify-content:flex-start;gap:10px;
-    padding:9px 10px;margin-bottom:6px;background:var(--panel2);
+  .kv.head span{color:var(--ink)}
+  button.exp{width:100%;height:auto;justify-content:flex-start;gap:11px;
+    padding:10px;margin-bottom:6px;background:var(--panel2);
     border:1px solid var(--rule);text-align:left}
-  button.exp svg{width:16px;height:16px;flex:none}
-  button.exp span{display:flex;flex-direction:column;gap:1px}
-  button.exp b{font:600 12px -apple-system,sans-serif}
-  button.exp i{font:normal 10px ui-monospace,monospace;color:var(--ink3)}
+  button.exp svg{width:15px;height:15px;flex:none;color:var(--ink3)}
+  button.exp span{display:flex;flex-direction:column;gap:2px;min-width:0}
+  button.exp b{font:500 12px -apple-system,sans-serif;letter-spacing:.01em}
+  button.exp i{font:normal 10px/1.35 ui-monospace,monospace;color:var(--ink3)}
   button.exp:active{background:#3A3A3A}
   button.exp.busy{opacity:.5}
   button.exp.ok{border-color:var(--selhi)}
-  .moatrow{display:flex;align-items:center;gap:8px;margin-top:4px;
-    font:11px ui-monospace,monospace;color:var(--ink3)}
-  .moatrow input{accent-color:var(--selhi);width:14px;height:14px}
-  #burnLog{padding:0 16px;overflow-y:auto;touch-action:pan-y;max-height:230px}
-  #burnLog pre{white-space:pre-wrap;font:10.5px/1.45 ui-monospace,monospace;
+  .moatrow{display:flex;align-items:flex-start;gap:9px;margin-top:10px;padding:0 1px}
+  .moatrow input{accent-color:var(--selhi);width:14px;height:14px;flex:none;
+    margin-top:1px}
+  .moatrow span{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .moatrow b{font:500 11px -apple-system,sans-serif;color:var(--ink2)}
+  .moatrow i{font:normal 10px/1.45 ui-monospace,monospace;color:var(--ink3)}
+  #burnLog{padding:0 16px}
+  #burnLog:empty{display:none}
+  #burnLog pre{white-space:pre-wrap;font:400 10.5px/1.5 ui-monospace,monospace;
     color:var(--ink2);background:#191919;border:1px solid var(--rule);
-    border-radius:6px;padding:9px 10px;margin-bottom:10px}
-  #burnLog .refused{color:var(--stop);font:600 11px ui-monospace,monospace;
-    padding:8px 0 6px}
-  .pf{font:11px/1.5 ui-monospace,monospace;color:var(--ink3)}
-  .pf b{color:var(--warn)}
+    border-radius:6px;padding:10px;margin-bottom:12px;
+    max-height:300px;overflow-y:auto;touch-action:pan-y}
+  #burnLog .why{color:var(--stop);font:400 11px/1.5 ui-monospace,monospace;
+    background:rgba(224,112,92,.08);border-left:2px solid var(--stop);
+    border-radius:0 6px 6px 0;padding:9px 10px;margin:12px 0 8px}
+  #burnLog .why b{font-weight:600;display:block;margin-bottom:3px}
+  .pf{font:400 11px/1.6 ui-monospace,monospace;color:var(--ink3);
+    list-style:none;padding:0}
+  .pf li{padding-left:14px;position:relative}
+  .pf li::before{content:"·";position:absolute;left:4px;color:var(--ink3)}
+  .pf li.last{color:var(--warn);margin-top:4px}
+  .pf li.last::before{color:var(--warn)}
   /* panels swap with the view: the sidebar always shows what you are doing */
   .panel{display:none;flex:1;min-height:0;flex-direction:column}
   .panel.show{display:flex}
+  /* the burn panel is taller than the sidebar: it has to scroll, or the log
+     that explains a refusal sits below the fold where nobody finds it */
+  #panelBurn{overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
   .sect{padding:12px 16px;border-bottom:1px solid var(--rule)}
-  .lab{display:flex;align-items:center;font:600 10px/1 ui-monospace,monospace;
-    letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:9px}
+  .lab{display:flex;align-items:center;font:500 10px/1 ui-monospace,monospace;
+    letter-spacing:.12em;text-transform:uppercase;color:#6A6A6A;margin-bottom:10px}
   .spacer{flex:1}
   .toolrow{display:flex;gap:2px;align-items:center}
   .fields{display:flex;gap:8px;align-items:center}
@@ -190,7 +215,10 @@
     font-variant-numeric:tabular-nums}
   #toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);
     background:var(--panel2);border:1px solid var(--rule);border-radius:10px;
-    padding:8px 14px;font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none}
+    padding:8px 14px;font-size:12px;line-height:1.4;opacity:0;
+    transition:opacity .25s;pointer-events:none;max-width:min(560px, 80%);
+    text-align:center}
+  #toast.bad{border-color:var(--stop);color:#F6B9AE}
 </style>
 </head>
 <body>
@@ -217,7 +245,8 @@
   <symbol id="i-gap" viewBox="0 0 24 24"><path d="M4 4v16"/><path d="M20 4v16"/><path d="m10 9-3 3 3 3"/><path d="m14 9 3 3-3 3"/></symbol>
   <symbol id="i-fit" viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M21 16v3a2 2 0 0 1-2 2h-3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><rect x="8" y="8" width="8" height="8" rx="1"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
-  <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 2s5 4.5 5 9a5 5 0 0 1-10 0c0-1.4.5-2.6 1.2-3.6C8.6 9 9 10 10 10c0-3 2-5.5 2-8Z"/><path d="M8.5 14a3.5 3.5 0 0 0 7 0c0-2-1.7-3.6-3.5-5.5C10.2 10.4 8.5 12 8.5 14Z"/></symbol>
+  <!-- a real flame: pointed tip, full shoulders, an inner flame cut out of it -->
+  <symbol id="i-fire" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C14.5 5.5 18.5 8.5 18.5 13A6.5 6.5 0 1 1 5.5 13C5.5 10.5 7 9.5 8 8.5C8.3 10 9.2 10.8 10 11C9.5 8 10.5 4.5 12 2ZM12 12.2C13 13.6 14.6 14.4 14.6 16.1A2.6 2.6 0 1 1 9.4 16.1C9.4 14.6 11 13.8 12 12.2Z"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
 </svg>
@@ -225,9 +254,7 @@
   <div id="stage">
     <canvas id="cv"></canvas><canvas id="cv3"></canvas>
     <div id="islands">
-      <div class="island">
-        <button id="undoB" title="Undo"><svg><use href="#i-undo"/></svg></button>
-      </div>
+      <button id="undoB" class="bare" title="Undo"><svg><use href="#i-undo"/></svg></button>
       <div class="island" id="islDraw">
         <button id="toolDraw" class="on" title="Draw"><svg><use href="#i-pen"/></svg></button>
         <button id="wArrow" class="mini" title="Pencil size"><svg><use href="#i-chevron"/></svg></button>
@@ -240,10 +267,6 @@
         <button id="viewDraw" class="on" title="Draw view"><svg><use href="#i-board"/></svg></button>
         <button id="view3d" title="3D view"><svg><use href="#i-cube"/></svg></button>
       </div>
-      <div class="island">
-        <button id="copperB" title="Copper: how it really looks"><svg><use href="#i-route"/></svg></button>
-        <button id="autoB" class="on" title="Ghost autoroute"><svg><use href="#i-ghost"/></svg></button>
-      </div>
     </div>
     <div class="pop" id="wPop"></div>
     <div id="readout"></div>
@@ -251,9 +274,12 @@
       <div id="smooth"><div class="track"></div><div class="fill"></div><div class="knob"></div></div>
     </div>
     <button id="sideShow" title="Show the panel"><svg><use href="#i-panel"/></svg></button>
-    <div class="island" id="canvasCtl">
+    <!-- how you LOOK at the board, as opposed to how you change it -->
+    <div id="canvasCtl">
       <button id="fitB" title="Fit the board to the screen"><svg><use href="#i-fit"/></svg></button>
       <button id="gridB" class="on" title="Grid"><svg><use href="#i-grid"/></svg></button>
+      <button id="copperB" title="Copper: how it really looks"><svg><use href="#i-route"/></svg></button>
+      <button id="autoB" class="on" title="Ghost autoroute"><svg><use href="#i-ghost"/></svg></button>
     </div>
     <div id="legend"></div>
     <div id="toast"></div>
@@ -342,22 +368,30 @@
         </button>
         <button class="exp" id="expFit">
           <svg><use href="#i-down"/></svg>
-          <span><b>Cardboard fit test</b><i>cut this first on any new layout</i></span>
+          <span><b>Cardboard fit test</b><i>first, on a new layout</i></span>
         </button>
         <button class="exp" id="expHr">
           <svg><use href="#i-down"/></svg>
-          <span><b>.handroute</b><i>the drawing — strokes, moves, board</i></span>
+          <span><b>.handroute</b><i>the drawing itself</i></span>
         </button>
         <label class="moatrow"><input type="checkbox" id="expMoat">
-          <span>isolation moat instead of full clear</span></label>
+          <span><b>Isolation moat</b>
+            <i>Clear only a 0.5 mm ring around each trace and pad; all the other
+              copper stays put as a ground plane. Far less laser time — but the
+              leftover copper is connected, so only use it on a board drawn for
+              it. V4 and V5 were cut with the full clear.</i></span></label>
       </div>
       <div id="burnLog"></div>
       <div class="sect" id="preflight">
         <div class="lab">Before you press go</div>
-        <div class="pf">Dimensions have sources · cardboard fit test on a new
-          layout · eyes on the file in LightBurn · board off the bed, air ON ·
-          <b>stand at the machine for the cutout</b> — it releases on pass 6 with
-          nothing to spare.</div>
+        <ul class="pf">
+          <li>dimensions have sources</li>
+          <li>cardboard fit test on a new layout</li>
+          <li>eyes on the file in LightBurn</li>
+          <li>board off the bed, air ON</li>
+          <li class="last">stand at the machine for the cutout — it releases on
+            pass 6 with nothing to spare</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -1402,10 +1436,14 @@ function finishStroke(){
 }
 
 /* ============================ buttons ================================== */
-function toast(msg){
+function toast(msg, bad){
   const t = document.getElementById("toast");
-  t.textContent = msg; t.style.opacity = 1;
-  clearTimeout(t._h); t._h = setTimeout(()=>t.style.opacity=0, 1600);
+  t.textContent = msg;
+  t.classList.toggle("bad", !!bad);
+  t.style.opacity = 1;
+  clearTimeout(t._h);
+  // a problem stays up long enough to actually be read
+  t._h = setTimeout(()=>t.style.opacity=0, bad ? 6000 : 1600);
 }
 /* Autosave: there is no Save button. Every change schedules a save 2 s after the
    pen lifts; a 15 s heartbeat retries anything that failed; leaving the page
@@ -1757,29 +1795,53 @@ function renderBurn(){
     return t + d;
   }, 0);
 
+  // Values are kept SHORT on purpose: this panel is 260 px wide and a value
+  // that wraps onto a second line stops being a number you can scan.
   const row = (k, v, cls) =>
-    `<div class="kv"><b>${k}</b><span class="${cls||""}">${v}</span></div>`;
+    `<div class="kv ${cls === "head" ? "head" : ""}">` +
+    `<b>${k}</b><span class="${cls && cls !== "head" ? cls : ""}">${v}</span></div>`;
+  const wr = widths.length === 0 ? "—"
+           : widths.length === 1 ? `${widths[0].toFixed(1)} mm`
+           : `${widths[0].toFixed(1)}–${widths[widths.length-1].toFixed(1)} mm`;
   document.getElementById("burnSpecs").innerHTML =
-    row("outline", `${w.toFixed(1)} × ${h.toFixed(1)} mm`) +
-    row("shape", drawnOutline ? `drawn here, ${drawnOutline.length} points`
-                              : "from the circuit") +
-    row("material", "FR4 1.6 mm · 35 µm copper") +
-    row("holes", `${hs.length} board · ${B.pads.length} component`) +
-    row("diameters", dias.map(d=>d.toFixed(1)).join(" · ") + " mm") +
-    row("traces", `${strokes.length} drawn · ${len.toFixed(0)} mm of copper`) +
-    row("widths", widths.length ? widths.map(x=>x.toFixed(1)).join(" · ") + " mm" : "—") +
-    row("nets", `${done}/${nets.length} complete`, done===nets.length ? "ok" : "bad") +
+    row("outline", `${w.toFixed(1)} × ${h.toFixed(1)} mm`, "head") +
+    row("shape", drawnOutline ? `drawn · ${drawnOutline.length} pts` : "from circuit") +
+    row("material", "FR4 1.6 · 35 µm") +
+    row("holes", `${hs.length} board · ${B.pads.length} parts`) +
+    row("⌀", dias.map(d=>d.toFixed(1)).join(" · ") + " mm") +
+    row("traces", `${strokes.length} · ${len.toFixed(0)} mm`) +
+    row("widths", wr) +
+    row("nets", `${done}/${nets.length}`, done===nets.length ? "ok" : "bad") +
     row("shorts", nShort, nShort ? "bad" : "ok") +
-    row("gap alerts", nGap, nGap ? "bad" : "ok") +
-    row("board issues", nBoard, nBoard ? "bad" : "ok");
+    row("gaps", nGap, nGap ? "bad" : "ok") +
+    row("board", nBoard, nBoard ? "bad" : "ok");
 
   document.getElementById("burnRecipe").innerHTML =
-    row("holes", "70% · 8 passes · wobble 0.10") +
-    row("hole kerf", "drawn = target − 0.24 mm") +
-    row("clear", "75% · 1500 mm/s · 4 passes · 0.05 mm") +
-    row("cutout", "100% · 6 passes · wobble 0.30") +
+    row("holes", "70% · 8× · w 0.10") +
+    row("kerf", "target − 0.24 mm") +
+    row("clear", "75% · 1500 · 4×") +
+    row("cutout", "100% · 6× · w 0.30") +
     row("pulse", "200 ns · 40 kHz") +
     row("min gap", `${B.min_gap.toFixed(3)} mm`);
+}
+
+function esc(s){
+  return String(s).replace(/[<&>]/g, c => c==="<" ? "&lt;" : c===">" ? "&gt;" : "&amp;");
+}
+// Pull the sentence that actually says what went wrong out of the converter's
+// output, so it can be shown instead of a pointer to it.
+function whyRefused(log){
+  const lines = log.split("\n").map(l=>l.trim()).filter(Boolean);
+  const refusing = lines.find(l => l.startsWith("Refusing to write"));
+  if (refusing){
+    const first = lines.find(l => /^(pad |hole |a drawn trace|outline )/.test(l));
+    const tail = refusing.replace(/^Refusing to write a laser file:\s*/, "");
+    return first ? `${tail.split(".")[0]} — e.g. ${first}` : tail;
+  }
+  const refused = lines.find(l => l.startsWith("REFUSED:"));
+  if (refused) return refused.replace(/^REFUSED:\s*/, "");
+  const err = lines.slice().reverse().find(l => /Error|Traceback|error:/i.test(l));
+  return err || lines[0] || "the converter refused without saying why";
 }
 
 async function exportFile(btn, url, fallbackName){
@@ -1793,9 +1855,15 @@ async function exportFile(btn, url, fallbackName){
     const r = await fetch(url);
     if (!r.ok){
       const j = await r.json().catch(()=>({log:"the server said no and gave no reason"}));
-      log.innerHTML = `<div class="refused">✕ REFUSED — nothing was written</div>` +
-                      `<pre>${(j.log||"").replace(/[<&]/g, c=>c==="<"?"&lt;":"&amp;")}</pre>`;
-      toast("Refused — read the log");
+      const raw = j.log || "";
+      const why = whyRefused(raw);
+      // Say the actual reason, here and in the toast. A message ABOUT an error
+      // is not an error message: it just sends you looking for the real one.
+      log.innerHTML =
+        `<div class="why"><b>✕ Nothing was written</b>${esc(why)}</div>` +
+        `<pre>${esc(raw)}</pre>`;
+      log.scrollIntoView({block:"nearest", behavior:"smooth"});
+      toast(why, true);
       return;
     }
     const cd = r.headers.get("Content-Disposition") || "";
@@ -1810,7 +1878,10 @@ async function exportFile(btn, url, fallbackName){
     btn.classList.add("ok");
     toast("Downloaded " + name);
   }catch(e){
-    log.innerHTML = `<div class="refused">✕ could not reach the server</div>`;
+    const why = `could not reach the server: ${e && e.message ? e.message : e}`;
+    log.innerHTML = `<div class="why"><b>✕ Nothing was written</b>${esc(why)}</div>`;
+    log.scrollIntoView({block:"nearest", behavior:"smooth"});
+    toast(why, true);
   }finally{
     btn.classList.remove("busy");
   }
@@ -1849,9 +1920,12 @@ async function save(){
   clearTimeout(saveT);
   try{
     const r = await fetch("/save", {method:"POST", body: JSON.stringify(payload())});
-    if ((await r.json()).ok){ dirty = false; return; }
-  }catch(e){ /* fall through to the failure toast */ }
-  toast("AUTOSAVE FAILED — is the server running?");
+    const j = await r.json();
+    if (j.ok){ dirty = false; return; }
+    toast("Autosave refused: " + (j.err || r.status), true);
+  }catch(e){
+    toast("Autosave failed: " + (e && e.message ? e.message : e), true);
+  }
 }
 setInterval(()=>{ if (dirty) save(); }, 15000);
 window.addEventListener("pagehide", ()=>{

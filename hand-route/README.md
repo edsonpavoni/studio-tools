@@ -117,15 +117,23 @@ recipe** that will cut it. Then the files:
 
 | export | what it is |
 |---|---|
-| **LightBurn job** | every layer, ready to cut (`--clear`, which is what V4 and V5 were actually cut with; tick the box for `--moat`) |
+| **LightBurn job** | every layer, ready to cut |
 | **Cardboard fit test** | cut this first on any new layout |
 | **.handroute** | the drawing itself — strokes, moves, board |
 
 Files are built by the converter on the spot and land in your Downloads, named
 after the project rather than `index`. **A refusal is the answer, not an error:**
-if the board is incomplete, shorted or unmanufacturable, nothing is written and
-the converter's whole log appears in the panel to be read. Any unsaved change is
-flushed before the file is built, so what you download is what is on screen.
+if the board is incomplete, shorted or unmanufacturable, nothing is written, the
+reason is stated in the panel and in the toast, and the converter's whole log
+follows underneath. Any unsaved change is flushed before the file is built, so
+what you download is what is on screen.
+
+**Full clear vs isolation moat.** The default clears *all* the copper that is
+not a trace or a pad — that is what V4 and V5 were cut with. The moat checkbox
+clears only a 0.5 mm ring around each piece of signal copper and leaves the rest
+standing as a ground plane: far less laser time, but the leftover copper is
+electrically connected and GND stops being a net you draw. It only suits a board
+designed for it.
 
 There is no save button: every change autosaves 2 s after the pen lifts (with a
 15 s retry heartbeat and a flush when the page hides); only a failure announces
