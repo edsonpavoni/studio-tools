@@ -19,9 +19,13 @@ a slip of the Pencil can't destroy an afternoon of drawing.
 import http.server
 import json
 import os
+import shlex
 import socket
+import subprocess
 import sys
+import tempfile
 import time
+import urllib.parse
 
 import netmap
 
@@ -54,6 +58,17 @@ def main():
     hist_dir = os.path.join(os.path.dirname(cj_path), "handroute-history")
 
     hist_last = {"t": 0.0}
+    # Name exports after the PROJECT, walking up past the build folders. A file
+    # called "index.lbrn2" or "dist.lbrn2" is unrecognisable in a Downloads list
+    # a week later; "pcb-v3.lbrn2" is the board you cut.
+    base_name = "board"
+    d = os.path.dirname(cj_path)
+    while d and d != "/":
+        nm = os.path.basename(d)
+        if nm and nm.lower() not in ("index", "dist", "build", "out", "output"):
+            base_name = nm
+            break
+        d = os.path.dirname(d)
     board = netmap.extract(cj_path)
     board["min_gap"] = 0.171          # proven floor; the UI warns below this
     board["default_width"] = 0.5
@@ -67,12 +82,60 @@ def main():
         def log_message(self, *a):
             pass
 
-        def _send(self, code, body, ctype="application/json"):
+        def _send(self, code, body, ctype="application/json", filename=None):
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Cache-Control", "no-store")
+            if filename:
+                self.send_header("Content-Disposition",
+                                 'attachment; filename="%s"' % filename)
             self.end_headers()
             self.wfile.write(body if isinstance(body, bytes) else body.encode())
+
+        def _export(self, query):
+            """Build a file for the burn session and hand it back as a download.
+
+            The converter IS the verification: it refuses incomplete, shorted or
+            unmanufacturable boards. So a refusal is not an error to swallow -
+            it is the answer, and its whole log goes back to be read on screen."""
+            kind = query.get("kind", ["lbrn"])[0]
+            if kind == "handroute":
+                path = out_path if os.path.exists(out_path) else legacy_path
+                if not os.path.exists(path):
+                    self._send(404, json.dumps({"ok": False,
+                                                "log": "nothing drawn yet"}))
+                    return
+                self._send(200, open(path, "rb").read(), "application/json",
+                           filename="%s.handroute" % base_name)
+                return
+
+            fit = kind == "fittest"
+            tmpd = tempfile.mkdtemp(prefix="handroute-export-")
+            suffix = "-FITTEST" if fit else ""
+            out_file = os.path.join(tmpd, "%s%s.lbrn2" % (base_name, suffix))
+            cmd = [sys.executable, os.path.join(HERE, "circuit2lbrn.py"), cj_path,
+                   "--manual-traces", "auto", "-o", out_file]
+            if fit:
+                cmd.append("--fit-test")
+            else:
+                # --clear is what the two working boards were cut with (V4 and
+                # V5 both carry a populated CLEAR_1 and an empty ISOLATE).
+                cmd.append("--moat" if query.get("mode", [""])[0] == "moat"
+                           else "--clear")
+            try:
+                r = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+            except subprocess.TimeoutExpired:
+                self._send(500, json.dumps({"ok": False,
+                                            "log": "the converter took over 5 minutes"}))
+                return
+            log = (r.stdout or "") + (r.stderr or "")
+            if r.returncode != 0 or not os.path.exists(out_file):
+                self._send(422, json.dumps({"ok": False, "log": log,
+                                            "cmd": " ".join(shlex.quote(c) for c in cmd)}))
+                return
+            self._send(200, open(out_file, "rb").read(),
+                       "application/octet-stream",
+                       filename=os.path.basename(out_file))
 
         def do_GET(self):
             if self.path in ("/", "/index.html"):
@@ -80,6 +143,9 @@ def main():
                            "text/html; charset=utf-8")
             elif self.path == "/board":
                 self._send(200, json.dumps(board))
+            elif self.path.startswith("/export"):
+                q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                self._export(q)
             elif self.path == "/traces":
                 if os.path.exists(out_path):
                     self._send(200, open(out_path, "rb").read())

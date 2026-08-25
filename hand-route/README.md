@@ -102,9 +102,30 @@ bottom of the canvas, deep green accent, no labels.
 
 **The right panel belongs to the view.** Draw view shows the connections —
 status lines, net checklist, alerts. Board view shows the board's own
-properties. 3D keeps the component legend on the canvas. The icon at the panel's
-top hides it; a floating button brings it back. A millimetre grid sits under
-everything (1 mm and 10 mm, each fading in when it becomes legible).
+properties. 3D keeps the component legend on the canvas. The icon at the
+panel's top left hides it; a floating button brings it back. Bottom right of
+the canvas: fit the board to the screen, and the grid toggle. A millimetre grid
+sits under everything (1 mm and 10 mm, each fading in when it becomes legible).
+
+### The burn session
+
+The green fire button at the panel's top right opens it: everything you need in
+the minute before the laser runs. What this board **is** — outline size, shape,
+material, hole count and diameters, drawn traces and total copper length, widths
+used, and the live state of nets, shorts, gaps and board issues. The **measured
+recipe** that will cut it. Then the files:
+
+| export | what it is |
+|---|---|
+| **LightBurn job** | every layer, ready to cut (`--clear`, which is what V4 and V5 were actually cut with; tick the box for `--moat`) |
+| **Cardboard fit test** | cut this first on any new layout |
+| **.handroute** | the drawing itself — strokes, moves, board |
+
+Files are built by the converter on the spot and land in your Downloads, named
+after the project rather than `index`. **A refusal is the answer, not an error:**
+if the board is incomplete, shorted or unmanufacturable, nothing is written and
+the converter's whole log appears in the panel to be read. Any unsaved change is
+flushed before the file is built, so what you download is what is on screen.
 
 There is no save button: every change autosaves 2 s after the pen lifts (with a
 15 s retry heartbeat and a flush when the page hides); only a failure announces
