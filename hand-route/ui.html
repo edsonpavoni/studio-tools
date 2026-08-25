@@ -1355,7 +1355,7 @@ function eraseAt(wx, wy){
     }
   if (hit){ markDirty(); analyze(); draw(); }
 }
-document.getElementById("undoB").onclick = ()=>{
+function doUndo(){
   const u = undoStack.pop();
   if (!u) return;
   if (u.op === "add") strokes.pop();
@@ -1378,7 +1378,23 @@ document.getElementById("undoB").onclick = ()=>{
   else if (u.op === "holeedit"){ u.h.x = u.x; u.h.y = u.y; u.h.d = u.d; }
   else strokes.splice(u.i, 0, u.s);
   markDirty(); analyze(); draw(); renderBoardPanel();
-};
+}
+document.getElementById("undoB").onclick = doUndo;
+
+// Cmd+Z on the iPad's keyboard and the Mac, Ctrl+Z everywhere else. One undo
+// stack across all three views, so it reaches outlines and holes as readily as
+// traces. Inside a number field the browser's own text undo wins - typing into
+// the inspector must not reshape the board behind you.
+window.addEventListener("keydown", e=>{
+  const k = (e.key || "").toLowerCase();
+  if (k !== "z" || !(e.metaKey || e.ctrlKey) || e.shiftKey || e.altKey) return;
+  const t = document.activeElement;
+  if (t && (t.tagName === "INPUT" || t.tagName === "SELECT" ||
+            t.tagName === "TEXTAREA")) return;
+  e.preventDefault();
+  if (!undoStack.length){ toast("Nothing left to undo"); return; }
+  doUndo();
+});
 // Draw / Erase / Move are one choice: the pencil is always exactly one tool.
 function setTool(t){
   closePops();

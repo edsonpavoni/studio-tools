@@ -119,6 +119,7 @@ itself.
 | Pencil drag (move tool) | reposition a component, pads and all |
 | Pencil (board view) | draw the board's outline, place holes, drag a hole |
 | tap a net in the checklist | focus it — everything else greys; tap again to release |
+| ⌘Z / Ctrl+Z | undo, in any view — traces, component moves, outlines, holes |
 
 ### Board view: the object
 
