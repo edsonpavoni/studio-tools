@@ -33,6 +33,15 @@ already makes working boards (V4, The Source P1b, 2026-08-24).
 8. **Long perimeters** — cutout proven on 10–30 mm squares and one 60×40 board; a
    100 mm edge is still untested (recipe doc, known unknowns).
 
+## Deferred by Edson (2026-08-25)
+
+- **File management in the app** — opening, starting and naming boards. Parked
+  until after the burn. Until then Edson asks Claude to open or start a board and
+  Claude keeps the folders in order; the convention and the parked ideas are both
+  in **`FILES.md`**. One idea in there is not really a feature and should jump the
+  queue whenever this restarts: **two clients on one drawing overwrite each other
+  silently**, which is the only way to lose an afternoon here.
+
 ## Considered and killed (2026-08-25, Edson's call — don't re-add without him)
 
 - **Autoroute assist** (click a net, software finds a route around drawn copper) —

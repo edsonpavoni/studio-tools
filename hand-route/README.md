@@ -25,7 +25,9 @@ independent verifier refuses incomplete or shorted drawings. The drawing saves a
 The result is a board that is also a drawing — V4 carries "the cave" written into
 the copper.
 
-**Open work lives in `BACKLOG.md`. Build history lives in `PLAN.md`.**
+**Open work lives in `BACKLOG.md`. Build history lives in `PLAN.md`. Where a
+board's files live, and what Claude does when asked to open or start one, is
+`FILES.md`.**
 
 ---
 
