@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>send unit</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* gallery of send-unit variants. each .variant is a self-contained block; lift the chosen .unit into index.html */
+body { height: auto; min-height: 100dvh; overflow: auto; touch-action: pan-y; }
+#grain { position: fixed; }
+main { padding: calc(var(--sat) + 40px) 0 calc(var(--sab) + 80px); }
+h1 { font-weight: 400; font-size: var(--fs); color: var(--ink-quiet); padding: 0 calc(var(--sal) + var(--edge)); }
+h1 small { display: block; margin-top: 4px; color: var(--ink-faint); }
+.variant { margin-top: 64px; }
+.variant h2 { font-weight: 400; font-size: var(--fs); color: var(--ink-quiet); padding: 0 calc(var(--sal) + var(--edge)); margin-bottom: 6px; }
+.variant h2 b { font-weight: 400; color: var(--ink-soft); margin-right: 10px; }
+/* a slice of the row's right end, at real size: +  ::  then the unit, 56 px edge inset */
+.strip { position: relative; height: 96px; display: flex; align-items: center; justify-content: flex-end; padding-right: calc(var(--sar) + var(--edge) - 14px); }
+.strip .tag { position: absolute; left: calc(var(--sal) + var(--edge)); top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
+.strip + .strip { height: 80px; }
+.glyphs { display: flex; align-items: center; gap: 4px; }
+.unit { position: relative; display: flex; align-items: center; margin-left: var(--send-air); cursor: pointer; touch-action: manipulation; }
+.unit .name { color: var(--ink-quiet); }
+.unit .cap { position: absolute; right: 0; bottom: calc(100% + 6px); white-space: nowrap; color: var(--ink-quiet); opacity: 0; transition: opacity .25s var(--ease); }
+.unit.sent .cap, .unit.ack .cap { opacity: 1; }
+.unit.ack .cap { transition-delay: .15s; }
+.arrow { width: 64px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative; color: var(--ink); }
+.arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.lift svg { transition: transform .3s var(--ease); }
+.unit.ack .lift svg, .unit.sent .lift svg { transform: translateY(-4px); }
+.unit.ack .lift svg { animation: lift .6s var(--ease); }
+@keyframes lift { 40% { transform: translateY(-5px); } 100% { transform: none; } }
+
+/* a · inline, arrow same weight as the text */
+.v-a .arrow { width: 44px; color: var(--ink-quiet); }
+.v-a .arrow svg { width: 15px; height: 15px; stroke-width: 1.2; }
+.v-a .name { margin-right: -6px; }
+
+/* b · inline, hairline ring */
+.v-b .arrow::before, .v-c .arrow::before { content: ""; position: absolute; left: 50%; top: 50%; width: 42px; height: 42px; border-radius: 50%; transform: translate(-50%, -50%); }
+.v-b .arrow::before { box-shadow: inset 0 0 0 1.25px var(--ink); }
+.v-b .arrow svg, .v-c .arrow svg { width: 18px; height: 18px; stroke-width: 1.5; }
+.v-b .unit.ack .arrow::before, .v-c .unit.ack .arrow::before { animation: ringpulse .55s var(--ease); }
+.v-b .name, .v-c .name { margin-right: 4px; }
+
+/* c · inline, dotted ring (the colour-list ring, larger) */
+.v-c .ring { position: absolute; left: 50%; top: 50%; width: 42px; height: 42px; transform: translate(-50%, -50%); }
+.v-c .ring circle { fill: none; stroke: var(--ink-soft); stroke-width: 1.3; stroke-linecap: round; stroke-dasharray: 0 3.3; }
+.v-c .unit.ack .ring { animation: ringpulse .55s var(--ease); }
+
+/* d · name underlined by a hairline, arrow after, both in ink */
+.v-d .name { color: var(--ink); position: relative; padding: 0 2px; }
+.v-d .name::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1px; background: var(--ink); }
+.v-d .arrow { width: 48px; }
+.v-d .arrow svg { width: 17px; height: 17px; stroke-width: 1.4; }
+
+/* e · a short sentence with a small ↗ */
+.v-e .unit { height: 48px; padding: 0 2px; }
+.v-e .sentence { color: var(--ink-quiet); display: flex; align-items: center; gap: 6px; }
+.v-e .sentence svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.v-e .unit.sent .sentence .verb::after { content: "sent to book"; }
+.v-e .unit:not(.sent) .sentence .verb::after { content: "send to book"; }
+.v-e .unit.sent .sentence svg, .v-e .unit.ack .sentence svg { opacity: .35; transform: translate(2px, -2px); transition: all .3s var(--ease); }
+
+/* f · a paper plane, thin line */
+.v-f .arrow svg { width: 24px; height: 24px; stroke-width: 1.2; }
+.v-f .name { margin-right: -2px; }
+.v-f .unit.ack .arrow svg, .v-f .unit.sent .arrow svg { transform: translate(4px, -4px); opacity: .5; transition: all .35s var(--ease); }
+
+/* g · arrow alone; the name only on tap / while sending */
+.v-g .arrow svg { width: 22px; height: 22px; stroke-width: 1.5; }
+.v-g .name { opacity: 0; margin-right: -4px; transition: opacity .3s var(--ease); }
+.v-g .unit.ack .name, .v-g .unit.show .name { opacity: 1; }
+
+/* h · a thin chevron above the name, tight */
+.v-h .unit { flex-direction: column; width: 64px; height: 56px; justify-content: flex-end; margin-left: var(--send-air); }
+.v-h .chev { width: 64px; height: 30px; display: flex; align-items: center; justify-content: center; color: var(--ink); }
+.v-h .chev svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--ease); }
+.v-h .name { line-height: 1; padding-bottom: 2px; }
+.v-h .unit.ack .chev svg, .v-h .unit.sent .chev svg { transform: translateY(-4px); }
+.v-h .cap { right: auto; left: 50%; transform: translateX(-50%); }
+
+/* i · dot · name · arrow as one cluster */
+.v-i .unit { height: 48px; padding: 0 4px; gap: 8px; }
+.v-i .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.v-i .name { color: var(--ink-soft); }
+.v-i .arrow { width: 24px; height: 24px; }
+.v-i .arrow svg { width: 15px; height: 15px; stroke-width: 1.4; }
+.v-i .unit.ack .dot, .v-i .unit.sent .dot { background: var(--ink-faint); transition: background .3s var(--ease); }
+
+/* j · the name in ink, the arrow faded */
+.v-j .name { color: var(--ink); margin-right: -4px; }
+.v-j .arrow { color: var(--ink-quiet); opacity: .7; }
+.v-j .arrow svg { width: 18px; height: 18px; }
+.v-j .unit.ack .arrow, .v-j .unit.sent .arrow { opacity: 1; color: var(--ink); transition: all .3s var(--ease); }
+</style>
+</head>
+<body data-mode="draw">
+<div id="grain"></div>
+<main>
+  <h1>send unit <small>ten versions at real size, each at the right end of the row after + and ::. tap one to see its acknowledgement.</small></h1>
+
+  <!-- a -->
+  <section class="variant v-a" id="v-a">
+    <h2><b>a</b>inline, arrow the same weight as the name, nothing else</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- b -->
+  <section class="variant v-b" id="v-b">
+    <h2><b>b</b>inline, the arrow in a hairline ring</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- c -->
+  <section class="variant v-c" id="v-c">
+    <h2><b>c</b>inline, the arrow in a dotted ring, like the colour-list mark</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow"><svg class="ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="20.5"/></svg><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow"><svg class="ring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="20.5"/></svg><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- d -->
+  <section class="variant v-d" id="v-d">
+    <h2><b>d</b>the name with a hairline beneath, the arrow after, both in ink</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- e -->
+  <section class="variant v-e" id="v-e">
+    <h2><b>e</b>a short sentence in quiet type with a small ↗</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="sentence"><span class="verb"></span><svg viewBox="0 0 24 24"><path d="M6 18 18 6M9 6h9v9"/></svg></span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="sentence"><span class="verb"></span><svg viewBox="0 0 24 24"><path d="M6 18 18 6M9 6h9v9"/></svg></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- f -->
+  <section class="variant v-f" id="v-f">
+    <h2><b>f</b>a paper plane, thin line, the name to its left</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 20.5 4l-4 16.5-5.5-6.5zM11 14l9.5-10"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow"><svg viewBox="0 0 24 24"><path d="M3.5 12.5 20.5 4l-4 16.5-5.5-6.5zM11 14l9.5-10"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- g -->
+  <section class="variant v-g" id="v-g">
+    <h2><b>g</b>the arrow alone; the name appears only on tap or while sending</h2>
+    <div class="strip"><span class="tag">resting</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">on tap</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit show"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- h -->
+  <section class="variant v-h" id="v-h">
+    <h2><b>h</b>a thin chevron above the name, tighter than now</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><div class="chev"><svg viewBox="0 0 24 24"><path d="M5 15.5 12 8.5l7 7"/></svg></div><span class="name">book</span><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><div class="chev"><svg viewBox="0 0 24 24"><path d="M5 15.5 12 8.5l7 7"/></svg></div><span class="name">book</span><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- i -->
+  <section class="variant v-i" id="v-i">
+    <h2><b>i</b>a small ink dot, the name, the arrow: one word-like cluster</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><i class="dot"></i><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><i class="dot"></i><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- j -->
+  <section class="variant v-j" id="v-j">
+    <h2><b>j</b>the name in ink, the arrow faded: the session is the thing, the arrow the hint</h2>
+    <div class="strip">
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+    <div class="strip"><span class="tag">sent</span>
+      <div class="glyphs">
+        <div class="ctl"><svg viewBox="0 0 24 24"><path d="M12 4.5v15M4.5 12h15"/></svg></div>
+        <div class="ctl"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="8.5" r="1.5"/><circle cx="16.5" cy="8.5" r="1.5"/><circle cx="7.5" cy="15.5" r="1.5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg></div>
+        <div class="unit sent"><span class="name">book</span><div class="arrow lift"><svg viewBox="0 0 24 24"><path d="M12 19.5v-15M6 10.5l6-6 6 6"/></svg></div><span class="cap">sent to book</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+// tap a resting unit: play its acknowledgement for a moment
+document.querySelectorAll('.unit:not(.sent)').forEach(u => {
+  u.addEventListener('pointerup', () => { u.classList.remove('ack'); void u.offsetWidth; u.classList.add('ack'); setTimeout(() => u.classList.remove('ack'), 1600); });
+});
+document.addEventListener('contextmenu', e => e.preventDefault());
+</script>
+</body>
+</html>

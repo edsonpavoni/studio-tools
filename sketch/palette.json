@@ -1,0 +1,136 @@
+{
+  "_note": "Edson's colour list for the sketch tool, 2026-10-20. Source: four icolorpalette.com palettes he picked. Quick row (his choice, 16:08): black, Rich Azure, Soft Deep Teal, Soft Deep Violet, Shaded Red. The full list is everything below, opened from the row.",
+  "quick": [
+    "black",
+    "rich-azure",
+    "soft-deep-teal",
+    "soft-deep-violet",
+    "shaded-red"
+  ],
+  "black": {
+    "name": "Graphite black",
+    "hex": "#2A2A2A"
+  },
+  "palettes": [
+    {
+      "name": "Industrial Carbon and Azure",
+      "colours": [
+        {
+          "id": "soft-deep-cobalt",
+          "name": "Soft Deep Cobalt",
+          "hex": "#252A36"
+        },
+        {
+          "id": "soft-dark-azure",
+          "name": "Soft Dark Azure",
+          "hex": "#46555A"
+        },
+        {
+          "id": "cool-soft-blue",
+          "name": "Cool Soft Blue",
+          "hex": "#688197"
+        },
+        {
+          "id": "rich-azure",
+          "name": "Rich Azure",
+          "hex": "#165C7D"
+        },
+        {
+          "id": "soft-blue-cool",
+          "name": "Soft Blue Cool",
+          "hex": "#8BA6C1"
+        }
+      ]
+    },
+    {
+      "name": "Wet Slate Forest Moss",
+      "colours": [
+        {
+          "id": "charcoal-cool",
+          "name": "Charcoal Cool",
+          "hex": "#373A36"
+        },
+        {
+          "id": "slate-grey",
+          "name": "Slate Grey",
+          "hex": "#51534A"
+        },
+        {
+          "id": "soft-deep-teal",
+          "name": "Soft Deep Teal",
+          "hex": "#385542"
+        },
+        {
+          "id": "soft-emerald",
+          "name": "Soft Emerald",
+          "hex": "#6B8D73"
+        },
+        {
+          "id": "soft-light-teal",
+          "name": "Soft Light Teal",
+          "hex": "#A7BDB1"
+        }
+      ]
+    },
+    {
+      "name": "Charcoal and Amethyst Dusk",
+      "colours": [
+        {
+          "id": "soft-deep-purple",
+          "name": "Soft Deep Purple",
+          "hex": "#403845"
+        },
+        {
+          "id": "soft-dark-purple",
+          "name": "Soft Dark Purple",
+          "hex": "#5C4E63"
+        },
+        {
+          "id": "gentle-purple",
+          "name": "Gentle Purple",
+          "hex": "#836C8E"
+        },
+        {
+          "id": "soft-deep-violet",
+          "name": "Soft Deep Violet",
+          "hex": "#3F2A56"
+        },
+        {
+          "id": "grey-cool",
+          "name": "Grey Cool",
+          "hex": "#9991A4"
+        }
+      ]
+    },
+    {
+      "name": "Brushed Metal Crimson Edge",
+      "colours": [
+        {
+          "id": "soft-deep-scarlet",
+          "name": "Soft Deep Scarlet",
+          "hex": "#382F2D"
+        },
+        {
+          "id": "warm-slate-grey",
+          "name": "Warm Slate Grey",
+          "hex": "#5E514D"
+        },
+        {
+          "id": "soft-scarlet",
+          "name": "Soft Scarlet",
+          "hex": "#826B6A"
+        },
+        {
+          "id": "shaded-red",
+          "name": "Shaded Red",
+          "hex": "#7C2629"
+        },
+        {
+          "id": "subtle-red",
+          "name": "Subtle Red",
+          "hex": "#C6858F"
+        }
+      ]
+    }
+  ]
+}

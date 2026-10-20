@@ -8,3 +8,23 @@ PT-Transcriber/vocab.txt
 .DS_Store
 __pycache__/
 *.pyc
+
+# sketch: drawings, inbox and replies are private data; the log and rendered docs are generated
+sketch/inbox/
+sketch/sheets/
+sketch/replies/
+sketch/server.log
+sketch/README.html
+sketch/PLAN.html
+sketch/HANDOFF.html
+sketch/design/UI-SPEC.html
+sketch/research/*.html
+sketch/graphite/README.html
+sketch/tools/shots/
+# sketch: the closed-source reference app (© minordaimyo, study only) and everything derived from its output
+sketch/graphite/reference/
+sketch/tools/reference/
+sketch/graphite/tools/ref-harness/compare.png
+sketch/graphite/research/16-ground-truth/png/
+# sketch: a third-party mock-up used as the look reference
+sketch/design/reference.jpg
