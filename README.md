@@ -70,7 +70,7 @@ exists for boards from Flux/KiCad.
 ## iPad
 
 ### ipad → `studio/ipad/`
-**Use when:** you pick up the iPad to draw or route a board and want it to just work. One app on the Mac (`~/Applications/iPadTools.app`, LaunchAgent `art.edsonpavoni.ipad`) runs every iPad tool from login, restarts what dies, and serves a hub page of tiles: **http://edsons-macbook-pro.local:8888** (rascunho 8880, hand-route 8481). `tools.json` is the registry; adding an iPad tool is one entry there. It is an app bundle because macOS gates Dropbox per app and a plain launchd `zsh`/`python3` job is never allowed in. *(Built 2026-10-20; details, checks, undo in its README.)*
+**Use when:** you pick up the iPad to draw or route a board and want it to just work. One app on the Mac (`~/Applications/iPadTools.app`, LaunchAgent `art.edsonpavoni.ipad`) runs every iPad tool from login, restarts what dies, and serves a hub page of tiles: **http://edsons-macbook-pro.local:8888** (rascunho 8880, trilha 8481). `tools.json` is the registry; adding an iPad tool is one entry there. It is an app bundle because macOS gates Dropbox per app and a plain launchd `zsh`/`python3` job is never allowed in. *(Built 2026-10-20; details, checks, undo in its README.)*
 
 ## Images
 
