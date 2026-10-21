@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tools">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Tools</title>
+<style>
+  :root{color-scheme:light dark;
+    --bg:#fcfbf8;--card:#ffffff;--ink:#1d1c1a;--ink2:#6f6c66;--rule:#e6e2da;
+    --up:#2f9e63;--down:#d0564a;--wait:#d9a441;--ext:#5b8bd6;--accent:#0E6B45}
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#1E1E1E;--card:#272727;--ink:#f1efe9;--ink2:#a39f96;--rule:#3a3a3a}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;background:var(--bg);color:var(--ink);
+    font:17px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+  body{padding:max(28px,env(safe-area-inset-top)) 24px 40px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    max-width:980px;margin:0 auto 22px}
+  h1{font-size:28px;font-weight:600;letter-spacing:-.01em}
+  #mac{color:var(--ink2);font-size:14px;white-space:nowrap}
+  #banner{display:none;max-width:980px;margin:0 auto 20px;padding:14px 16px;border-radius:14px;
+    background:#fff3cd;color:#5a4300;font-size:15px}
+  @media (prefers-color-scheme:dark){#banner{background:#3a3010;color:#f1d98a}}
+  #banner.show{display:block}
+  #banner code{font:13px ui-monospace,Menlo,monospace}
+  main{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;
+    max-width:980px;margin:0 auto}
+  a.tile{display:block;position:relative;background:var(--card);border:1px solid var(--rule);
+    border-radius:22px;padding:22px 22px 20px;color:inherit;text-decoration:none;
+    min-height:190px;transition:transform .08s}
+  a.tile:active{transform:scale(.985)}
+  a.tile.off{opacity:.55}
+  .emoji{font-size:40px;line-height:1;margin-bottom:14px}
+  .name{font-size:22px;font-weight:600;margin-bottom:6px}
+  .what{color:var(--ink2);font-size:15px;line-height:1.4}
+  .foot{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:var(--ink2)}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--down);flex:none}
+  .dot.up{background:var(--up)}.dot.starting{background:var(--wait)}.dot.external{background:var(--ext)}
+  .url{font:12px ui-monospace,Menlo,monospace;color:var(--ink2);margin-left:auto}
+  button.restart{position:absolute;top:16px;right:16px;border:1px solid var(--rule);background:transparent;
+    color:var(--ink2);border-radius:999px;padding:6px 12px;font-size:13px}
+  footer{max-width:980px;margin:34px auto 0;color:var(--ink2);font-size:13px;line-height:1.6}
+  footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<header><h1>Tools</h1><div id="mac">…</div></header>
+<div id="banner"></div>
+<main id="tiles"></main>
+<footer>Tap a tile to open the tool. Share › Add to Home Screen on a tool gives it its own icon. Green = running on the Mac, yellow = starting, blue = started by hand from a terminal, red = down (tap <em>restart</em>). <a href="/status">status</a></footer>
+<script>
+const host = location.hostname;
+const tiles = document.getElementById('tiles');
+const banner = document.getElementById('banner');
+const mac = document.getElementById('mac');
+let known = null;
+
+function urlFor(t){ return `${location.protocol}//${host}:${t.port}${t.path || '/'}`; }
+
+function render(s){
+  mac.textContent = s.host || host;
+  if (s.access !== 'ok') {
+    banner.className = 'show';
+    banner.innerHTML = s.access === 'denied'
+      ? 'The runner cannot read its folder in Dropbox. On the Mac: System Settings › Privacy &amp; Security › Full Disk Access › + › <code>~/Applications/iPadTools.app</code>. This page recovers by itself.'
+      : `Folder ${s.access}: ${s.folder}`;
+  } else if (s.config_error) {
+    banner.className = 'show'; banner.textContent = 'tools.json: ' + s.config_error;
+  } else banner.className = '';
+  const ids = s.tools.map(t => t.id).join(',');
+  if (known !== ids) {
+    tiles.innerHTML = '';
+    for (const t of s.tools) {
+      const a = document.createElement('a');
+      a.className = 'tile'; a.id = 'tile-' + t.id; a.href = urlFor(t);
+      a.innerHTML = `<div class="emoji">${t.emoji || '🧰'}</div><div class="name">${t.name}</div>
+        <div class="what">${t.what || ''}</div>
+        <div class="foot"><span class="dot"></span><span class="state"></span><span class="url">:${t.port}</span></div>
+        <button class="restart" type="button">restart</button>`;
+      a.querySelector('button').addEventListener('click', ev => {
+        ev.preventDefault(); ev.stopPropagation();
+        fetch('/restart?id=' + encodeURIComponent(t.id), {method: 'POST'});
+        ev.target.textContent = 'restarting…';
+        setTimeout(() => ev.target.textContent = 'restart', 4000);
+      });
+      tiles.appendChild(a);
+    }
+    known = ids;
+  }
+  for (const t of s.tools) {
+    const a = document.getElementById('tile-' + t.id); if (!a) continue;
+    a.href = urlFor(t);
+    a.classList.toggle('off', !t.up);
+    a.querySelector('.dot').className = 'dot ' + t.state;
+    let txt = {up: 'running', starting: 'starting…', external: 'running (started by hand)', down: 'down'}[t.state] || t.state;
+    if (t.state === 'down' && t.error) txt += ' · ' + t.error;
+    else if (t.state === 'down' && t.last_exit) txt += ` · exited ${t.last_exit.code}, retrying`;
+    a.querySelector('.state').textContent = txt;
+  }
+}
+
+async function poll(){
+  try {
+    const r = await fetch('/status', {cache: 'no-store'});
+    render(await r.json());
+  } catch (e) {
+    banner.className = 'show';
+    banner.textContent = 'The runner on the Mac is not answering. Is the Mac awake and on this Wi-Fi?';
+  }
+}
+poll(); setInterval(poll, 3000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+</script>
+</body>
+</html>

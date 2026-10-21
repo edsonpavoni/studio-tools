@@ -1,0 +1,25 @@
+{
+  "hub_port": 8888,
+  "tools": [
+    {
+      "id": "rascunho",
+      "name": "Rascunho",
+      "emoji": "✏️",
+      "what": "Graphite on the iPad. Pencil draws, a finger smudges, two fingers pan. Send a sheet to a Claude Code session by name.",
+      "dir": "../rascunho",
+      "cmd": ["python3", "server.py", "--port", "8880"],
+      "port": 8880,
+      "path": "/"
+    },
+    {
+      "id": "trilha",
+      "name": "Trilha",
+      "emoji": "🔌",
+      "what": "Route a circuit board by hand with the Pencil and export one LightBurn file for the B6. Opens the board a session last set.",
+      "dir": "../trilha",
+      "cmd": ["python3", "server.py", "--port", "8481"],
+      "port": 8481,
+      "path": "/"
+    }
+  ]
+}

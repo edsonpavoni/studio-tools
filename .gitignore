@@ -28,3 +28,6 @@ rascunho/graphite/tools/ref-harness/compare.png
 rascunho/graphite/research/16-ground-truth/png/
 # rascunho: a third-party mock-up used as the look reference
 rascunho/design/reference.jpg
+trilha/current-board
+trilha/recent-boards.json
+ipad/__pycache__/

@@ -1,0 +1,11 @@
+{
+  "name": "Trilha",
+  "short_name": "Trilha",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#1E1E1E",
+  "theme_color": "#1E1E1E",
+  "icons": [{ "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }]
+}

@@ -1,4 +1,4 @@
-# hand-route — build plan (history)
+# trilha — build plan (history)
 
 > **This file is the build history. The live to-do list is `BACKLOG.md`.**
 > Superseded coupon generators moved to `archive/` (2026-08-24 cleanup).
@@ -119,7 +119,7 @@ refuses incomplete or shorted boards. Edson drew the whole board as artwork.
 
 **V3, the first real board (60×40, 56 holes, 324 hand strokes, 72% cleared), was cut
 2026-08-23.** Full first-article review in
-`projects/the-source-burning-man-2026/pcb-v3/LOG.md`. Score for the tool:
+`tools/instrument/versions/2026_the-source/pcb-v3/LOG.md`. Score for the tool:
 
 - Fill recipe, interleaved holes, labels layer: all behaved exactly as measured.
 - **0.3 mm drawn traces proven conductive** (7.4 mm runs). UI floor updated.

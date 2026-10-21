@@ -15,7 +15,7 @@ cd "/Users/edsonpavoni/Library/CloudStorage/Dropbox/0000 AI/studio/rascunho"
 
 Mac: http://localhost:8880 · iPad: **http://edsons-macbook-pro.local:8880** (fallback: the Mac's LAN IP, printed on start).
 
-**Home-screen icon.** On the iPad open that address in Safari, tap Share › *Add to Home Screen* › Add. The icon opens Rascunho full screen with no browser bars (the page ships a manifest and `icon-180.png`). For 120 Hz drawing turn off Settings › Safari › Advanced › Feature Flags › *Prefer Page Rendering Updates Near 60fps*. The icon only works while the Mac is awake on the same network with the server running: see *Always on*.
+**Home-screen icon.** On the iPad open that address in Safari, tap Share › *Add to Home Screen* › Add. The icon opens Rascunho full screen with no browser bars (the page ships a manifest and `icon-180.png`). For 120 Hz drawing turn off Settings › Safari › Advanced › Feature Flags › *Prefer Page Rendering Updates Near 60fps*. The icon works whenever the Mac is awake on the same network: the server is always on, see *Always on*.
 
 ## Drawing
 
@@ -69,11 +69,11 @@ Names (sessions, sheets) are reduced to `[A-Za-z0-9._-]`. Max body 64 MB. No COR
 
 ## Always on
 
-`./install.sh` installs the LaunchAgent `~/Library/LaunchAgents/art.edsonpavoni.rascunho.plist`: `python3 server.py --port 8880` from this folder at login, restarted if it dies, appending to `server.log`. Safe to rerun. It stops a hand-started server first; if the agent does not come up it removes itself, restarts the server by hand and says why.
+Since 2026-10-20 22:00 the server is kept running by **`studio/ipad`**: the LaunchAgent `art.edsonpavoni.ipad` starts `~/Applications/iPadTools.app` at login, which runs `python3 server.py --port 8880` in this folder (log: `~/Library/Logs/ipad-rascunho.log`) and restarts it if it dies. Nothing to do here after a reboot. `serve.sh` still works for a Mac without the agent; while the agent runs it just reports the busy port.
 
-**One-time prerequisite (2026-10-20, 21:45: Full Disk Access given to `/bin/zsh`, still not enough).** macOS does not let launchd jobs touch `~/Library/CloudStorage` freely. After the grant, a launchd-started zsh could create new files in this folder but was still denied `ls` of it and appending to the existing `server.log`, so `install.sh` falls back to a hand-started server (what `serve.sh` does). Until a launchd job proves it can list this folder and overwrite a synced file, always-on means: keep the Mac awake and run `serve.sh` after a reboot. One-shot test: a LaunchAgent running `/bin/zsh -c 'cd <this folder> && ls && echo x >> server.log'` must print the listing with no `operation not permitted`.
+Why not a plain LaunchAgent: macOS gates Dropbox with a per-app permission that `/bin/zsh` or `python3` can never hold (the Full Disk Access attempt of 2026-10-20 never registered; a launchd zsh could `cd` here but not `ls` or append to `server.log`). An app bundle gets it and passes it to what it starts. Details, checks and undo: `studio/ipad/README.md`. Hub with every iPad tool: http://edsons-macbook-pro.local:8888.
 
-Check: `launchctl print gui/$(id -u)/art.edsonpavoni.rascunho | grep -E "state|pid"` and `curl -s localhost:8880/sessions`. Undo: `launchctl bootout gui/$(id -u)/art.edsonpavoni.rascunho && rm ~/Library/LaunchAgents/art.edsonpavoni.rascunho.plist`.
+Check: `curl -s localhost:8888/status` (state of every tool) · `curl -s localhost:8880/sessions`. Restart just this server: the *restart* button on the hub, or `curl -X POST "localhost:8888/restart?id=rascunho"`.
 
 ## The page
 

@@ -120,7 +120,7 @@ All at **40 kHz, 200 ns, min power 20 %**.
 
 ---
 
-**Recovered 2026-08-17 by reading the files, not from memory.** Source: `2025 O.K./B6/ToR_008.lbrn2` (24 May 2025, the eighth and last iteration of the TRIBE / Touch of Red board) cross-checked against `2025 O.K./PCBs/pcb2gcode/ToR_008/drill.drl`.
+**Recovered 2026-08-17 by reading the files, not from memory.** Source: `0000 AI/artworks/ok/fabrication/B6/ToR_008.lbrn2` (24 May 2025, the eighth and last iteration of the TRIBE / Touch of Red board) cross-checked against `0000 AI/artworks/ok/fabrication/PCBs/pcb2gcode/ToR_008/drill.drl`.
 
 A copy of both is frozen in `reference/`. **Do not edit those two files.** They are the only surviving record of a board that actually worked.
 
@@ -132,7 +132,7 @@ A copy of both is frozen in `reference/`. **Do not edit those two files.** They 
 1.6 mm. **The running measurement log for this material is `MATERIAL-QIMOO-FR4.md`**
 (proven settings, capability floors, recorded failures — append new bench results
 there). This is a different regime from the copper recipes in
-`projects/B6 Mopa Laser/material-settings.md`, which are for **1.1 mm copper sheet**. Do not mix them.
+`tools/B6-Mopa/MATERIAL-SETTINGS.md`, which are for **1.1 mm copper sheet**. Do not mix them.
 
 | | copper foil on FR4 (this page) | 1.1 mm copper sheet (material-settings.md) |
 |---|---|---|

@@ -5,7 +5,7 @@ and scored on the bench; append new results with the date, never overwrite — a
 superseded number stays as history with a strikethrough or a note. The *procedure*
 for making a board lives in `B6-PCB-RECIPE.md`; this file is what the material does.
 
-⚠️ Different regime from `projects/B6 Mopa Laser/material-settings.md`, which is
+⚠️ Different regime from `tools/B6-Mopa/MATERIAL-SETTINGS.md`, which is
 **1.1 mm solid copper sheet** (75 kHz, wobble 0.30 — Witness lids). Do not mix them.
 
 Identity: Qimoo brand FR4-laminate, 1.6 mm substrate, 1 oz (35 µm) copper one side.

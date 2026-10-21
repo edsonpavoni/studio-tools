@@ -1,6 +1,6 @@
-# hand-route
+# trilha
 
-*(named PCB-Maker until 2026-08-25; same tool, same recipe)*
+*(named PCB-Maker until 2026-08-25 and hand-route until 2026-10-20; same tool, same recipe. A* trilha *is what a PCB trace is called in Brazilian Portuguese, and a trail.)*
 
 Make circuit boards on the ComMarker B6 MOPA, in the studio, the same way twice.
 
@@ -15,7 +15,7 @@ the converter's defaults produce it automatically.
 The pipeline, in one line:
 
 ```
-tsci build → hand-route UI (iPad+Pencil over a ghost autoroute) → circuit2lbrn.py → LightBurn → B6
+tsci build → trilha UI (iPad+Pencil over a ghost autoroute) → circuit2lbrn.py → LightBurn → B6
 ```
 
 The autorouter's spacing is not cuttable on this process, so traces are drawn by hand:
@@ -47,6 +47,7 @@ board's files live, and what Claude does when asked to open or start one, is
 | `coupon/` | Generated coupons and their filled score sheets — the measurement record. |
 | `archive/` | Superseded coupon generators, one line each in its README on what they answered. |
 | `BACKLOG.md` | **What to do next**, ordered by value. |
+| `PROBLEMS.md` | **What went wrong in the field**, symptoms only, no solutions — the raw material the backlog gets polished from. Started on The Source P2 build, 2026-08-27. |
 | `PLAN.md` | The build phases and everything they taught. |
 | `reference/ToR_008-*` | The last working LightBurn and drill files from the TRIBE board, May 2025. **Frozen. Do not edit.** |
 
@@ -58,7 +59,7 @@ board's files live, and what Claude does when asked to open or start one, is
 # a real board, from tscircuit source
 cd your-board-project
 tsci build                                    # writes dist/<name>/circuit.json
-python3 /path/to/hand-route/circuit2lbrn.py \
+python3 /path/to/trilha/circuit2lbrn.py \
         dist/index/circuit.json --clear --manual-traces auto \
         -o board.lbrn2
 # defaults already carry the measured recipe: 200 ns, 0.05 mm interval,
@@ -85,12 +86,19 @@ hand: the board's pads and netlist load into a canvas, you draw each connection 
 the Apple Pencil, and a live checklist ticks nets off as they complete. The routing
 becomes part of the object, the way the 2025 TRIBE board's big sweeping curve was.
 
+The server is always on (`studio/ipad` runs it on **port 8481** from login; the
+iPad icon **Trilha** → http://edsons-macbook-pro.local:8481). It serves the
+board named in `current-board` beside this script. To switch boards, from any
+session or terminal:
+
 ```bash
-cd tools/hand-route
-python3 server.py /path/to/board/dist/index/circuit.json
+python3 "/Users/edsonpavoni/Library/CloudStorage/Dropbox/0000 AI/studio/trilha/server.py" /path/to/board/dist/index/circuit.json
 ```
 
-Open the printed URL in Safari on the iPad (same WiFi). Then:
+That writes the pointer, adds the board to `recent-boards.json`, and the running
+server shows it on the iPad's next load (no restart; a `tsci build` is picked up the
+same way). With no board set, the page lists the recent boards to tap. Without a
+running server the same command serves the board itself (`--port` to choose). Then:
 
 The chrome is Figma-flavoured (2026-08-25): four floating icon islands at the
 bottom of the canvas, deep green accent, no labels.
@@ -99,15 +107,54 @@ bottom of the canvas, deep green accent, no labels.
 |---|---|
 | 1 | undo |
 | 2 | pen (chevron beside it opens the size popover), smoothness (vertical slider), eraser, move a component |
-| 3 | **the three views**: board · draw · 3D |
+| 3 | **the four views**: board · draw · schematic · 3D |
 | 4 | overlays: copper, ghost autoroute |
 
 **The right panel belongs to the view.** Draw view shows the connections —
 status lines, net checklist, alerts. Board view shows the board's own
-properties. 3D keeps the component legend on the canvas. The icon at the
+properties. Schematic keeps the connections panel, since that is what it is
+reading out. 3D keeps the component legend on the canvas. The icon at the
 panel's top left hides it; a floating button brings it back. Bottom right of
 the canvas: fit the board to the screen, and the grid toggle. A millimetre grid
 sits under everything (1 mm and 10 mm, each fading in when it becomes legible).
+
+### Schematic view: the printable legend
+
+The artwork for the face of the board that carries **no copper**. A drawing
+sheet with the blank on it: footprints, port numbers, net names, a square
+shoulder on pin 1, ⌀ on every mount hole, and + / − on the electrolytic taken
+from the netlist rather than typed. It reads `/board` and edits nothing — the
+pen pans instead of drawing.
+
+**Bottom left, only in this view, is the flip.** It mirrors *positions* about
+the board's centre line and nothing else: every glyph stays upright, because a
+silkscreen whose numbers come out backwards is one you cannot print. The tag
+beside the button says which face you are reading — `COPPER SIDE · as routed`
+or `COMPONENT SIDE · mirrored`. Leaving the view resets it to copper side.
+
+**`signals.json` — what each net actually carries.** `NET_3` tells you nothing
+standing at a bench; `SDA` tells you everything. Drop a `signals.json` beside the
+board's `circuit.json`, or in the project directory above it, and the view prints
+the real names:
+
+```json
+{ "nets": { "NET_3": "SDA", "GND": "GND", "NET_1": "D+" },
+  "pins": { "QA.pin1": "S", "QA.pin2": "D", "QA.pin3": "G" } }
+```
+
+`nets` maps a net id to what it carries; `pins` gives a part-level pin *function*
+where the net name does not carry it — G/D/S on a MOSFET being the case that
+matters, since a TO-220's physical lead order and a footprint's pin numbering
+need not agree. Both are optional; anything missing falls back to the raw net id,
+which is at least always true. **It is deliberately data and not names typed into
+the renderer: a silkscreen label that has drifted from the netlist is worse than
+no label.** The server re-reads it on every `/board`, so edit the file and refresh
+the page — no restart. Cross-check with `python3 netmap.py <circuit.json>`.
+
+Net names on a 2.54 row stand up and read along the pin: at that pitch there is
+no width for them to lie down in. The sheet has a margin, and a deeper foot for
+the title block, because the outermost parts sit 5 mm from the board edge and
+their names need somewhere to land.
 
 ### The burn session
 
@@ -179,7 +226,7 @@ winding, so the cutout polygon never depends on which way your hand travelled.
 Live width × height shows while you draw.
 
 **This is the split that matters: tscircuit is the source of the circuit —
-components, nets, pads. hand-route is the source of the board — outline, free
+components, nets, pads. trilha is the source of the board — outline, free
 holes, and all drawn copper.** An authored board lives in the `board` section of
 `board.handroute` and overrides circuit.json's outline and free holes;
 component holes are never touched, because those belong to footprints.
@@ -338,4 +385,4 @@ Until that coupon exists, treat `B6-PCB-RECIPE.md` as **an archive of what worke
 
 ## Machine
 
-ComMarker B6 MOPA 60 W, driven by LightBurn 1.7.08, device name `B6 Mopa`. General material settings for engraving and cutting metal live in `projects/B6 Mopa Laser/material-settings.md`. **Those are for solid copper, brass and aluminium sheet.** PCB foil is 35 µm on FR4 and wants a different recipe, which is why it has its own file here.
+ComMarker B6 MOPA 60 W, driven by LightBurn 1.7.08, device name `B6 Mopa`. General material settings for engraving and cutting metal live in `tools/B6-Mopa/MATERIAL-SETTINGS.md`. **Those are for solid copper, brass and aluminium sheet.** PCB foil is 35 µm on FR4 and wants a different recipe, which is why it has its own file here.

@@ -48,7 +48,7 @@ points at and re-reads that pointer on every request)*
    and tells the running server (it prints the board, the stroke count and both
    URLs). Never start a second server on another port for the same drawing.
 3. Say which board is open and how many strokes it already has. The iPad shows it
-   on its next load (the **Hand Route** icon, or http://edsons-macbook-pro.local:8481).
+   on its next load (the **Trilha** icon, or http://edsons-macbook-pro.local:8481).
 
 **"Start a new board in \<project\>"**
 1. Ask which it is: a **copy** of an existing board (the usual case, V5 → V6), or

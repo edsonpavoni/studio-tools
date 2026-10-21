@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Hand Route</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trilha">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<title>Trilha</title>
 <style>
   /* Figma-dark chrome, deep green accent (Edson, 2026-08-25). The board itself
      keeps its warm FR4/copper look - only the chrome speaks Figma. */
@@ -35,6 +39,12 @@
   button.burn.on svg{stroke:currentColor;fill:none}
   /* Bare icons floating on the canvas: the viewing tools, which change nothing
      about the board, and undo, which is one gesture rather than a mode. */
+  #flipWrap{position:absolute;left:10px;bottom:18px;z-index:6;display:none;
+    align-items:center;gap:7px}
+  #flipWrap.show{display:flex}
+  #sideTag{font:600 9px ui-monospace,monospace;letter-spacing:.09em;color:var(--ink2);
+    background:var(--panel2);border-radius:4px;padding:4px 7px;white-space:nowrap;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.75))}
   #canvasCtl{position:absolute;right:10px;bottom:18px;z-index:6;display:flex;gap:2px}
   #canvasCtl button, #canvasCtl button.on, button.bare, button.bare.on{background:none}
   #canvasCtl button, button.bare{color:var(--ink3);
@@ -231,6 +241,10 @@
   <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="16" r="1.4"/><circle cx="16" cy="8" r="1.4"/><path d="M9 15c4-1 2-6 6-6"/></symbol>
   <symbol id="i-route" viewBox="0 0 24 24"><circle cx="5" cy="19" r="2.2"/><circle cx="19" cy="5" r="2.2"/><path d="M7 18c7-2 3-10 10-12"/></symbol>
   <symbol id="i-cube" viewBox="0 0 24 24"><path d="M21 8v8l-9 5-9-5V8l9-5 9 5Z"/><path d="m3 8 9 5 9-5"/><path d="M12 22V13"/></symbol>
+  <!-- the legend printed on the bare side: a footprint, pins ticked, pin 1 dotted -->
+  <symbol id="i-silk" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="1.5"/><path d="M2 7h4M2 12h4M2 17h4M18 7h4M18 12h4M18 17h4"/><circle cx="9" cy="6.5" r="1.15"/></symbol>
+  <!-- mirror about a vertical axis: what flipping the board actually does -->
+  <symbol id="i-flip" viewBox="0 0 24 24"><path d="M12 2v20" stroke-dasharray="3 2.5"/><path d="M9 6 4 12l5 6V6Z"/><path d="m15 6 5 6-5 6V6Z"/></symbol>
   <symbol id="i-ghost" viewBox="0 0 24 24"><path d="M3 14c2.5-6 5-6 7.5 0s5 6 7.5 0" stroke-dasharray="2.6 2.8"/></symbol>
   <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></symbol>
@@ -264,6 +278,7 @@
       <div class="island">
         <button id="viewBoard" title="Board view"><svg><use href="#i-shape"/></svg></button>
         <button id="viewDraw" class="on" title="Draw view"><svg><use href="#i-board"/></svg></button>
+        <button id="viewSchem" title="Schematic \u2014 the printable legend"><svg><use href="#i-silk"/></svg></button>
         <button id="view3d" title="3D view"><svg><use href="#i-cube"/></svg></button>
       </div>
     </div>
@@ -279,6 +294,12 @@
       <button id="gridB" class="on" title="Grid"><svg><use href="#i-grid"/></svg></button>
       <button id="copperB" title="Copper: how it really looks"><svg><use href="#i-route"/></svg></button>
       <button id="autoB" class="on" title="Ghost autoroute"><svg><use href="#i-ghost"/></svg></button>
+    </div>
+    <!-- bottom-LEFT, opposite the viewing tools: which face of the board you
+         are reading. Only the schematic view has two faces, so it lives here. -->
+    <div id="flipWrap">
+      <button id="flipB" class="bare" title="Flip the board over"><svg><use href="#i-flip"/></svg></button>
+      <span id="sideTag">COPPER SIDE</span>
     </div>
     <div id="legend"></div>
     <div id="toast"></div>
@@ -898,6 +919,9 @@ function poly(pts, close){
   if (close) ctx.closePath();
 }
 function draw(){
+  // the schematic view shares the canvas, the camera and every pan/zoom path;
+  // only what gets painted differs
+  if (curView === "schem") return drawSchem();
   const css = getComputedStyle(document.documentElement);
   const C = n => css.getPropertyValue(n).trim();
   ctx.clearRect(0,0,cv.width,cv.height);
@@ -1204,6 +1228,11 @@ cv.addEventListener("pointerdown", e=>{
     return;
   }
   // pen or mouse
+  if (curView === "schem"){        // read-only: the pen pans instead of drawing
+    schemPan = [e.offsetX, e.offsetY];
+    cv.setPointerCapture(e.pointerId);
+    return;
+  }
   const [wx,wy] = S2W(e.offsetX*DPR, e.offsetY*DPR);
   if (boardMode){
     cv.setPointerCapture(e.pointerId);
@@ -1252,6 +1281,13 @@ cv.addEventListener("pointerdown", e=>{
 });
 cv.addEventListener("pointermove", e=>{
   e.preventDefault();
+  if (schemPan && e.pointerType !== "touch"){
+    view.x -= (e.offsetX - schemPan[0]) / view.s;
+    view.y += (e.offsetY - schemPan[1]) / view.s;
+    schemPan = [e.offsetX, e.offsetY];
+    draw();
+    return;
+  }
   if (e.pointerType === "touch"){
     if (!fingers.has(e.pointerId)) return;
     const prev = fingers.get(e.pointerId);
@@ -1320,6 +1356,7 @@ function endTouch(e){
   if (fingers.size < 2) pinch0 = null;
 }
 cv.addEventListener("pointerup", e=>{
+  if (schemPan){ schemPan = null; return; }
   e.preventDefault();
   if (e.pointerType === "touch"){ endTouch(e); return; }
   if (dragHole){
@@ -1690,20 +1727,414 @@ function renderBoardPanel(){
     al.appendChild(d);
   }
 }
-/* Three views, and the sidebar belongs to the view: board (shape the object),
-   draw (route the circuit), 3d (look at it). Copper and Ghost are overlays that
-   ride on top, not views of their own. */
+/* ==================== schematic / silkscreen view ======================
+   The printable legend for the face of the board that carries NO copper:
+   footprints, port numbers, net names, pin 1, polarity. Everything here is
+   a read of /board — this view never edits the circuit or the drawing.
+
+   FLIP mirrors POSITIONS about the board's centre line and nothing else.
+   Glyphs are always drawn upright, because a silkscreen whose numbers come
+   out backwards is a silkscreen you cannot print. That is the whole reason
+   the flip exists: hold the board either way up and read the same marks.  */
+/* ---- PROBE: the assistant points at pads, the bench follows ------------
+   Born 2026-08-27, after an afternoon of "measure between QB pin 3 and pin 1"
+   over chat while Edson counted pads by eye. Claude Code sits beside this
+   window; it calls probe(["QB.pin3","QB.pin1"], "expect ~10k") and the pads
+   light up, labelled A and B, with the instruction on the sheet. */
+let probePads = [];           // pad names to ring, in order
+let probeMsg  = "";           // the instruction to show
+const PROBE_INK = "#D0342C";
+
+function probe(names, msg, opts){
+  probePads = names == null ? [] : (Array.isArray(names) ? names : [names]);
+  probeMsg  = msg || "";
+  if (curView !== "schem") setView("schem");
+  if (probePads.length && !(opts && opts.keepView)) probeFit();
+  draw();
+  return probePads.length + " pad(s) highlighted";
+}
+function probeClear(){ return probe(null, ""); }
+
+/* frame the probed pads with enough around them to stay recognisable */
+function probeFit(){
+  const box = schemBox();
+  const MX  = x => schemFlip ? 2*box.cx - x : x;
+  const pts = [];
+  for (const nm of probePads){
+    const p = B.pads.find(q => q.name === nm);
+    if (p) pts.push([MX(p.x), p.y]);
+  }
+  if (!pts.length) return;
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
+  for (const q of pts){ x0=Math.min(x0,q[0]); x1=Math.max(x1,q[0]);
+                        y0=Math.min(y0,q[1]); y1=Math.max(y1,q[1]); }
+  const pad = 22;                       // mm of context - enough to recognise where you are
+  const bw = (x1-x0) + 2*pad, bh = (y1-y0) + 2*pad;
+  view.s = Math.max(6, Math.min(46, Math.min(cv.clientWidth/bw, cv.clientHeight/bh)));
+  view.x = (x0-pad) - (cv.clientWidth/view.s - bw)/2;
+  view.y = (y1+pad) + (cv.clientHeight/view.s - bh)/2;
+}
+
+let schemFlip = false;        // false = copper side, true = component side
+let schemPan  = null;         // [x,y] while dragging the schematic with a mouse
+
+/* ink on paper, not chrome: this is what a printer would put down */
+const SILK = { sheet:"#F6F2EA", paper:"#E9E2D4", ink:"#191919", mid:"#6A645C",
+               hole:"#FFFFFF", faint:"#B4AC9C" };
+const SILK_MARGIN = 11;       // mm of sheet around the blank, so the labels on
+                              // the outermost parts have somewhere to land
+const SILK_FOOT   = 22;       // deeper at the bottom: the title block lives there,
+                              // below where the outermost net names reach
+
+/* A net id is not a signal. `NET_3` tells you nothing standing at a bench; SDA
+   tells you everything. The board can ship a signals.json saying what each net
+   carries and what a part's pins do — see server.py. It is optional data, never
+   a name typed into this renderer: a silkscreen label that has drifted from the
+   netlist is worse than no label at all. Missing file, missing entry: fall back
+   to the raw net id, which is at least always true. */
+function sigNet(net){
+  if (!net) return null;
+  const m = (B && B.signals && B.signals.nets) || {};
+  return m[net] || net;
+}
+function sigPin(padName){
+  const m = (B && B.signals && B.signals.pins) || {};
+  return m[padName] || null;
+}
+function sigPol(padName){
+  const m = (B && B.signals && B.signals.polarity) || {};
+  return m[padName] || null;
+}
+
+function paintSideTag(){
+  const t = document.getElementById("sideTag");
+  if (t) t.textContent = schemFlip ? "COMPONENT SIDE · mirrored"
+                                   : "COPPER SIDE · as routed";
+}
+
+function schemBox(){
+  const o = outlineNow();
+  let x0=Infinity, x1=-Infinity, y0=Infinity, y1=-Infinity;
+  for (const p of o){
+    x0=Math.min(x0,p[0]); x1=Math.max(x1,p[0]);
+    y0=Math.min(y0,p[1]); y1=Math.max(y1,p[1]);
+  }
+  return {x0,x1,y0,y1, cx:(x0+x1)/2, cy:(y0+y1)/2};
+}
+
+function drawSchem(){
+  const w = cv.width, h = cv.height, s = view.s * DPR;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,w,h);
+  const css = getComputedStyle(document.documentElement);
+  const C = n => css.getPropertyValue(n).trim();
+  ctx.fillStyle = C("--bg") || "#1E1E1E";
+  ctx.fillRect(0,0,w,h);
+  if (!B) return;
+
+  const box = schemBox();
+  const MX  = x => schemFlip ? 2*box.cx - x : x;      // mirror, positions only
+  const S   = (x,y) => W2S(MX(x), y);
+  const mm  = v => v * s;                             // millimetres -> device px
+  const lw  = v => Math.max(1, mm(v));
+  const font = (size, weight) =>
+    (weight||600) + " " + Math.max(6, mm(size)) + "px ui-monospace, Menlo, monospace";
+  const labels = mm(1) >= 7;         // under this, nothing would be readable
+
+  /* ---- the sheet, then the blank on it --------------------------------
+     A drawing sheet rather than a bare outline: RGA and RGB sit 5 mm from the
+     board edge and their net names need more room than that. On a sheet they
+     stay readable, and the board edge is still drawn, so nothing is ambiguous
+     about where the copper actually stops. */
+  const M = SILK_MARGIN, FOOT = SILK_FOOT;
+  const [sxa, sya] = S(box.x0 - M, box.y1 + M);
+  const [sxb, syb] = S(box.x1 + M, box.y0 - FOOT);
+  ctx.fillStyle = SILK.sheet;
+  ctx.fillRect(Math.min(sxa,sxb), Math.min(sya,syb),
+               Math.abs(sxb-sxa), Math.abs(syb-sya));
+
+  const out = outlineNow();
+  ctx.beginPath();
+  out.forEach((p,i)=>{ const [X,Y]=S(p[0],p[1]); i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); });
+  ctx.closePath();
+  ctx.fillStyle = SILK.paper; ctx.fill();
+  ctx.strokeStyle = SILK.ink; ctx.lineWidth = lw(0.3); ctx.stroke();
+
+  /* ---- component courtyards, dashed and quiet ------------------------- */
+  const comps = B.comps || [];
+  for (const c of comps){
+    const [X,Y] = S(c.x, c.y);
+    ctx.save();
+    ctx.translate(X, Y);
+    // world y is up and canvas y is down, so a world CCW turn is CW here;
+    // mirroring reverses the handedness again
+    ctx.rotate((schemFlip ? 1 : -1) * ((c.rot||0) * Math.PI/180));
+    ctx.strokeStyle = SILK.faint; ctx.lineWidth = lw(0.18);
+    ctx.setLineDash([mm(0.7), mm(0.5)]);
+    ctx.strokeRect(-mm(c.w)/2, -mm(c.h)/2, mm(c.w), mm(c.h));
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  /* ---- which way each component's labels lean -------------------------
+     perpendicular to its row of pads, and away from the middle of the
+     board, so the text runs out into clear space instead of into a
+     neighbour's pins. */
+  const pads = B.pads.map(p => ({p, x: MX(p.x), y: p.y}));
+  const groups = {};
+  for (const q of pads){
+    const cn = padComp(q.p) || "?";
+    (groups[cn] = groups[cn] || []).push(q);
+  }
+  const lean = {};
+  for (const cn of Object.keys(groups)){
+    const g  = groups[cn];
+    const xs = g.map(q=>q.x), ys = g.map(q=>q.y);
+    const sx = Math.max.apply(null,xs) - Math.min.apply(null,xs);
+    const sy = Math.max.apply(null,ys) - Math.min.apply(null,ys);
+    const mx = xs.reduce((a,b)=>a+b,0)/xs.length;
+    const my = ys.reduce((a,b)=>a+b,0)/ys.length;
+    lean[cn] = (sx >= sy) ? [0, my >= box.cy ? 1 : -1]    // a row  -> up / down
+                          : [mx >= box.cx ? 1 : -1, 0];   // a column -> out sideways
+  }
+
+  /* ---- pads, drills, pin 1, and the numbers that are the point --------- */
+  for (const q of pads){
+    const p = q.p, [X,Y] = W2S(q.x, q.y);
+    const cn  = padComp(p) || "?";
+    const ring = Math.max(p.pad_w || 0, p.pad_h || 0, (p.d||1) + 0.6);
+
+    ctx.strokeStyle = SILK.ink; ctx.lineWidth = lw(0.2);
+    ctx.fillStyle = SILK.hole;
+    if (p.shape === "rect"){
+      const pw = mm(p.pad_w || ring), ph = mm(p.pad_h || ring);
+      ctx.beginPath(); ctx.rect(X-pw/2, Y-ph/2, pw, ph); ctx.fill(); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.arc(X, Y, mm(ring)/2, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(X, Y, mm(p.d||0.8)/2, 0, 7);
+    ctx.fillStyle = SILK.faint; ctx.fill();
+
+    // pin 1 wears a square shoulder — the one mark every assembler looks for
+    if (/\.pin1$/.test(p.name)){
+      const r = mm(ring)/2 + mm(0.4);
+      ctx.strokeStyle = SILK.ink; ctx.lineWidth = Math.max(1.3, mm(0.3));
+      ctx.strokeRect(X-r, Y-r, 2*r, 2*r);
+    }
+
+    if (!labels) continue;
+    const L  = lean[cn] || [0,-1];
+    const ux = L[0], uy = -L[1];                 // canvas y grows downward
+    const step = mm(ring)/2 + mm(0.6);
+    const ox = X + ux*step, oy = Y + uy*step;
+    ctx.textAlign    = ux ? (ux > 0 ? "left" : "right") : "center";
+    ctx.textBaseline = uy ? (uy > 0 ? "top"  : "bottom") : "middle";
+
+    const fn  = sigPin(p.name);                   // G / D / S and the like
+    const num = p.name.split(".").pop().replace(/^pin/, "");
+    ctx.fillStyle = SILK.ink;
+    if (fn) {
+      // The letter is the thing you actually read when deciding which way round a
+      // part goes in, so it gets the weight and the number rides along smaller.
+      ctx.font = font(1.0, 500);
+      const wNum = ctx.measureText(num + " ").width;
+      ctx.font = font(1.7, 700);
+      const wFn = ctx.measureText(fn).width;
+      const total = wNum + wFn;
+      let x0 = ox;                                // honour the alignment we chose
+      if (ctx.textAlign === "center")     x0 = ox - total / 2;
+      else if (ctx.textAlign === "right") x0 = ox - total;
+      const al = ctx.textAlign;
+      ctx.textAlign = "left";
+      ctx.font = font(1.0, 500);  ctx.fillText(num + " ", x0, oy);
+      ctx.font = font(1.7, 700);  ctx.fillText(fn, x0 + wNum, oy);
+      ctx.textAlign = al;
+    } else {
+      ctx.font = font(1.15, 700);
+      ctx.fillText(num, ox, oy);
+    }
+    const carries = sigNet(p.net);
+    if (carries){                                 // what this port actually carries
+      ctx.font = font(0.85, 500); ctx.fillStyle = SILK.mid;
+      if (ux === 0){
+        // a row of pads on 2.54 leaves no width for a net name, so the names
+        // stand up and read along the pin instead - exactly what a real
+        // silkscreen does when the pitch runs out
+        ctx.save();
+        ctx.translate(ox, oy + uy*mm(1.5));
+        ctx.rotate(-Math.PI/2);
+        ctx.textAlign = uy > 0 ? "right" : "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText(carries, 0, 0);
+        ctx.restore();
+      } else {
+        ctx.fillText(carries, ox + ux*mm(1.7), oy + uy*mm(1.7));
+      }
+    }
+  }
+
+  /* ---- polarity ---------------------------------------------------------
+     Which pads get a big + or -, from signals.json. It is not only the
+     electrolytic: the lasers are LOW-SIDE switched, so a laser's + is on 5V and
+     its - is the MOSFET drain - a switched node, not ground. No "V5 means plus,
+     GND means minus" rule could ever work that out, so the board states it and
+     signals.json writes out the derivation for each so it can be re-checked.
+
+     The sign sits on the FAR side of its pad, along the axis the part's pads lie
+     on. That is the one direction that cannot collide with the sibling pad
+     however the part is turned, and it is where a silkscreen puts it. */
+  const compBy = {};
+  for (const c of comps) compBy[c.name] = c;
+  for (const q of pads){
+    const p = q.p;
+    const sign = sigPol(p.name);
+    if (!sign) continue;
+    const c = compBy[padComp(p) || ""];
+    let dx = 1, dy = 0;
+    if (c){
+      const gx = q.x - MX(c.x), gy = q.y - c.y;
+      if (Math.abs(gx) >= Math.abs(gy)) { dx = Math.sign(gx) || 1; dy = 0; }
+      else                              { dx = 0; dy = Math.sign(gy) || 1; }
+    }
+    const [X,Y] = W2S(q.x, q.y);
+    const ring = Math.max(p.pad_w || 0, p.pad_h || 0, (p.d||1) + 0.6);
+    const off  = mm(ring)/2 + mm(0.8);   // hug the pad: drift and it starts to
+                                         // look like it belongs to the neighbour
+    ctx.font = font(2.4, 700); ctx.fillStyle = SILK.ink;
+    ctx.textAlign    = dx ? (dx > 0 ? "left" : "right") : "center";
+    ctx.textBaseline = dy ? (dy > 0 ? "bottom" : "top") : "middle";
+    ctx.fillText(sign, X + dx*off, Y - dy*off);   // world y is up, canvas y down
+  }
+
+  /* ---- mounting holes -------------------------------------------------- */
+  for (const hh of (holesOwnedHere() ? boardHoles : (B.holes || []))){
+    const [X,Y] = S(hh.x, hh.y), r = mm(hh.d)/2;
+    ctx.beginPath(); ctx.arc(X, Y, r, 0, 7);
+    ctx.fillStyle = SILK.hole; ctx.fill();
+    ctx.strokeStyle = SILK.ink; ctx.lineWidth = lw(0.2); ctx.stroke();
+    ctx.beginPath();                              // crosshair: a hole, not a pad
+    ctx.moveTo(X-r-mm(0.8), Y); ctx.lineTo(X+r+mm(0.8), Y);
+    ctx.moveTo(X, Y-r-mm(0.8)); ctx.lineTo(X, Y+r+mm(0.8));
+    ctx.strokeStyle = SILK.faint; ctx.lineWidth = lw(0.15); ctx.stroke();
+    if (labels){
+      // outward, away from the middle of the board. Straight down put H1's
+      // diameter on top of LA's pads - the mounts sit in the corners, and the
+      // corner is the one direction with nothing else in it.
+      const ox = hh.x - box.cx, oy = hh.y - box.cy;
+      const hx = Math.abs(ox) >= Math.abs(oy) ? (Math.sign(ox) || 1) : 0;
+      const hy = hx ? 0 : (Math.sign(oy) || -1);
+      const d  = r + mm(0.9);
+      ctx.font = font(0.8, 500); ctx.fillStyle = SILK.mid;
+      ctx.textAlign    = hx ? (hx > 0 ? "left" : "right") : "center";
+      ctx.textBaseline = hy ? (hy > 0 ? "bottom" : "top") : "middle";
+      ctx.fillText("\u00D8" + hh.d, X + (schemFlip ? -hx : hx)*d, Y - hy*d);
+    }
+  }
+
+  /* ---- reference designators last, haloed so they survive the pads ----- */
+  if (labels) for (const c of comps){
+    const L = lean[c.name] || [0,-1];
+    // A two-pin part straddles its own centre, so the gap between its pads is
+    // free and the name goes there. A denser part has no such gap: its name
+    // steps inboard, opposite its labels. Stepping a two-pin part inboard is
+    // what used to drop RGA's name on QA's pin 3.
+    const np  = (groups[c.name] || []).length;
+    const off = np <= 2 ? 0 : (L[0] ? c.w/2 : c.h/2) + 1.8;
+    const [X,Y] = S(c.x - L[0]*off, c.y - L[1]*off);
+    ctx.font = font(1.5, 700);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.lineWidth = Math.max(2, mm(0.55));
+    ctx.strokeStyle = SILK.paper; ctx.strokeText(c.name, X, Y);
+    ctx.fillStyle = SILK.ink;     ctx.fillText(c.name, X, Y);
+  }
+
+  /* ---- the instruction: SCREEN space, so panning can never lose it ------ */
+  if (probeMsg){
+    const fs = Math.max(13, 15*DPR), padY = Math.max(10, 11*DPR);
+    ctx.font = "700 " + fs + "px Inter, -apple-system, system-ui, sans-serif";
+    const tw = ctx.measureText(probeMsg).width;
+    const bh = fs + padY*2;
+    ctx.fillStyle = PROBE_INK;
+    ctx.fillRect(0, 0, w, bh);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(probeMsg, Math.max(padY, (w - tw)/2), bh/2);
+  }
+
+  /* ---- probe rings, over everything, impossible to miss ---------------- */
+  if (probePads.length){
+    probePads.forEach((nm, i) => {
+      const p = B.pads.find(q => q.name === nm);
+      if (!p) return;
+      const [X, Y] = S(p.x, p.y);
+      const ring = Math.max(p.pad_w||0, p.pad_h||0, (p.d||1)+0.6);
+      const r = mm(ring)/2 + mm(1.1);
+      ctx.strokeStyle = PROBE_INK; ctx.lineWidth = Math.max(2.5, mm(0.55));
+      ctx.beginPath(); ctx.arc(X, Y, r, 0, 7); ctx.stroke();
+      ctx.beginPath(); ctx.arc(X, Y, r + mm(0.9), 0, 7);
+      ctx.lineWidth = Math.max(1, mm(0.2)); ctx.stroke();
+      // A, B, C... so "measure between A and B" needs no counting of pads
+      // tag sits up and out on a leader, clear of the pads it is pointing at
+      const tag = String.fromCharCode(65 + i);
+      const tR = Math.max(11, mm(1.5));
+      const tx = X + r + mm(3.2), ty = Y - r - mm(3.2);
+      ctx.beginPath(); ctx.moveTo(X + r*0.72, Y - r*0.72); ctx.lineTo(tx, ty);
+      ctx.lineWidth = Math.max(1.5, mm(0.25)); ctx.stroke();
+      ctx.beginPath(); ctx.arc(tx, ty, tR, 0, 7);
+      ctx.fillStyle = PROBE_INK; ctx.fill();
+      ctx.font = "700 " + Math.max(13, tR*1.35) + "px Inter, -apple-system, sans-serif";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(tag, tx, ty);
+      ctx.font = "700 " + Math.max(11, tR*0.95) + "px ui-monospace, Menlo, monospace";
+      ctx.fillStyle = PROBE_INK;
+      ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText(nm, tx + tR + 5*DPR, ty);
+    });
+  }
+
+  /* ---- title block, on the sheet, in ink: part of the artwork ---------- */
+  if (labels){
+    const [kx, ky] = W2S(box.x0 - M + 2, box.y0 - 12);   // never mirrored
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.font = font(1.45, 700); ctx.fillStyle = SILK.ink;
+    ctx.fillText(schemFlip ? "COMPONENT SIDE \u2014 mirrored for print"
+                           : "COPPER SIDE \u2014 as routed", kx, ky);
+    ctx.font = font(0.95, 500); ctx.fillStyle = SILK.mid;
+    ctx.fillText("\u25A1 pin 1     \u00D8 mount hole     " +
+                 B.pads.length + " ports \u00B7 " +
+                 Object.keys(B.nets || {}).length + " nets     " +
+                 (box.x1-box.x0).toFixed(1) + " \u00D7 " +
+                 (box.y1-box.y0).toFixed(1) + " mm",
+                 kx, ky + mm(2.2));
+    const legend = (B.signals && B.signals.pins_legend) || "";
+    if (legend){
+      ctx.font = font(1.1, 700); ctx.fillStyle = SILK.ink;
+      ctx.fillText(legend, kx, ky + mm(4.6));
+    }
+  }
+}
+
+/* Four views, and the sidebar belongs to the view: board (shape the object),
+   draw (route the circuit), schem (the printable legend), 3d (look at it).
+   Copper and Ghost are overlays that ride on top, not views of their own. */
 let curView = "draw";
 function setView(m){
   curView = m;
   boardMode = m === "board";
   closePops();
   const v3 = m === "3d";
+  const vs = m === "schem";
   document.getElementById("cv3").style.display = v3 ? "block" : "none";
   document.getElementById("legend").classList.toggle("show", v3);
   cv.style.display = v3 ? "none" : "block";
-  document.getElementById("islDraw").classList.toggle("dim3d", v3 || boardMode);
-  for (const [id, key] of [["viewBoard","board"],["viewDraw","draw"],["view3d","3d"]])
+  document.getElementById("islDraw").classList.toggle("dim3d", v3 || boardMode || vs);
+  // the flip button belongs to this view alone, and each visit starts copper-side
+  document.getElementById("flipWrap").classList.toggle("show", vs);
+  if (!vs) schemFlip = false;
+  paintSideTag();
+  for (const [id, key] of [["viewBoard","board"],["viewDraw","draw"],
+                           ["viewSchem","schem"],["view3d","3d"]])
     document.getElementById(id).classList.toggle("on", m === key);
   // the panel follows the view, and picking up a view leaves the burn session
   burnOpen = false;
@@ -1721,7 +2152,13 @@ function setView(m){
 }
 document.getElementById("viewBoard").onclick = ()=>setView("board");
 document.getElementById("viewDraw").onclick  = ()=>setView("draw");
+document.getElementById("viewSchem").onclick = ()=>setView("schem");
 document.getElementById("view3d").onclick    = ()=>setView("3d");
+document.getElementById("flipB").onclick = ()=>{
+  schemFlip = !schemFlip;
+  paintSideTag();
+  draw();
+};
 document.getElementById("copperB").onclick = e=>{
   copperView = !copperView;
   e.currentTarget.classList.toggle("on", copperView);
@@ -2134,10 +2571,16 @@ function fitView(){
   const xs = ol.map(p=>p[0]), ys = ol.map(p=>p[1]);
   const x0 = Math.min(...xs), x1 = Math.max(...xs);
   const y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const bw = Math.max(x1-x0, 1), bh = Math.max(y1-y0, 1);
-  view.s = Math.min(cv.clientWidth/(bw*1.15), cv.clientHeight/(bh*1.15));
-  view.x = x0 - (cv.clientWidth/view.s - bw)/2;
-  view.y = y1 + (cv.clientHeight/view.s - bh)/2;
+  // the schematic view draws a margin of sheet around the blank, and the
+  // title block below it, so "fit" has to take in more than the outline
+  const pad  = curView === "schem" ? SILK_MARGIN : 0;
+  const foot = curView === "schem" ? SILK_FOOT   : 0;
+  const bw = Math.max(x1-x0, 1) + 2*pad;
+  const bh = Math.max(y1-y0, 1) + pad + foot;
+  const X0 = x0 - pad, Y1 = y1 + pad;
+  view.s = Math.min(cv.clientWidth/(bw*1.08), cv.clientHeight/(bh*1.08));
+  view.x = X0 - (cv.clientWidth/view.s - bw)/2;
+  view.y = Y1 + (cv.clientHeight/view.s - bh)/2;
   marker = null;
 }
 document.getElementById("fitB").onclick = ()=>{ fitView(); draw(); };
@@ -2178,6 +2621,7 @@ smEl.addEventListener("pointermove", e=>{
 /* ============================ boot ===================================== */
 async function boot(){
   B = await (await fetch("/board")).json();
+  if (B.project) document.title = "Trilha · " + B.project;
   const t = await (await fetch("/traces")).json();
   strokes = t.strokes || [];
   moves = t.moves || {};
