@@ -55,7 +55,7 @@ A transcript filed away from its source drifts from it. Write the output into th
 
 ## Making circuit boards
 
-### hand-route → `studio/hand-route/`
+### trilha → `studio/trilha/`
 *(named PCB-Maker until 2026-08-25)*
 **Use when:** a sculpture needs a board and the fab house's shipping date does not fit. tscircuit source → hand-routed artwork on the iPad → one LightBurn file for the ComMarker B6 MOPA, so a board can be made in the studio on a Tuesday — and the traces are a drawing. The board's routing saves as a `.handroute` file next to its circuit.json.
 
@@ -66,6 +66,11 @@ in `BACKLOG.md`; history in `PLAN.md`. The Gerber route (`gerber2lbrn.py`, pcb2g
 exists for boards from Flux/KiCad.
 
 ---
+
+## iPad
+
+### ipad → `studio/ipad/`
+**Use when:** you pick up the iPad to draw or route a board and want it to just work. One app on the Mac (`~/Applications/iPadTools.app`, LaunchAgent `art.edsonpavoni.ipad`) runs every iPad tool from login, restarts what dies, and serves a hub page of tiles: **http://edsons-macbook-pro.local:8888** (rascunho 8880, hand-route 8481). `tools.json` is the registry; adding an iPad tool is one entry there. It is an app bundle because macOS gates Dropbox per app and a plain launchd `zsh`/`python3` job is never allowed in. *(Built 2026-10-20; details, checks, undo in its README.)*
 
 ## Images
 
@@ -104,7 +109,7 @@ exists for boards from Flux/KiCad.
 ### B6 MOPA → `studio/B6-Mopa/`
 **Use when:** anything goes on the ComMarker B6 MOPA fiber laser — cutting sheet metal, engraving lids, the rotary.
 
-🔴 **`studio/B6-Mopa/` is the source of truth for this machine.** `MATERIAL-SETTINGS.md` holds every measured recipe by material and thickness — copper, brass, aluminium and stainless 304 — with the breakthrough pass counts and what was tried and failed. `R5-ROTARY.md` covers the rotary attachment. PCB work stays with its own toolchain in `hand-route/`.
+🔴 **`studio/B6-Mopa/` is the source of truth for this machine.** `MATERIAL-SETTINGS.md` holds every measured recipe by material and thickness — copper, brass, aluminium and stainless 304 — with the breakthrough pass counts and what was tried and failed. `R5-ROTARY.md` covers the rotary attachment. PCB work stays with its own toolchain in `trilha/`.
 
 **Rules that keep it honest:** dial in on scrap, set production ~20 % above breakthrough, record the number, mark it LOCKED. A recipe without a thickness is not a recipe. *(Consolidated here 2026-09-21 from `projects/B6 Mopa Laser/`.)*
 
@@ -154,11 +159,12 @@ One folder per tool, each with its own README covering: what it is for, how to r
 | Photo Picker (cross-project, `studio/` tool) | `studio/photo-picker/` | http://127.0.0.1:8801 | 8801 grid + API (`serve.sh`) |
 | 2026 OKRs glance (`system/` tool) | `system/plans/tools/` | http://localhost:8810 | 8810 page + `okrs.json` (`serve.sh`) |
 | Bambu P2S printing (`studio/equipment/` tool) | `studio/equipment/tools/p2s/` | none (CLI `p2s.py` + `/print`) | none · printer 192.168.204.181 (8883 MQTT, 990 FTPS, 322 camera) |
-| rascunho, iPad graphite → Claude Code (`studio/` tool) | `studio/rascunho/` | http://localhost:8880 | 8880 page + API (`serve.sh` → `server.py`; iPad: `http://edsons-macbook-pro.local:8880`) |
+| rascunho, iPad graphite → Claude Code (`studio/` tool) | `studio/rascunho/` | http://localhost:8880 | 8880 page + API (always on via `studio/ipad`; iPad: `http://edsons-macbook-pro.local:8880`) |
+| iPad tools hub + runner (`studio/` tool) | `studio/ipad/` | http://localhost:8888 | 8888 hub · runs rascunho 8880 and trilha 8481 from login (`install.sh`, LaunchAgent) |
 | Orbital Temple, 12 artists deck v2 (Oct 16) | `artworks/orbital-temple/orbital-temple-chapel/deck/v2-2026-10-16/` | http://localhost:8816 | 8816 6-page deck (`index.html`) → PDF `Orbital-Temple-12-Artists-v2-2026-10-16.pdf` (`serve.sh`) |
 | Failing Spectacularly study (report + notes) | `artworks/_studies/failing-spectacularly/tools/` | http://localhost:8840/tools/ | 8840 hub, pandoc-rendered pages (`serve.sh`) |
 | Brazil Vegan Core deck (Vegan Trouble NY dinner) | `commercial/vegan-trouble/ny-event-oct-2026/presentation/` | http://127.0.0.1:8812 | 8812 deck · `/?presenter` notes + timer (`serve.sh`) |
 | Vegan Trouble website draft (home + Brazil × US report) | `commercial/vegan-trouble/website/` | http://127.0.0.1:8813 | 8813 static (`serve.sh`) |
 | Sunrise/Sunset (ribbon simulator v1 + v2 no-crossing, progress pages) | `artworks/sunrise-sunset/tools/` | http://localhost:8822/tools/ | 8822 static, rooted at `artworks/sunrise-sunset/` (`serve.sh`) |
 
-**Ports in use (pick a free one for a new project):** 8765 av-studio · 8777 / 8788 First Witness · 8791 Orbital Temple launch · 8795 Instrument · 8480 Felix tools · 8478 Felix Flasher · 8801 Photo Picker · 8802 grantHunter · 8812 Brazil Vegan Core deck · 8813 Vegan Trouble website · 8840 Failing Spectacularly study · 8850 Grants files (`proposals/grants/tools/serve.sh`).
+**Ports in use (pick a free one for a new project):** 8765 av-studio · 8777 / 8788 First Witness · 8791 Orbital Temple launch · 8795 Instrument · 8480 Felix tools · 8478 Felix Flasher · 8801 Photo Picker · 8802 grantHunter · 8812 Brazil Vegan Core deck · 8813 Vegan Trouble website · 8840 Failing Spectacularly study · 8850 Grants files (`proposals/grants/tools/serve.sh`) · 8880 rascunho · 8481 trilha · 8888 iPad hub (`studio/ipad`).

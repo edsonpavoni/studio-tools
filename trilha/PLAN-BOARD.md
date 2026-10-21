@@ -15,7 +15,7 @@ tscircuit. That is backwards for an art tool: the outline is the most visible,
 most sculptural property of the object. V4 carries "the cave" in its copper but
 sits inside a 60×40 box.
 
-**End state:** in hand-route, a Board tool lets the Pencil draw the outline the
+**End state:** in trilha, a Board tool lets the Pencil draw the outline the
 way it draws traces — or drop exact primitives when the sculpture needs a
 measured fit — and place mount holes from a standards palette. Measurements are
 visible and typable. The authored board saves into `board.handroute`, flows into

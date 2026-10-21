@@ -169,7 +169,7 @@ def main():
                          "survives this much wider than drawn, so a large value fuses "
                          "nearby traces. Default 0.05.")
     ap.add_argument("--manual-traces", default=None, metavar="PATH",
-                    help="use hand-drawn traces from the hand-route UI instead of the "
+                    help="use hand-drawn traces from the trilha UI instead of the "
                          "autoroute. 'auto' looks for board.handroute (falling back to "
                          "a legacy traces.json) next to circuit.json. Component moves "
                          "saved in the file are applied to every layer. The strokes are "
@@ -387,7 +387,7 @@ def main():
                       % args.min_trace)
 
     layers = {l.name: l for l in pcb_layers(qpulse=args.qpulse, interval=args.interval)}
-    doc = LbrnDoc(notes="hand-route from %s" % os.path.basename(args.circuit_json))
+    doc = LbrnDoc(notes="trilha from %s" % os.path.basename(args.circuit_json))
     for l in layers.values():
         doc.add_layer(l)
 

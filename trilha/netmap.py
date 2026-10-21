@@ -35,7 +35,7 @@ class Find:
 
 
 def apply_moves(cj, moves):
-    """Translate components by the offsets the hand-route UI saved: {name: [dx, dy]}
+    """Translate components by the offsets the trilha UI saved: {name: [dx, dy]}
     in mm. Moves the pcb_component centre and every pad/port that belongs to it.
     Mutates cj in place, returns how many elements moved. UI, converter and
     verifier all apply the SAME offsets, so there is exactly one geometry.
@@ -77,10 +77,10 @@ def apply_moves(cj, moves):
 
 def apply_board(cj, board):
     """Replace the board outline and the free (non-component) holes with the ones
-    drawn in the hand-route UI: {"outline": [[x,y]...], "holes": [{x,y,d}]}.
+    drawn in the trilha UI: {"outline": [[x,y]...], "holes": [{x,y,d}]}.
 
     The authored board WINS over circuit.json. tscircuit is the source of the
-    circuit — components, nets, pads; hand-route is the source of the board —
+    circuit — components, nets, pads; trilha is the source of the board —
     outline and free holes. Component holes (pcb_plated_hole) are never touched:
     those belong to footprints and moving them would break the parts.
 
@@ -129,7 +129,7 @@ def extract(circuit_json_path, moves=None, board=None):
 
     pads: [{x, y, d, name, net}]          d = drill or pad size, mm
     nets: {net_name: [pad_index, ...]}     only pads that belong to a named net
-    moves: optional {component: [dx, dy]} from the hand-route UI, applied first.
+    moves: optional {component: [dx, dy]} from the trilha UI, applied first.
     board: optional {"outline": [...], "holes": [...]} drawn in the UI; overrides
            circuit.json's board outline and free holes.
     """

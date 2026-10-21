@@ -40,12 +40,15 @@ currently mix with source. Old drawings (`traces-*.json` from before the
 
 ## What Claude does when asked
 
-**"Open hand-route on \<board\>"**
+**"Open trilha on \<board\>"** *(since 2026-10-20 the server is always on,
+port **8481**, kept up by `studio/ipad`; it serves whatever `trilha/current-board`
+points at and re-reads that pointer on every request)*
 1. Find the board's `circuit.json`; run `tsci build` first if it is stale.
-2. Kill any hand-route server already running, so there is never a second one
-   writing to the same drawing behind your back.
-3. Start one server on **port 8480** and hand over both URLs, Mac and iPad.
-4. Say which board is open and how many strokes it already has.
+2. `python3 studio/trilha/server.py <that circuit.json>`: it writes the pointer
+   and tells the running server (it prints the board, the stroke count and both
+   URLs). Never start a second server on another port for the same drawing.
+3. Say which board is open and how many strokes it already has. The iPad shows it
+   on its next load (the **Hand Route** icon, or http://edsons-macbook-pro.local:8481).
 
 **"Start a new board in \<project\>"**
 1. Ask which it is: a **copy** of an existing board (the usual case, V5 → V6), or
@@ -90,7 +93,7 @@ thinking is not lost, not because any of it is agreed.
 - **Duplicate** a board (V5 → V6). Matches how Edson already works by hand.
 - **Blank board, no circuit**: an outline and holes, no components, no copper.
   The converter only *warns* about a circuit with no traces, it does not refuse,
-  so this nearly works today. It would make hand-route a way to cut FR4 objects
+  so this nearly works today. It would make trilha a way to cut FR4 objects
   (brackets, spacers, panels) and not only circuits.
 - **New from tscircuit** (`tsci init` + `tsci build` run by the server). The
   complete answer, but it drags node and the tsci toolchain into a server that
