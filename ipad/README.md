@@ -16,6 +16,10 @@ Each one: open the address in Safari, Share › **Add to Home Screen** › Add. 
 
 **The Mac must be awake, on the same Wi-Fi.** On power with the lid open it never sleeps (pmset `sleep 0` on AC). Lid closed: Amphetamine (installed) › Quick Settings › untick *Allow closed-display sleep*, and keep a session running while on AC. On battery the Mac sleeps after a minute and the tools go with it.
 
+## Icons and look
+
+Black page, bone-white glyphs, serif names: Edson's call, 2026-10-20 ("black, mysterious"). **Every studio tool uses one icon set:** *Alchemy* by chinnan, The Noun Project. Rascunho = *strategy* #556645, Trilha = *understand* #556651, the hub = *delight* #556854 (home-screen icon and favicon). Each tool's entry in `tools.json` names its glyph (`"icon": "icons/<name>.png"`); the hub inverts it to white. `make_icons.py` makes the three `icon-180.png` from the same files. Files, the list and the CC BY attribution: `icons/README.md`. A new tool: pick a glyph from the set, drop the 512 px PNG in `icons/`, add the row, add `icon` to its entry, rerun `make_icons.py`.
+
 ## How it runs
 
 ```
@@ -29,6 +33,8 @@ launchd  art.edsonpavoni.ipad  (RunAtLoad, KeepAlive)
 ```
 
 **Why an app bundle and not a plain LaunchAgent.** macOS gates `~/Library/CloudStorage` (Dropbox) with a per-app permission, *Files and Folders › Dropbox* (`kTCCServiceFileProviderDomain`), not with Full Disk Access. A launchd job that is just `/bin/zsh` or `python3` can never hold it (the `/bin/zsh` Full Disk Access attempt of 2026-10-20 never even registered in the privacy database, and `ls` inside Dropbox from such a job dies with `operation not permitted`). An app bundle with its own identifier gets it, and the grant covers every process it starts, the way Terminal's grant covers what you run in it. The privacy database shows `art.edsonpavoni.ipad` allowed at 22:00:04, the second the runner first read `tools.json`. If macOS ever asks *"iPadTools would like to access files in Dropbox"*, answer Allow. Same pattern as `claude-shot` and `voice` (OracleEars.app).
+
+**The second rule: evicted files.** Dropbox turns synced files into *online-only* placeholders whenever it likes (it did so to `index.html` and both `server.py` files two minutes after they were written). Reading one makes the kernel fetch it, and launchd-started processes have that materialisation switched **off** by default: `open()` fails with `EDEADLK` ("Resource deadlock avoided") or the read comes back empty, which is how both tools died two seconds after start on 2026-10-20 22:20 (Python ran an empty `server.py` and exited 0). `supervisor.py` switches it on for itself and everything it starts (`setiopolicy_np(IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES, IOPOL_SCOPE_PROCESS, ON)`, logged as `dataless-file materialisation: on`). Terminal processes have it on already, which is why nothing showed up when testing by hand.
 
 The Swift stub never changes when `supervisor.py` changes, so updates keep the grant. `install.sh` only recompiles the stub when `iPadTools.swift` changed, and says so, because that invalidates the grant (re-allow when asked, or re-add the app under System Settings › Privacy & Security › Files and Folders / Full Disk Access).
 

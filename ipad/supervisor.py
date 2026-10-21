@@ -32,6 +32,26 @@ import time
 import urllib.parse
 
 HERE = pathlib.Path(__file__).resolve().parent
+
+
+def allow_dataless_files():
+    """Dropbox (a File Provider) evicts synced files to "online-only" whenever it likes;
+    reading one then needs the kernel to fetch it. Processes started by launchd have
+    that materialisation switched OFF by default (open() fails with EDEADLK, "Resource
+    deadlock avoided", or reads come back empty), while Terminal-started ones have it
+    ON. Switch it on for this process; children inherit it. Found 2026-10-20 22:20 when
+    both tools died two seconds after start on freshly edited (evicted) server.py files."""
+    import ctypes
+    try:
+        libc = ctypes.CDLL(None, use_errno=True)
+        # IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES=3, IOPOL_SCOPE_PROCESS=0, ..._ON=2 (sys/resource.h)
+        r = libc.setiopolicy_np(3, 0, 2)
+        return "on" if r == 0 else "failed errno %d" % ctypes.get_errno()
+    except Exception as e:
+        return "failed: %s" % e
+
+
+DATALESS = allow_dataless_files()
 DEFAULT_TOOLS = pathlib.Path(
     "/Users/edsonpavoni/Library/CloudStorage/Dropbox/0000 AI/studio/ipad/tools.json")
 
@@ -356,6 +376,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 def main():
     log("iPad tools runner; tools.json = %s" % TOOLS_PATH)
+    log("dataless-file materialisation: %s" % DATALESS)
     SUP.check_access()
     SUP.load_config()
     if SUP.access != "ok":

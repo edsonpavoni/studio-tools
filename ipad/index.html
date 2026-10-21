@@ -6,54 +6,66 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Tools">
+<meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
 <title>Tools</title>
 <style>
-  :root{color-scheme:light dark;
-    --bg:#fcfbf8;--card:#ffffff;--ink:#1d1c1a;--ink2:#6f6c66;--rule:#e6e2da;
-    --up:#2f9e63;--down:#d0564a;--wait:#d9a441;--ext:#5b8bd6;--accent:#0E6B45}
-  @media (prefers-color-scheme:dark){:root{
-    --bg:#1E1E1E;--card:#272727;--ink:#f1efe9;--ink2:#a39f96;--rule:#3a3a3a}}
+  :root{color-scheme:dark;
+    --bg:#000;--card:#070707;--card2:#0d0d0d;--rule:#1a1a1a;--rule2:#2a2a2a;
+    --bone:#e8e4dc;--ash:#8a867e;--dust:#4a4742;
+    --up:#9fe3b4;--down:#e07a6a;--wait:#e3c27a;--ext:#8fb6e8}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{min-height:100%;background:var(--bg);color:var(--ink);
-    font:17px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-    -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-  body{padding:max(28px,env(safe-area-inset-top)) 24px 40px}
-  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
-    max-width:980px;margin:0 auto 22px}
-  h1{font-size:28px;font-weight:600;letter-spacing:-.01em}
-  #mac{color:var(--ink2);font-size:14px;white-space:nowrap}
-  #banner{display:none;max-width:980px;margin:0 auto 20px;padding:14px 16px;border-radius:14px;
-    background:#fff3cd;color:#5a4300;font-size:15px}
-  @media (prefers-color-scheme:dark){#banner{background:#3a3010;color:#f1d98a}}
+  html,body{min-height:100%;background:var(--bg);color:var(--bone);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+  body{padding:max(36px,env(safe-area-inset-top)) 28px 48px;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(232,228,220,.07),transparent 60%)}
+  header,main,footer,#banner{position:relative;z-index:1;max-width:1040px;margin-left:auto;margin-right:auto}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:40px}
+  h1{font:400 13px/1 ui-serif,"New York",Georgia,serif;letter-spacing:.42em;text-transform:uppercase;color:var(--ash);
+    padding-left:.42em}
+  #mac{font:12px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--dust)}
+  #banner{display:none;margin-bottom:28px;padding:14px 18px;border:1px solid #4a3a1a;background:#140f05;
+    color:#e3c27a;font-size:14px;line-height:1.5}
   #banner.show{display:block}
-  #banner code{font:13px ui-monospace,Menlo,monospace}
-  main{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;
-    max-width:980px;margin:0 auto}
-  a.tile{display:block;position:relative;background:var(--card);border:1px solid var(--rule);
-    border-radius:22px;padding:22px 22px 20px;color:inherit;text-decoration:none;
-    min-height:190px;transition:transform .08s}
-  a.tile:active{transform:scale(.985)}
-  a.tile.off{opacity:.55}
-  .emoji{font-size:40px;line-height:1;margin-bottom:14px}
-  .name{font-size:22px;font-weight:600;margin-bottom:6px}
-  .what{color:var(--ink2);font-size:15px;line-height:1.4}
-  .foot{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:var(--ink2)}
-  .dot{width:10px;height:10px;border-radius:50%;background:var(--down);flex:none}
-  .dot.up{background:var(--up)}.dot.starting{background:var(--wait)}.dot.external{background:var(--ext)}
-  .url{font:12px ui-monospace,Menlo,monospace;color:var(--ink2);margin-left:auto}
-  button.restart{position:absolute;top:16px;right:16px;border:1px solid var(--rule);background:transparent;
-    color:var(--ink2);border-radius:999px;padding:6px 12px;font-size:13px}
-  footer{max-width:980px;margin:34px auto 0;color:var(--ink2);font-size:13px;line-height:1.6}
-  footer a{color:var(--ink2)}
+  #banner code{font:12px ui-monospace,Menlo,monospace}
+  main{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+  a.tile{display:flex;flex-direction:column;position:relative;background:var(--card);border:1px solid var(--rule);
+    padding:30px 28px 24px;color:inherit;text-decoration:none;min-height:250px;
+    transition:border-color .25s,background .25s,transform .12s;opacity:0;animation:rise .7s ease forwards}
+  a.tile:nth-child(2){animation-delay:.08s}a.tile:nth-child(3){animation-delay:.16s}a.tile:nth-child(4){animation-delay:.24s}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  a.tile:active{transform:scale(.985);background:var(--card2)}
+  a.tile.off .glyph{opacity:.3}
+  a.tile.off .name{color:var(--ash)}
+  .glyph{width:64px;height:64px;margin-bottom:26px;display:flex;align-items:center;justify-content:center}
+  .glyph img{width:64px;height:64px;object-fit:contain;filter:invert(1) brightness(.92);opacity:.95}
+  .glyph span{font-size:44px;line-height:1;filter:grayscale(1) brightness(1.4)}
+  .name{font:400 26px/1.15 ui-serif,"New York",Georgia,serif;letter-spacing:.02em;margin-bottom:10px;color:var(--bone)}
+  .what{color:var(--ash);font-size:14px;line-height:1.5;flex:1}
+  .foot{display:flex;align-items:center;gap:9px;margin-top:22px;font-size:12px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--dust)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--down);flex:none;box-shadow:0 0 10px var(--down)}
+  .dot.up{background:var(--up);box-shadow:0 0 10px var(--up)}
+  .dot.starting{background:var(--wait);box-shadow:0 0 10px var(--wait)}
+  .dot.external{background:var(--ext);box-shadow:0 0 10px var(--ext)}
+  .url{font:11px ui-monospace,Menlo,monospace;letter-spacing:.04em;color:var(--dust);margin-left:auto;text-transform:none}
+  button.restart{position:absolute;top:22px;right:22px;border:1px solid var(--rule2);background:transparent;
+    color:var(--dust);padding:5px 11px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+  footer{margin-top:48px;color:var(--dust);font-size:12px;line-height:1.7;letter-spacing:.02em;max-width:720px}
+  footer a{color:var(--ash);text-decoration:none;border-bottom:1px solid var(--rule2)}
+  footer .credit{display:block;margin-top:10px;font-size:11px}
 </style>
 </head>
 <body>
 <header><h1>Tools</h1><div id="mac">…</div></header>
 <div id="banner"></div>
 <main id="tiles"></main>
-<footer>Tap a tile to open the tool. Share › Add to Home Screen on a tool gives it its own icon. Green = running on the Mac, yellow = starting, blue = started by hand from a terminal, red = down (tap <em>restart</em>). <a href="/status">status</a></footer>
+<footer>Tap a tile to open the tool. Share › Add to Home Screen on a tool gives it its own icon. Green: running on the Mac. Yellow: starting. Blue: started by hand from a terminal. Red: down, tap <em>restart</em>. <a href="/status">status</a>
+<span class="credit">Glyphs: <em>Alchemy</em> by chinnan, The Noun Project (CC BY 3.0).</span></footer>
 <script>
 const host = location.hostname;
 const tiles = document.getElementById('tiles');
@@ -73,13 +85,14 @@ function render(s){
   } else if (s.config_error) {
     banner.className = 'show'; banner.textContent = 'tools.json: ' + s.config_error;
   } else banner.className = '';
-  const ids = s.tools.map(t => t.id).join(',');
+  const ids = s.tools.map(t => t.id + ':' + (t.icon || '')).join(',');
   if (known !== ids) {
     tiles.innerHTML = '';
     for (const t of s.tools) {
       const a = document.createElement('a');
       a.className = 'tile'; a.id = 'tile-' + t.id; a.href = urlFor(t);
-      a.innerHTML = `<div class="emoji">${t.emoji || '🧰'}</div><div class="name">${t.name}</div>
+      const glyph = t.icon ? `<img src="${t.icon}" alt="">` : `<span>${t.emoji || '◇'}</span>`;
+      a.innerHTML = `<div class="glyph">${glyph}</div><div class="name">${t.name}</div>
         <div class="what">${t.what || ''}</div>
         <div class="foot"><span class="dot"></span><span class="state"></span><span class="url">:${t.port}</span></div>
         <button class="restart" type="button">restart</button>`;
@@ -98,7 +111,7 @@ function render(s){
     a.href = urlFor(t);
     a.classList.toggle('off', !t.up);
     a.querySelector('.dot').className = 'dot ' + t.state;
-    let txt = {up: 'running', starting: 'starting…', external: 'running (started by hand)', down: 'down'}[t.state] || t.state;
+    let txt = {up: 'running', starting: 'starting…', external: 'running, started by hand', down: 'down'}[t.state] || t.state;
     if (t.state === 'down' && t.error) txt += ' · ' + t.error;
     else if (t.state === 'down' && t.last_exit) txt += ` · exited ${t.last_exit.code}, retrying`;
     a.querySelector('.state').textContent = txt;

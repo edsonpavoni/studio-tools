@@ -1,71 +1,118 @@
 #!/usr/bin/env python3
-"""make_icons.py — the two home-screen icons, 180×180 PNG, pure standard library.
-    python3 make_icons.py            writes icon-180.png here and in ../trilha/
-Hub: a 2×2 of rounded tiles on the dark chrome. Hand Route: a copper trace with two
-pads on FR4. Re-run after changing the numbers below; the iPad picks the icon up the
-next time the page is added to the Home Screen."""
-import math, os, struct, zlib
+"""make_icons.py — the home-screen icons, 180×180 PNG, pure standard library.
+    python3 make_icons.py
+Takes the Noun Project glyphs in icons/ (black on transparent, 512 px; see icons/README.md),
+inverts them to bone white, scales them to fit a 108 px square, and sets them on black:
+  icons/delight.png    → ./icon-180.png            (the hub)
+  icons/strategy.png   → ../rascunho/icon-180.png
+  icons/understand.png → ../trilha/icon-180.png
+Re-run after changing a glyph; the iPad picks the icon up when the page is re-added to
+the Home Screen."""
+import os, struct, zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-N = 180
+N, GLYPH = 180, 108
+BG, INK = (0, 0, 0), (232, 228, 220)
+JOBS = [("delight.png", HERE), ("strategy.png", os.path.join(HERE, "..", "rascunho")),
+        ("understand.png", os.path.join(HERE, "..", "trilha"))]
 
 
-def png(path, pix):
+def read_png(path):
+    """8-bit RGBA or RGB or grey(+alpha), non-interlaced → (w, h, [[(r,g,b,a)…]])."""
+    data = open(path, "rb").read()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", path
+    pos, idat, w = 8, b"", 0
+    while pos < len(data):
+        ln, = struct.unpack(">I", data[pos:pos + 4]); typ = data[pos + 4:pos + 8]
+        body = data[pos + 8:pos + 8 + ln]; pos += 12 + ln
+        if typ == b"IHDR":
+            w, h, depth, ctype, _, _, inter = struct.unpack(">IIBBBBB", body)
+            assert depth == 8 and inter == 0, "need 8-bit non-interlaced"
+            bpp = {0: 1, 2: 3, 4: 2, 6: 4}[ctype]
+        elif typ == b"IDAT":
+            idat += body
+    raw = zlib.decompress(idat)
+    stride = w * bpp
+    rows, prev = [], bytearray(stride)
+    p = 0
+    for _ in range(h):
+        f = raw[p]; line = bytearray(raw[p + 1:p + 1 + stride]); p += 1 + stride
+        for i in range(stride):
+            a = line[i - bpp] if i >= bpp else 0
+            b = prev[i]
+            c = prev[i - bpp] if i >= bpp else 0
+            if f == 1: line[i] = (line[i] + a) & 255
+            elif f == 2: line[i] = (line[i] + b) & 255
+            elif f == 3: line[i] = (line[i] + (a + b) // 2) & 255
+            elif f == 4:
+                pa, pb, pc = abs(b - c), abs(a - c), abs(a + b - 2 * c)
+                line[i] = (line[i] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        px = []
+        for i in range(0, stride, bpp):
+            v = line[i:i + bpp]
+            if bpp == 4: px.append(tuple(v))
+            elif bpp == 3: px.append((v[0], v[1], v[2], 255))
+            elif bpp == 2: px.append((v[0], v[0], v[0], v[1]))
+            else: px.append((v[0], v[0], v[0], 255))
+        rows.append(px); prev = line
+    return w, h, rows
+
+
+def write_png(path, pix):
     raw = b"".join(b"\x00" + bytes(v for px in row for v in px) for row in pix)
     def chunk(t, d):
-        c = struct.pack(">I", len(d)) + t + d
-        return c + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
+        return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
     open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", N, N, 8, 2, 0, 0, 0))
                            + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
 
 
-def hexc(h):
-    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+def coverage(rows):
+    """The glyph as an alpha map: dark, opaque pixels count. Trim to the drawn box."""
+    h, w = len(rows), len(rows[0])
+    a = [[(px[3] / 255) * (1 - (px[0] + px[1] + px[2]) / 765) for px in row] for row in rows]
+    ys = [y for y in range(h) if any(v > .05 for v in a[y])]
+    xs = [x for x in range(w) if any(a[y][x] > .05 for y in range(h))]
+    y0, y1, x0, x1 = ys[0], ys[-1] + 1, xs[0], xs[-1] + 1
+    return [row[x0:x1] for row in a[y0:y1]]
 
 
-def mix(a, b, t):
-    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
+def box_scale(a, size):
+    """Area-average the alpha map so its longer side becomes `size`."""
+    h, w = len(a), len(a[0])
+    s = size / max(h, w)
+    nw, nh = max(1, round(w * s)), max(1, round(h * s))
+    out = []
+    for oy in range(nh):
+        y0, y1 = oy / s, (oy + 1) / s
+        row = []
+        for ox in range(nw):
+            x0, x1 = ox / s, (ox + 1) / s
+            tot = area = 0.0
+            for y in range(int(y0), min(h, int(math_ceil(y1)))):
+                wy = min(y + 1, y1) - max(y, y0)
+                for x in range(int(x0), min(w, int(math_ceil(x1)))):
+                    wx = min(x + 1, x1) - max(x, x0)
+                    tot += a[y][x] * wx * wy; area += wx * wy
+            row.append(tot / area if area else 0)
+        out.append(row)
+    return out
 
 
-def rrect_sd(x, y, cx, cy, hw, hh, r):
-    dx, dy = abs(x - cx) - hw + r, abs(y - cy) - hh + r
-    return math.hypot(max(dx, 0), max(dy, 0)) + min(max(dx, dy), 0) - r
+def math_ceil(v):
+    return int(-(-v // 1))
 
 
-def seg_sd(x, y, ax, ay, bx, by):
-    vx, vy, wx, wy = bx - ax, by - ay, x - ax, y - ay
-    t = max(0, min(1, (wx * vx + wy * vy) / (vx * vx + vy * vy)))
-    return math.hypot(wx - t * vx, wy - t * vy)
-
-
-def paint(pix, shape_sd, colour, feather=1.0):
-    for y in range(N):
-        for x in range(N):
-            d = shape_sd(x + .5, y + .5)
-            if d < feather:
-                t = 1 if d <= -feather else (feather - d) / (2 * feather)
-                pix[y][x] = mix(pix[y][x], colour, t)
-
-
-def canvas(colour):
-    return [[colour] * N for _ in range(N)]
-
-
-# --- hub: four tiles ---------------------------------------------------------
-pix = canvas(hexc("#1E1E1E"))
-tiles = [("#FCFBF8", 56, 56), ("#D0865A", 124, 56), ("#0E6B45", 56, 124), ("#B3B3B3", 124, 124)]
-for col, cx, cy in tiles:
-    paint(pix, lambda x, y, cx=cx, cy=cy: rrect_sd(x, y, cx, cy, 27, 27, 9), hexc(col))
-png(os.path.join(HERE, "icon-180.png"), pix)
-
-# --- hand route: copper trace + pads on FR4 -----------------------------------
-pix = canvas(hexc("#2A211B"))
-cu = hexc("#D0865A")
-pts = [(40, 132), (40, 90), (76, 54), (110, 54), (140, 84), (140, 48)]
-for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-    paint(pix, lambda x, y, a=(ax, ay), b=(bx, by): seg_sd(x, y, *a, *b) - 7, cu)
-for cx, cy in (pts[0], pts[-1]):
-    paint(pix, lambda x, y, cx=cx, cy=cy: math.hypot(x - cx, y - cy) - 17, cu)
-    paint(pix, lambda x, y, cx=cx, cy=cy: math.hypot(x - cx, y - cy) - 6, hexc("#2A211B"))
-png(os.path.join(HERE, "..", "trilha", "icon-180.png"), pix)
-print("icons written")
+for name, dest in JOBS:
+    w, h, rows = read_png(os.path.join(HERE, "icons", name))
+    g = box_scale(coverage(rows), GLYPH)
+    gh, gw = len(g), len(g[0])
+    pix = [[BG] * N for _ in range(N)]
+    oy, ox = (N - gh) // 2, (N - gw) // 2
+    for y in range(gh):
+        for x in range(gw):
+            t = g[y][x]
+            if t > 0:
+                pix[oy + y][ox + x] = tuple(round(BG[i] + (INK[i] - BG[i]) * t) for i in range(3))
+    out = os.path.join(dest, "icon-180.png")
+    write_png(out, pix)
+    print("wrote", os.path.normpath(out), "from", name)

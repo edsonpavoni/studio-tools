@@ -4,6 +4,8 @@
 
 Reusable tools. Not projects, not artworks. If a thing gets used again on a different job, it belongs here.
 
+**Icons (Edson, 2026-10-20):** every studio tool takes its glyph from one set, *Alchemy* by chinnan on The Noun Project (45 glyphs, https://thenounproject.com/browse/collection-icon/alchemy-18255/). Rascunho = *strategy*, trilha = *understand*, the iPad hub = *delight*. The files, the attribution and the list live in `studio/ipad/icons/README.md`; `studio/ipad/make_icons.py` turns a glyph into a tool's `icon-180.png` (bone white on black). Pages are black. A new tool picks its glyph from the same set and adds a row there.
+
 **Created 2026-08-12.** Everything here runs locally. No API keys, no per-minute cost, and **no audio or document ever leaves the machine**, which is the point when the material is a private creative session, a legal case, or an unreleased artwork.
 
 ---
