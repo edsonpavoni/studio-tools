@@ -1,0 +1,1018 @@
+{
+ "name": "cam-calib-plate",
+ "units": "mm",
+ "written": "2026-10-21 by the raio camera session",
+ "purpose": "camera calibration grid: 11x11 filled dots, 13 mm pitch (-65..+65), plus 3 orientation dots of 2.5 mm at three corners (asymmetric: the missing corner is +70,+70). Engrave on black-anodised aluminium or any dark-marking scrap, autofocused. Do NOT move the plate between engraving and the camera capture.",
+ "origin": "galvo coordinates as raio sends them (identity mapping, LOG 17:24: +x right, +y back)",
+ "material": "dark scrap (black anodised Al preferred); recipe = the studio's aluminium engrave, raio's choice; one pass that marks bright is enough",
+ "layers": [
+  {
+   "name": "dots",
+   "kind": "engrave",
+   "shapes": [
+    {
+     "circle": [
+      -65.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      -65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      -52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      -39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      -26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      -13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      0.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      13.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      26.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      39.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      52.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -65.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -52.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -39.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -26.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      -13.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      0.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      13.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      26.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      39.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      52.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    },
+    {
+     "circle": [
+      65.0,
+      65.0
+     ],
+     "d": 1.2,
+     "fill": true
+    }
+   ]
+  },
+  {
+   "name": "orientation",
+   "kind": "engrave",
+   "shapes": [
+    {
+     "circle": [
+      -70,
+      -70
+     ],
+     "d": 2.5,
+     "fill": true
+    },
+    {
+     "circle": [
+      70,
+      -70
+     ],
+     "d": 2.5,
+     "fill": true
+    },
+    {
+     "circle": [
+      -70,
+      70
+     ],
+     "d": 2.5,
+     "fill": true
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "dots": 121,
+  "orientation": 3
+ }
+}

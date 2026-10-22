@@ -1,0 +1,15 @@
+# reddit-3f53_base-internals-omni1-like.jpg
+
+- **Source:** https://i.redd.it/3f53kkd8ad7e1.jpg (direct image host; the Reddit post it came from is unknown — a web search on the id found nothing, and Reddit refuses fetches from here)
+- **Downloaded:** 2026-10-21, curl, 4032x2268 JPEG, original kept. Crops in `crops/3f53_*`.
+- **Which machine:** NOT confirmed as a B6. The layout (Tohun FYD-400QLT-S PSU top, second meshed PSU left, DM542 stepper driver, small relay board, BJJCZ board with rainbow ribbon at right, DB25 pigtail and foot pedal outside) has the same component set and layout as the **ComMarker Omni 1** base in the YouTube video (youtube/frames/f15_019.jpg, x_0245.jpg), where the DM542 is stated to be the **rotary** driver. Treat as Omni 1 (or same-family unibody), not B6.
+
+## What it shows (VERIFIED unless marked)
+- Open black aluminium base tray, top-down. Corrugated loom exits right side (to the column/head), two grey-capped round panel connectors on the right wall, a USB-B on the BJJCZ board facing the wall.
+- **PSU 1** (top centre): brand "Tohun" (red logo), "Type: FYD-400QLT-S, Switching Power supply", Chinese text "激光打标系列专用电源" (laser marking series dedicated PSU), INPUT 220VAC (180-240VAC) 4.0A / 110VAC (100-130VAC) 6.3A, 50/60Hz, 110V/220V selector switch. OUTPUT (DC): V1 +12V 29A (V1 ADJ pot), V2 +5V 5A, V3 ±15V 3A; terminals labelled +12V, +12V, COM, COM, +5V, COM, +15V, COM, -15V (order approximate). It has a fan grille (black, square) at its left end; no fan model, size or voltage is readable. Crop: crops/3f53_fyd-400qlt-s-psu.jpg.
+- **PSU 2** (left): perforated-mesh enclosed switching PSU with CAUTION sticker; no model label visible in this shot (label side down/not visible). Its terminal strip on the right; red/black wires.
+- **DM542 "Microstep Driver"** (centre-bottom): signal block PUL+/PUL-/DIR+/DIR-/ENA+/ENA- with yellow and red wires (a yellow loop bridging pins); power/motor block GND, +V, A+, A-, B+, B-. Current table (1.00A … 4.20A) and pulse/rev table printed; DIP positions not readable. Crop: crops/3f53_dm542.jpg.
+- **BJJCZ controller** (right): green board, "BJJCZ" silkscreen, Cyclone-style FPGA (logo visible, text unreadable), QC PASSED sticker, holographic sticker, USB-B, rainbow 10-wire ribbon into a blue IDC on the top edge and a second ribbon on the right edge. Model silkscreen partly legible as "MODEL: LMC-Digi-LV…" plus a date code — too small to read fully (crops/3f53_bjjcz-board-label.jpg). "Digi" (digital galvo) would differ from the B6's LMCV4 fiber board: INFERRED, low confidence.
+- Front-left wall: red mushroom E-stop-style button (top-left) wired red/black; blue-collared connector below it; two more round panel connectors lower-left wired red/black (likely power switch/indicator). Pedal (grey, Omron-style foot switch) lying outside top-right with its cable; a DB25 male plug lying on the floor (bottom centre).
+- Small green board with relay visible just above DM542 (partly hidden by cable) — same relay board as in the video.
+- Nothing visible about a Type-C or a Laser_SW_V05 board.

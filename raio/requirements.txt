@@ -1,0 +1,6 @@
+# raio: the driver, the importer and the planner (the board page and server use the standard library only)
+pyusb>=1.2
+numpy>=1.26
+shapely>=2.0
+# optional: cam/ (the bed camera helper) uses opencv for its calibration tools
+# opencv-python>=4.8

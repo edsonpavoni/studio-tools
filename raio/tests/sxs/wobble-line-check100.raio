@@ -1,0 +1,66 @@
+{
+ "raio": 1,
+ "name": "wobble-line-check-100",
+ "created": "2026-10-21T21:35:36",
+ "source": {
+  "file": "studio/raio/tests/sxs/wobble-line-lightburn.lbrn2",
+  "kind": "lbrn2",
+  "sha1": "48effb56bb75a2bf24d9d6369cccc5ad9e4f086b",
+  "app_version": "1.7.08",
+  "device": "B6 Mopa",
+  "defaults_applied": [],
+  "defaults_by_layer": {},
+  "import_warnings": [],
+  "imported": "2026-10-21T21:35:36"
+ },
+ "material": {
+  "name": "",
+  "thickness_mm": null
+ },
+ "notes": "raio side-by-side 4: 20 mm wobble LINE (mark, not cut): 30 %, 800 mm/s, 65 kHz, 350 ns, wobble 0.15/0.025, 1 pass; y=+6 (LightBurn). Loupe on the line width.",
+ "layers": [
+  {
+   "id": "L1",
+   "name": "AL_WOBBLE_100_CHECK",
+   "order": 0,
+   "output": true,
+   "mode": "line",
+   "power_pct": 100,
+   "speed_mm_s": 800.0,
+   "freq_khz": 65.0,
+   "pulse_ns": 350,
+   "passes": 1,
+   "wobble": {
+    "size_mm": 0.15,
+    "step_mm": 0.025
+   },
+   "fill": null,
+   "kerf_mm": 0,
+   "delays": {
+    "on_us": -300,
+    "off_us": 100,
+    "poly_us": 100,
+    "jump_us": 500,
+    "end_us": 300
+   },
+   "shapes": [
+    {
+     "type": "polyline",
+     "closed": false,
+     "pts": [
+      [
+       -10.0,
+       6.0
+      ],
+      [
+       10.0,
+       6.0
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "z": null,
+ "log": []
+}

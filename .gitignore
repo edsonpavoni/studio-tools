@@ -31,3 +31,35 @@ rascunho/design/reference.jpg
 trilha/current-board
 trilha/recent-boards.json
 ipad/__pycache__/
+
+# raio: run logs and camera photos are private (the room, the people); runtime state is written by raio itself;
+# the .html pages are rendered from the .md (jeitinho render.py); studio.css copies come from jeitinho transmute sync;
+# the teardown images are third-party (Reddit, YouTube, a LightBurn manual page): notes kept, pictures local
+raio/logs/
+raio/board/next.json
+raio/board/live.json
+raio/board/history.json
+raio/board/stills.json
+raio/board/preview.svg
+raio/board/.live.*.tmp
+raio/*.html
+raio/research/*.html
+raio/cam/*.html
+!raio/cam/index.html
+raio/**/studio.css
+!raio/board/studio.css
+!raio/cam/studio.css
+raio/research/teardown/**/*.jpg
+raio/research/teardown/**/*.jpeg
+raio/research/teardown/**/*.png
+raio/research/teardown/youtube/*.vtt
+raio/research/teardown/youtube/transcript.txt
+# raio, private: the studio's own history (artworks, clients, archive paths), the import report over the studio's
+# files, the recipe library (sources in a personal archive), an email draft, an internal session brief; the
+# machine's lens-correction file (the vendor's, machine-specific)
+raio/research/01-studio-history.md
+raio/tests/import-report.md
+raio/research/materials.json
+raio/research/commarker-support-email.md
+raio/HANDOFF-camera.md
+raio/lmc/*.cor

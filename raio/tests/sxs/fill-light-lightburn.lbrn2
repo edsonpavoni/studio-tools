@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Scan">
+        <index Value="1"/>
+        <name Value="FILL_LIGHT"/>
+        <maxPower Value="50"/>
+        <maxPower2 Value="20"/>
+        <speed Value="1000"/>
+        <frequency Value="40000"/>
+        <numPasses Value="2"/>
+        <QPulseWidth Value="200"/>
+        <interval Value="0.05"/>
+        <angle Value="0"/>
+        <anglePerPass Value="45"/>
+        <bidir Value="1"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="1" W="10.000000" H="10.000000" Cr="0">
+        <XForm>1 0 0 1 78.750000 78.750000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="raio side-by-side 5b: 10x10 mm light FILL at the field centre: Scan, 1000 mm/s, 50 %, 40 kHz, 200 ns, interval 0.05, angle 0, bidir, 2 passes, +45 deg per pass. Same place, two sheets."/>
+</LightBurnProject>

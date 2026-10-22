@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="2.1.00" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False" AskForSendName="True">
+    <Thumbnail Source="iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFbUlEQVR4nO3Yv2rUWRzG4e/8WUUDuomQhKSKLBYibr8otjbiLaTxDgTZS7DZfkEbey2tbIxIELSw2CAWFknjBBKMmjWumZktcgXJHvixvM9zAS/nFOczw683nU6nBUTqd30AoDsCAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAINnz27Fndu3evrl692vVZ6uXLl7WxsVHD4bDJ3v37VU+fVl282GTuxPb3q0ajqufPG46urlZtb1ctLDQcPYHRqGppqerBg2aT1z9er6XhUp3tnW22eRIfDj/UrTO36u65u032JpODev/+15qZ+a3J3n/x7dvbWl7+o4YHBwf15cuXunHjRtdnqkePHtV0Om229+lT1enTVV1fbWur6vXrxqPb20cP79q1xsPHtLZ2FIGGNg836+aZm7U8WG66e1xbh1u1N9lruDip798/1Pz87w03T+br1xc1mRzUcHZ2tubn52t1dbXrM9WdO3eq1+s121tcrLp8+ejHsktv31Y9ftx4dGHh6PF3fbnxuGp9venkuf65un32dl356UrT3eN688+bWhi0+4fV6w2q1xvU3Nxqs82T2tn5swaDn30DgGQCAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACDYcHd3t0ajUT18+LDrs9RkMqnpdNps7+PHqr/+qur6altbVXt7jUdHo6q1tarxuPHwMb14UbWz03Ty8+RzPfn7Sb0avGq6e1wbPzbqfP98s73pdFxV49rd7f6tHR5u13j8qYYzMzM1Oztb6+vrXZ+pLl26VL1er9ne3NzR++j6avv7VSsrjUeXlo4i0PXldnaqFhebTq4MV+rdj3e1ebjZdPe4JjWpC/0LDRf7derUL7W/3/1bGw7nqt8/U71py59c4H/FNwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGACAMEEAIIJAAQTAAgmABBMACCYAEAwAYBgAgDBBACCCQAEEwAIJgAQTAAgmABAMAGAYAIAwQQAggkABBMACCYAEEwAIJgAQDABgGD/AsOMuoV4JBs6AAAAAElFTkSuQmCC"/>
+    <VariableText>
+        <Start Value="0"/>
+        <End Value="999"/>
+        <Current Value="0"/>
+        <Increment Value="1"/>
+        <AutoAdvance Value="0"/>
+    </VariableText>
+    <UIPrefs>
+        <Optimize_ByLayer Value="0"/>
+        <Optimize_ByGroup Value="-1"/>
+        <Optimize_ByPriority Value="1"/>
+        <Optimize_WhichDirection Value="0"/>
+        <Optimize_InnerToOuter Value="1"/>
+        <Optimize_ByDirection Value="0"/>
+        <Optimize_ReduceTravel Value="1"/>
+        <Optimize_HideBacklash Value="0"/>
+        <Optimize_ReduceDirChanges Value="0"/>
+        <Optimize_ChooseCorners Value="0"/>
+        <Optimize_AllowReverse Value="1"/>
+        <Optimize_RemoveOverlaps Value="0"/>
+        <Optimize_OptimalEntryPoint Value="0"/>
+        <Optimize_OverlapDist Value="0.025"/>
+    </UIPrefs>
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="PW_50ns"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="100"/>
+        <QPulseWidth Value="50"/>
+        <numPasses Value="20"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="1"/>
+        <name Value="PW_100ns"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="100"/>
+        <QPulseWidth Value="100"/>
+        <numPasses Value="20"/>
+        <priority Value="1"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="2"/>
+        <name Value="PW_200ns"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="100"/>
+        <numPasses Value="20"/>
+        <priority Value="2"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="3"/>
+        <name Value="PW_350ns"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="100"/>
+        <QPulseWidth Value="350"/>
+        <numPasses Value="20"/>
+        <priority Value="3"/>
+    </CutSetting>
+    <CutSetting type="Cut">
+        <index Value="4"/>
+        <name Value="PW_500ns"/>
+        <maxPower Value="100"/>
+        <maxPower2 Value="20"/>
+        <speed Value="100"/>
+        <QPulseWidth Value="500"/>
+        <numPasses Value="20"/>
+        <priority Value="4"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="5" H="5" Cr="0">
+        <XForm>1 0 0 1 60 100</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="1" W="5" H="5" Cr="0">
+        <XForm>1 0 0 1 68 100</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="2" W="5" H="5" Cr="0">
+        <XForm>1 0 0 1 76 100</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="3" W="5" H="5" Cr="0">
+        <XForm>1 0 0 1 84 100</XForm>
+    </Shape>
+    <Shape Type="Rect" CutIndex="4" W="5" H="5" Cr="0">
+        <XForm>1 0 0 1 92 100</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="raio pulse-width row: [50, 100, 200, 350, 500] ns left→right, 100% 100mm/s 20kHz x20. Same aluminium as raio's rows."/>
+</LightBurnProject>

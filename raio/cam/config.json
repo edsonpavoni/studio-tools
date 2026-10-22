@@ -1,0 +1,28 @@
+{
+  "camera": {
+    "name": "Innomaker-U20CAM-720P",
+    "vid": 3141,
+    "pid": 25447,
+    "size": "1280x720",
+    "fps": 30,
+    "live_size": "1280x720",
+    "live_fps": 10
+  },
+  "note": "name = substring of the AVFoundation device name; vid/pid = the USB camera's ids (decimal or 0x\u2026), for the usb poll. 0x0C45:0x6367 = Innomaker U20CAM-720P, set 2026-10-21 18:46 \u00b7 shutter_when_armed=false: the eye stays open during jobs (bed camera on the frame, Edson 2026-10-21 19:06); true for a head-mounted camera",
+  "shutter_when_armed": false,
+  "uvc": {
+    "auto-exposure-mode": 1,
+    "exposure-time-abs": 156,
+    "gain": 0,
+    "auto-white-balance-temp": "false",
+    "white-balance-temp": 4600,
+    "power-line-frequency": 2,
+    "brightness": 0,
+    "contrast": 32,
+    "saturation": 64,
+    "sharpness": 3,
+    "gamma": 100,
+    "backlight-compensation": 80
+  },
+  "uvc_locked_at": "2026-10-21 19:53:28"
+}

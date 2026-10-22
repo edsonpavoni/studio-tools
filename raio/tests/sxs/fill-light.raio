@@ -1,0 +1,31 @@
+{
+  "raio": 1,
+  "name": "fill-light-lightburn",
+  "created": "2026-10-21T22:53:00",
+  "source": {"file": "studio/raio/tests/sxs/fill-light-lightburn.lbrn2", "kind": "lbrn2", "sha1": "09892f5fcb34ce4c753323dcf1dab91dd7e020be", "app_version": "1.7.08", "device": "B6 Mopa", "defaults_applied": [], "defaults_by_layer": {}, "import_warnings": [], "imported": "2026-10-21T22:53:00"},
+  "material": {"name": "", "thickness_mm": null},
+  "notes": "raio side-by-side 5b: 10x10 mm light FILL at the field centre: Scan, 1000 mm/s, 50 %, 40 kHz, 200 ns, interval 0.05, angle 0, bidir, 2 passes, +45 deg per pass. Same place, two sheets.",
+  "layers": [
+    {
+      "id": "L1",
+      "name": "FILL_LIGHT",
+      "order": 0,
+      "output": true,
+      "mode": "fill",
+      "power_pct": 50.0,
+      "speed_mm_s": 1000.0,
+      "freq_khz": 40.0,
+      "pulse_ns": 200,
+      "passes": 2,
+      "wobble": null,
+      "fill": {"interval_mm": 0.05, "angle_deg": 0.0, "angle_per_pass_deg": 45.0, "bidir": true, "cross": false, "even_odd": true},
+      "kerf_mm": 0,
+      "delays": {"on_us": -300, "off_us": 100, "poly_us": 100, "jump_us": 500, "end_us": 300},
+      "shapes": [
+        {"type":"polyline","closed":true,"pts":[[-5.0,-5.0],[5.0,-5.0],[5.0,5.0],[-5.0,5.0]]}
+      ]
+    }
+  ],
+  "z": null,
+  "log": []
+}

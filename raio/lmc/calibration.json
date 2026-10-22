@@ -1,0 +1,7 @@
+{
+  "field_mm": 157.5,
+  "note": "Per-axis scale applied in LMC.mm() on top of the 157.5 mm field and jcz15.cor. From the 80 mm calibration square, 2026-10-21 20:11: commanded 80 x 80, one pass, autofocused aluminium; caliper outside-to-outside 79.15 (x, left-right) x 78.90 (y, front-back). scale = 80 / measured. Re-measure after any lens, cor or focus change.",
+  "scale_x": 1.010739,
+  "scale_y": 1.013942,
+  "measured": {"date": "2026-10-21", "commanded_mm": 80, "x_mm": 79.15, "y_mm": 78.90, "material": "aluminium, new sheet", "passes": 1, "by": "Edson, caliper"}
+}

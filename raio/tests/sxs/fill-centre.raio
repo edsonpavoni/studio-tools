@@ -1,0 +1,31 @@
+{
+  "raio": 1,
+  "name": "fill-centre-lightburn",
+  "created": "2026-10-21T22:47:03",
+  "source": {"file": "studio/raio/tests/sxs/fill-centre-lightburn.lbrn2", "kind": "lbrn2", "sha1": "886ed8e175046e90f3b63d9faa65ce59d3658d92", "app_version": "1.7.08", "device": "B6 Mopa", "defaults_applied": [], "defaults_by_layer": {}, "import_warnings": [], "imported": "2026-10-21T22:47:03"},
+  "material": {"name": "", "thickness_mm": null},
+  "notes": "raio side-by-side 5: 10x10 mm FILL at the field centre, copper-engrave recipe (Scan, 150 mm/s, 100 %, 20 kHz, 350 ns, interval 0.02, angle 0, bidir, 3 passes). Same place for both programs, different sheets.",
+  "layers": [
+    {
+      "id": "L1",
+      "name": "FILL_CU_ENGRAVE",
+      "order": 0,
+      "output": true,
+      "mode": "fill",
+      "power_pct": 100.0,
+      "speed_mm_s": 150.0,
+      "freq_khz": 20.0,
+      "pulse_ns": 350,
+      "passes": 3,
+      "wobble": null,
+      "fill": {"interval_mm": 0.02, "angle_deg": 0.0, "angle_per_pass_deg": 0.0, "bidir": true, "cross": false, "even_odd": true},
+      "kerf_mm": 0,
+      "delays": {"on_us": -300, "off_us": 100, "poly_us": 100, "jump_us": 500, "end_us": 300},
+      "shapes": [
+        {"type":"polyline","closed":true,"pts":[[-5.0,-5.0],[5.0,-5.0],[5.0,5.0],[-5.0,5.0]]}
+      ]
+    }
+  ],
+  "z": null,
+  "log": []
+}

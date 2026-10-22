@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightBurnProject AppVersion="1.7.08" DeviceName="B6 Mopa" FormatVersion="1" MaterialHeight="0" MirrorX="False" MirrorY="False">
+    <CutSetting type="Cut">
+        <index Value="0"/>
+        <name Value="SQ_70pct"/>
+        <maxPower Value="70.0"/>
+        <maxPower2 Value="20"/>
+        <speed Value="200.0"/>
+        <frequency Value="20000"/>
+        <QPulseWidth Value="200"/>
+        <priority Value="0"/>
+    </CutSetting>
+    <Shape Type="Rect" CutIndex="0" W="100.000000" H="100.000000" Cr="0">
+        <XForm>1 0 0 1 78.750000 78.750000</XForm>
+    </Shape>
+    <Notes ShowOnLoad="1" Notes="raio side-by-side: 100.0 mm square, 70.0% 200.0mm/s 20.0kHz 200ns x1"/>
+</LightBurnProject>

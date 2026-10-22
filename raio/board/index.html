@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en" data-kind="board" data-face="nigredo"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>raio</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="raio"><meta name="theme-color" content="#000000">
+<!-- sigil: best (Alchemy · chinnan · Noun Project #556659), icon-180.png made by studio/ipad/make_icons.py -->
+<link rel="icon" href="board/icon-180.png"><link rel="apple-touch-icon" href="board/icon-180.png">
+<link rel="stylesheet" href="studio.css">
+<style>
+/* what is this thing? raio is the laser's bench in the dark: the job on the material, its layers in run order, and one word: go.
+   board · nigredo (the bench is dark) · aurum only for the job outline and the GO.
+   One column for the Superset pane beside the session (~780 px, Edson 2026-10-21 23:11); the iPad gets the same column.
+   Top to bottom: header (state · laser · camera = the live-view switch) · warnings · the job (preview, field, layers) · the act (frame + fire / progress, pause + cancel / result) · live camera when on · history.
+   The camera is off unless asked for: the session takes the stills, the page shows them. Contract: board/CONTRACT.md. */
+main{max-width:860px;margin:0 auto;padding:16px 16px 48px}
+/* sticky, not fixed: the Superset pane did not show a fixed bottom bar (00:26) */
+.dock{position:sticky;top:0;z-index:5;background:var(--bg);margin:8px -16px 0;padding:10px 16px 6px}
+#draw .pv{margin-top:6px}
+.dock .line{position:relative;height:20px;margin-top:8px}
+#live{margin-top:6px}
+.lv{display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;align-items:start}
+#live.big .lv{grid-template-columns:minmax(0,1fr)}
+.thumbslot{display:block;padding:0;border:0;min-height:0;cursor:zoom-in;background:none}
+#live.big .thumbslot{cursor:zoom-out}
+/* the result: the camera's photo of the bed after the run (Edson, 02:02), beside the facts */
+#a-done.big .lv{grid-template-columns:minmax(0,1fr)}
+#a-done.big #res-shot{cursor:zoom-out}
+.thumbslot img.shot{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--rule)}
+#a-done.big .thumbslot img.shot{object-fit:contain;background:var(--bg)}
+.thumbslot .noshot{display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;border:1px solid var(--rule);color:var(--faint);font-size:var(--fs-label)}
+.pshots{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pshots a{border:0;display:block;width:84px}
+.pshots img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--rule)}
+.pshots span{display:block;font-size:var(--fs-label);color:var(--faint)}
+.thumbslot .cam{margin:0;aspect-ratio:16/9}   /* the InnoMaker streams 1280 × 720 */
+.lvinfo .prog{margin-top:2px}
+.dock .why,.dock .msg{position:absolute;inset:0;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .msg{background:var(--bg);color:var(--fg)}
+section+section,#alerts+section{margin-top:var(--gap)}
+#job{margin-top:var(--gap)}
+
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:var(--hit)}
+header h1{margin:0;display:flex;align-items:center;gap:12px}
+.sigil{width:30px;height:30px;flex:none}
+header .grow{flex:1}
+.sub{display:flex;flex-wrap:wrap;gap:4px 16px;margin:2px 0 0 42px}
+/* the machine's two truths, big enough to read from the bed: is the laser on USB, is the eye on */
+/* laser · camera: small, a dot each (Edson, 23:53: "smaller, circles instead of ticks"); camera is also the live-view switch */
+.dev{display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-meta);color:var(--quiet);min-height:var(--hit);padding:0 4px;border:0;text-transform:none;letter-spacing:.02em}
+.dev .dot.off{background:var(--faint);box-shadow:none}
+button.dev.on{color:var(--fg)}
+.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)} .pill.bad{color:var(--bad)} .pill.ink{color:var(--fg)}
+/* warnings: one line each, a hue on the left rule, never a box of colour */
+.alerts:empty{display:none}
+.alerts p{margin:10px 0 0;padding:6px 0 6px 12px;border-left:1px solid var(--warn);color:var(--fg);font-size:var(--fs-meta)}
+.alerts p.bad{border-left-color:var(--bad)}
+.alerts p i{font-style:normal;color:var(--quiet)}
+/* the job */
+.jobhead{display:flex;align-items:flex-start;gap:12px}
+.jobhead .grow{flex:1;min-width:0}
+.jobname{margin:2px 0 4px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#j-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.5em}
+#j-label{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{white-space:nowrap;overflow:hidden}
+.notes{color:var(--quiet);margin:4px 0 0;font-size:var(--fs-meta)}
+.jnotes{margin:12px 0 0;font-size:var(--fs-label);line-height:1.5;color:var(--faint)}
+.pv{position:relative;margin-top:14px;border:1px solid var(--rule);background:var(--bg);height:min(42vh,440px);min-height:220px}
+.pv img{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);object-fit:contain}
+.pv .size{position:absolute;left:10px;bottom:6px}
+/* where the job sits on the 150 × 150 field (the periphery distorts: same place for side-by-sides) */
+.field{position:absolute;right:10px;bottom:10px;width:84px;height:84px;background:var(--bg)}
+@media (max-width:520px){.field{width:60px;height:60px}}
+.field svg{display:block;width:100%;height:100%}
+.scroll{overflow-x:auto;margin:12px 0 6px}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-meta)}
+th,td{text-align:left;padding:8px 7px;border-bottom:1px solid var(--rule);white-space:nowrap;width:1%}
+th:first-child,td:first-child{padding-left:0} th:last-child,td:last-child{width:auto;padding-right:0}
+th{font-weight:400;font-size:var(--fs-label);letter-spacing:.08em;text-transform:uppercase;color:var(--quiet)}
+td{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--quiet)}
+td.n,th.n{text-align:right}
+td.nm{font-family:var(--sans);color:var(--fg)}
+/* the layers, in run order: one line of settings (value + a faint unit, no header row), path and wobble/fill small beneath
+   (Edson, 2026-10-22 00:13: "segments still do not look clean enough; path and wobble info smaller") */
+.layers{list-style:none;margin:14px 0 6px;padding:0;min-width:540px}
+.layers li{display:grid;grid-template-columns:10px minmax(0,1fr) 40px 52px 84px 62px 56px 30px;column-gap:12px;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid var(--rule)}
+.layers li:first-child{border-top:1px solid var(--rule)}
+.layers .sw{width:9px;height:9px;align-self:center}
+.layers .nm{color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layers .v{font-family:var(--mono);font-size:var(--fs-meta);color:var(--quiet);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.layers .v u{text-decoration:none;font-size:var(--fs-label);color:var(--faint);margin-left:3px}
+.layers .md{font-size:var(--fs-meta);color:var(--quiet)}
+.layers .sub{grid-column:2 / -1;font:var(--fs-label)/1.4 var(--mono);color:var(--faint);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.layers li.dark .nm,.layers li.dark .v,.layers li.dark .md{color:var(--faint)}
+.layers li.cur .nm{color:var(--accent)} .layers li.cur .v{color:var(--fg)}
+.totals{display:flex;flex-wrap:wrap;gap:4px 18px;margin:8px 0 0}
+.totals span{font-family:var(--mono);font-size:var(--fs-meta)}
+.totals i{font-style:normal;color:var(--quiet);font-family:var(--sans);font-size:var(--fs-label);letter-spacing:.1em;text-transform:uppercase;margin-right:6px}
+.est,.est i{color:var(--faint)!important}   /* Edson: time has small importance */
+/* the act */
+/* the heroes: serif, like a name (Edson, 23:53) */
+.go,.halt,.frame{display:block;width:100%;min-height:76px;font:400 var(--fs-name)/1 var(--serif);letter-spacing:.04em;text-transform:none;transition:color var(--t) var(--ease),background-color var(--t) var(--ease),border-color var(--t) var(--ease)}
+.go{color:var(--accent);border-color:var(--accent)}
+.go:hover{color:var(--accent);border-color:var(--accent)}
+.go.armed{background:var(--accent);color:var(--bg)}
+/* framing on → fire is live: red, so the hot button reads hot (Edson, 2026-10-22 00:11) */
+.go.live,.go.live:hover{color:var(--bad);border-color:var(--bad)}
+.go.live.armed{background:var(--bad);color:var(--bg)}
+/* Frame and Fire, always, for the job on screen (Edson, 23:47); fire is dead until the frame is on (23:55); STOP never sits beside fire */
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:12px}
+.frame{color:var(--fg);border-color:var(--quiet)}
+.frame.on{color:var(--warn);border-color:var(--warn)}   /* the red is on the bed: tap again to end it */
+.go:disabled,.frame:disabled{opacity:.35;cursor:default}
+.halt{color:var(--bad);border-color:var(--bad)}
+.halt:hover{color:var(--bad);border-color:var(--bad)}
+.why{color:var(--quiet);font-size:var(--fs-meta);margin:10px 0 0}
+.msg{min-height:20px;margin:8px 0 0;font-size:var(--fs-meta);color:var(--quiet);opacity:0;transition:opacity var(--t) var(--ease)}
+.msg.lit{opacity:1}
+.prog{display:flex;flex-wrap:wrap;gap:4px 22px;align-items:baseline;margin:4px 0 14px}
+.prog .big{font-family:var(--mono);font-size:var(--fs-name);color:var(--fg)}
+.prog span{font-family:var(--mono);font-size:var(--fs-meta)}
+.prog i{font-style:normal;color:var(--quiet);font-family:var(--sans);font-size:var(--fs-label);letter-spacing:.1em;text-transform:uppercase;margin-right:6px}
+.bar.tall{height:4px}
+.bar.tall>i{background:var(--bad)}
+.cap{margin:6px 0 0;font-size:var(--fs-meta);color:var(--quiet)}
+.cap .stamp{margin-right:10px}
+.cam{position:relative;margin-top:10px;background:var(--bg);border:1px solid var(--rule);aspect-ratio:4/3}
+.cam img{width:100%;height:100%;object-fit:contain;display:block}
+.cam.off img{visibility:hidden}
+.cam.off::after{content:"camera offline";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:var(--fs-meta)}
+/* history */
+.hist td{color:var(--quiet)} .hist td.nm{color:var(--fg)}
+.hist a{border:0}
+.links{display:flex;gap:22px;margin-top:10px}
+.links a{display:inline-flex;align-items:center;min-height:var(--hit)}
+.empty{color:var(--quiet);padding:8px 0;margin:0}
+[hidden]{display:none!important}
+</style></head>
+<body><main>
+<header>
+  <h1 class="name"><img class="sigil" src="board/icon-180.png" alt="" width="30" height="30">raio</h1>
+  <span id="pill"></span>
+  <span class="grow"></span>
+  <span class="dev" id="d-laser"><i class="dot off"></i>laser</span>
+  <button class="dev" id="d-cam" title="live camera"><i class="dot off"></i>camera</button>
+</header>
+<div class="sub"><span class="stamp">B6 MOPA</span><span class="stamp" id="cal"></span><span class="stamp" id="upd"></span></div>
+<!-- Order (Edson, 2026-10-22 00:26: "the buttons should always be visible … below the name"):
+     job head (one line each) · the buttons (sticky: they stay at the top of the pane when it scrolls) · the drawing ·
+     warnings · progress / result · camera · layers · runs. Nothing above the buttons changes height, so they never jump. -->
+<section id="job" hidden>
+  <span class="label" id="j-label"></span>
+  <p class="name jobname" id="j-name"></p>
+  <p class="notes" id="j-meta"></p>
+</section>
+
+<div class="dock" id="dock" hidden>
+  <div class="pair" id="a-red"><button class="frame" id="frame">frame</button><button class="go" id="go">fire</button></div>
+  <div class="pair" id="a-stop" hidden><button class="frame" id="pause">pause</button><button class="halt" id="stop">cancel</button></div>
+  <div class="line"><p class="why" id="a-why"></p><p class="msg" id="a-msg"></p></div>
+</div>
+
+<!-- the live box: only while framing or cutting (Edson, 00:32): a small camera feed (tap = the whole column) beside the progress;
+     the drawing moves down under it -->
+<section id="live" hidden>
+  <div class="lv">
+    <button class="thumbslot" id="thumbslot" title="tap: bigger / smaller"></button>
+    <div class="lvinfo">
+      <div id="a-fire" hidden>
+        <span class="label" id="a-flabel">Firing</span>
+        <div class="prog" id="a-prog"></div>
+        <div class="bar tall"><i id="a-bar" style="width:0"></i></div>
+        <p class="cap" id="a-sent"></p>
+      </div>
+      <div id="a-framing" hidden>
+        <span class="label">Framing</span>
+        <p class="cap">The red is tracing the contour. Check it sits on the material, then fire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="draw" hidden>
+  <div class="pv" id="pv"><img id="j-preview" alt=""><span class="stamp size" id="j-size"></span><div class="field" id="j-field"></div></div>
+</section>
+
+<div class="alerts" id="alerts"></div>
+
+<section class="card" id="act" hidden>
+  <div id="a-done" hidden>
+    <div class="lv" id="res-lv">
+      <button class="thumbslot" id="res-shot" title="tap: bigger / smaller"></button>
+      <div><span class="label">Result</span><dl class="kv" id="a-res"></dl><div class="pshots" id="res-pauses"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="photos" hidden>
+  <figure class="cam" id="cam" style="margin:0"><img id="camimg" alt=""></figure>
+</section>
+
+<section class="card" id="lay" hidden>
+  <span class="label">Layers · in run order</span>
+  <div class="scroll"><ol class="layers" id="j-layers"></ol></div>
+  <div class="totals" id="j-totals"></div>
+  <p class="jnotes" id="j-notes"></p>
+</section>
+
+<section id="hist">
+  <span class="label">Runs</span>
+  <div class="scroll"><table class="hist"><tbody id="h-rows"></tbody></table></div>
+  <div class="links"><a href="/PLAN.html">plan</a><a href="/LOG.html">log</a><a href="/MACHINE.html">machine</a></div>
+</section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num = (v, d = 0) => v == null || v === "" ? "—" : (typeof v === "number" ? (Number.isInteger(v) && d === 0 ? String(v) : v.toFixed(d)) : esc(v));
+const trim = v => v == null ? "—" : (typeof v === "number" ? String(+v.toFixed(3)) : esc(v));
+const clock = d => d.toTimeString().slice(0, 5);
+const hms = iso => iso ? esc(String(iso).slice(11, 19)) : "—";
+const when = iso => { const d = new Date(iso); return isNaN(d) ? esc(iso || "—") : d.toLocaleDateString("en-GB", {day: "numeric", month: "short"}) + " " + clock(d); };
+const secs = s => s == null ? "—" : s >= 90 ? `${Math.floor(s / 60)} min ${Math.round(s % 60)} s` : `${(+s).toFixed(1)} s`;
+const ago = iso => { const t = Date.parse(iso); return isNaN(t) ? null : (Date.now() - t) / 1000; };
+
+// wobble size is LightBurn's radius (raio, 22:29): say "r" so the number means the same in both programs
+function wobfill(L){
+  const w = L.wobble, f = L.fill;
+  if (w){
+    const [r, st] = typeof w === "object" ? [w.size_mm, w.step_mm] : String(w).split("/");
+    return `wobble r ${trim(typeof r === "string" ? +r : r)} · step ${trim(typeof st === "string" ? +st : st)}`;
+  }
+  if (f) return typeof f === "object"
+    ? `fill ${trim(f.interval_mm)} · ${trim(f.angle_deg)}°${f.angle_per_pass_deg ? " +" + trim(f.angle_per_pass_deg) + "°/pass" : ""}`
+    : `fill ${esc(String(f).replace(" mm @ ", " · ").replace(/(\d)\.0°/g, "$1°"))}`;
+  return "—";
+}
+function material(m){
+  if (!m) return "";
+  if (typeof m === "string") return esc(m);
+  return [m.name, m.thickness_mm != null ? m.thickness_mm + " mm" : ""].filter(Boolean).map(esc).join(" · ");
+}
+
+// ── the field: 150 × 150, centre cross, the job's box in aurum ──
+function field(b){
+  if (!b || b.length !== 4) return "";
+  const [x0, y0, x1, y1] = b, m = 1.2;                       // keep a tiny job visible
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = Math.max(x1 - x0, m * 2), h = Math.max(y1 - y0, m * 2);
+  return `<svg viewBox="-77 -77 154 154" aria-label="position on the field">
+    <rect x="-75" y="-75" width="150" height="150" fill="none" stroke="var(--rule-strong)" stroke-width="1.5"/>
+    <path d="M-8 0H8M0 -8V8" stroke="var(--faint)" stroke-width="1.5"/>
+    <rect x="${(cx - w / 2).toFixed(2)}" y="${(-cy - h / 2).toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="none" stroke="var(--accent)" stroke-width="2"/></svg>`;
+}
+
+// ── the camera: off unless asked (Edson, 23:11); the session takes the stills ──
+const EYE = `//${location.hostname}:8878`;
+let camLive = false;
+let streaming = false, inBox = false;
+function stream(on){                                      // one stream, never reconnected on a poll
+  if (on === streaming) return;
+  streaming = on;
+  const img = $("camimg");
+  if (on){
+    $("cam").classList.remove("off");
+    img.onerror = () => $("cam").classList.add("off");
+    img.onload = () => $("cam").classList.remove("off");
+    img.src = `${EYE}/live.mjpg`;
+  } else { img.onerror = null; img.removeAttribute("src"); }
+}
+function camPlace(box){                                   // box: framing or cutting → the feed sits in the live box and runs
+  inBox = box;
+  const slot = box ? $("thumbslot") : $("photos");
+  if ($("cam").parentNode !== slot) slot.appendChild($("cam"));
+  $("photos").hidden = box || !camLive;
+  stream(box || camLive);
+  $("d-cam").classList.toggle("on", box || camLive);
+}
+function camSet(on){ camLive = on; camPlace(inBox); }
+$("d-cam").addEventListener("click", () => inBox ? $("live").classList.toggle("big") : camSet(!camLive));
+$("thumbslot").addEventListener("click", () => $("live").classList.toggle("big"));
+$("res-shot").addEventListener("click", () => $("a-done").classList.toggle("big"));
+
+function pill(text, cls){ $("pill").innerHTML = text ? `<span class="pill ${cls || ""}">${esc(text)}</span>` : ""; }
+function dev(id, label, v){
+  $(id).querySelector(".dot").className = "dot " + (v === true ? "ok" : v === false ? "" : "off");   // .dot alone = --bad
+}
+
+// ── the job card ──
+let lastPreview = "";
+function renderJob(n, live){
+  $("job").hidden = $("draw").hidden = $("lay").hidden = !n;
+  if (!n) return;
+  // an error after the GO is not "did not run": the material may be partly marked
+  const label = {ready: "Ready · frame to see it on the bed", red: "Next · red on the bed", firing: "Now · firing", done: "Just ran", stopped: "Stopped",
+                 error: n.go_at ? "Broke partway · the material may be marked" : "Did not run"}[n.state] || n.state;
+  $("j-label").textContent = label;
+  $("j-name").textContent = n.job || "—";
+  $("j-meta").innerHTML = [material(n.material), n.file ? `<span class="mono">${esc(n.file.replace(/^.*?studio\/raio\//, ""))}</span>` : ""].filter(Boolean).join(" · ");
+  $("j-notes").textContent = n.notes || "";
+  const cur = n.state === "firing" && live ? live.layer : null;
+  const layers = (n.layers || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const v = (x, unit, d = 0) => `<span class="v">${x == null ? "—" : num(+x, d)}${x == null ? "" : `<u>${unit}</u>`}</span>`;
+  $("j-layers").innerHTML = layers.length ? layers.map(L => {
+    const sub = [L.path_mm == null ? "" : `${num(+L.path_mm, 0)} mm`, (L.wobble || L.fill) ? wobfill(L) : ""].filter(Boolean).join(" · ");
+    return `<li class="${L.output === false ? "dark" : ""}${cur && L.name === cur ? " cur" : ""}">
+      <span class="sw" style="background:${esc(L.color || "var(--faint)")}"></span>
+      <span class="nm">${esc(L.name)}${L.output === false ? ' <span class="label">off</span>' : ""}</span>
+      <span class="md">${esc(L.mode)}</span>${v(L.power_pct, "%")}${v(L.speed_mm_s, "mm/s")}${v(L.freq_khz, "kHz")}${v(L.pulse_ns, "ns")}
+      <span class="v"><u style="margin:0 2px 0 0">×</u>${num(L.passes)}</span>
+      ${sub ? `<span></span><span class="sub">${sub}</span>` : ""}</li>`; }).join("")
+    : `<li><span></span><span class="nm">no layers in next.json</span></li>`;
+  const t = n.totals || {};
+  const est = t.est_s ?? t.est;
+  $("j-totals").innerHTML = `<span><i>passes</i>${num(t.passes)}</span><span><i>marked</i>${t.marked_m == null ? "—" : num(+t.marked_m, 2) + " m"}</span>`
+    + `<span><i>packets</i>${num(t.packets)}</span>` + (est ? `<span class="est"><i>est</i>${secs(+est)}</span>` : "");
+  const pv = n.preview_svg ? `/${n.preview_svg}?v=${encodeURIComponent((n.red_since || "") + (n.job || ""))}` : "";
+  if (pv !== lastPreview){ lastPreview = pv; if (pv) $("j-preview").src = pv; else $("j-preview").removeAttribute("src"); }
+  $("pv").hidden = !pv;
+  const b = n.bbox;
+  $("j-size").textContent = b ? `${(b[2] - b[0]).toFixed(1)} × ${(b[3] - b[1]).toFixed(1)} mm · centre ${((b[0] + b[2]) / 2).toFixed(1)}, ${((b[1] + b[3]) / 2).toFixed(1)}` : "";
+  $("j-field").innerHTML = field(b);
+}
+
+// ── the act ──
+function renderAct(n, live, d){
+  const st = n && n.state;
+  const done = ["done", "stopped", "error"].includes(st);
+  $("dock").hidden = !n;
+  $("a-red").hidden = !n || st === "firing";
+  $("a-stop").hidden = st !== "firing";            // pause + cancel take the very same place as frame + fire
+  $("act").hidden = !done;                          // the card keeps only the result now
+  const framing = st === "red" || !!(pend && pend.on);
+  $("live").hidden = !(framing || st === "firing");
+  $("a-fire").hidden = st !== "firing";
+  $("a-framing").hidden = !(framing && st !== "firing");
+  // pause is a switch while firing: "paused" (warn) until tapped again; the raio side reports the board's real state in live.json
+  const paused = st === "firing" && live && live.state === "paused";
+  const asked = pauseWant !== null && Date.now() < pauseWant.until ? pauseWant.on : !!d.pause_asked;
+  if (pauseWant && Date.now() >= pauseWant.until) pauseWant = null;
+  $("pause").classList.toggle("on", asked || paused);
+  $("pause").textContent = paused ? "resume" : asked ? "pausing" : "pause";
+  $("a-flabel").textContent = paused ? "Paused · emission off" : "Firing";
+  camPlace(framing || st === "firing");
+  $("a-done").hidden = !done;
+  if (st === "firing") $("a-why").textContent = "";
+  if (n && st !== "firing"){
+    // a tapped frame wins over the poll until raio confirms it (or 12 s pass): no flicker back
+    if (pend && (Date.now() > pend.until || (st === "red") === pend.on)) pend = null;
+    const red = pend ? pend.on : st === "red";
+    $("frame").classList.toggle("on", red);
+    $("frame").textContent = red ? "framing" : "frame";
+    $("frame").disabled = !!d.busy;
+    const live = st === "red" && !d.busy && !(pend && !pend.on);   // fire wakes on the real red only (Edson, 23:55), never on the optimistic flip
+    $("go").disabled = !live;
+    $("go").classList.toggle("live", live);
+    $("a-why").textContent = d.busy ? d.busy
+      : red ? "The red stays on until you tap framing again or fire. Look for it on the material: the board cannot prove the source emits."
+      : "Fire wakes when the frame is on.";
+    if (!live) disarm();
+  } else disarm();
+  if (st === "firing"){
+    const L = live && (live.state === "firing" || live.state === "paused") ? live : {};
+    const sent = L.packets_sent ?? 0, tot = L.packets ?? (n.totals && n.totals.packets);
+    // the cutting clock: from the GO, minus every pause (the timer stops while paused, Edson 02:01)
+    const held = (L.paused_s || 0) + (L.paused_since ? ago(L.paused_since) || 0 : 0);
+    const el = n.go_at ? Math.max(0, ago(n.go_at) - held) : L.elapsed_s;
+    const est = n.totals && n.totals.est_s;
+    $("a-bar").style.width = tot ? Math.min(100, 100 * sent / tot).toFixed(1) + "%" : "0";
+    $("a-prog").innerHTML = `<span class="big">${el == null ? "—" : el.toFixed(1) + " s"}</span>`
+      + (L.layer ? `<span><i>layer</i>${esc(L.layer)}</span>` : "")
+      + (L.pass != null ? `<span><i>pass</i>${num(L.pass)} / ${num(L.passes)}</span>` : "")
+      + (est ? `<span class="est"><i>est</i>${secs(est)}</span>` : "");
+    $("a-sent").innerHTML = `<span class="stamp">sent ${num(sent)} / ${num(tot)} packets</span>` + (tot && sent >= tot ? ` · all sent, the board is finishing` : "");
+  }
+  if (["done", "stopped", "error"].includes(st)){
+    const cls = {done: "ok", stopped: "warn", error: "bad"}[st];
+    const est = n.totals && n.totals.est_s;
+    const kv = [["state", `<span class="pill ${cls}">${esc(st)}</span>`]];
+    if (n.reason) kv.push(["why", esc(n.reason)]);
+    if (n.seconds != null) kv.push(["time", `<span class="mono">${secs(n.seconds)}</span>` + (est ? ` <span class="stamp">est ${secs(est)}</span>` : "")]);
+    if (n.go_at) kv.push(["go", `<span class="mono">${hms(n.go_at)}</span>`]);
+    if (n.done_at) kv.push(["ended", `<span class="mono">${hms(n.done_at)}</span>`]);
+    $("a-res").innerHTML = kv.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+    const shot = n.end_photo_url || "";
+    if ($("res-shot").dataset.src !== shot){                   // set once per photo: no flicker on the poll
+      $("res-shot").dataset.src = shot;
+      $("res-shot").innerHTML = shot ? `<img class="shot" src="${esc(shot)}" alt="the bed after the run">`
+        : `<span class="noshot">${n.end_photo ? "no photo" : "photo…"}</span>`;
+    }
+    const ps = n.pause_photo_urls || [];
+    $("res-pauses").innerHTML = ps.map((u, i) => `<a href="${esc(u)}" target="_blank"><img src="${esc(u)}" alt=""><span>pause ${i + 1}</span></a>`).join("");
+  }
+}
+
+// ── warnings: what today taught (UI-BRIEF.md) ──
+function renderAlerts(d){
+  const n = d.next, e = d.eye, h = (d.history || [])[0], out = [];
+  const st = n && n.state;
+  if (!e) out.push(["", "RaioEye is offline (:8878): no laser state, no photos."]);
+  else if (e.laser === false) out.push([st === "red" ? "bad" : "", `The laser is off USB. <i>${st === "red" ? "The red cannot be on the bed: switch the machine on, then mark again." : "Switched off for the noise? Switch it on before the next job."}</i>`]);
+  if (d.run) out.push(["bad", `${esc(d.run.what)} did not start (exit ${esc(d.run.code)}). <i>${esc(d.run.line)}</i>`]);
+  if (st === "error" && n.reason) out.push(["bad", esc(n.reason) + (n.detail ? ` <i>${esc(n.detail)}</i>` : "")]);
+  // how the previous mark ended (raio writes next.after; history only holds runs that fired)
+  const prev = st === "red" ? (n.after || (h && h.state)) : null;
+  const ended = {stopped: "was stopped", error: "ended in an error", firing: "died while firing", red: "died while in red"}[prev];
+  if (ended) out.push(["", `The last mark ${ended}. <i>After a stop, an abort or a USB change, a short red rectangle first proves the source still emits.</i>`]);
+  $("alerts").innerHTML = out.map(([c, t]) => `<p class="${c}">${t}</p>`).join("");
+}
+
+function renderHistory(d){
+  const rows = (d.history || []).slice(0, 5);
+  const cls = {done: "ok", stopped: "warn", error: "bad"};
+  $("h-rows").innerHTML = rows.length ? rows.map(r => `<tr><td>${when(r.go_at || r.done_at)}</td><td class="nm">${esc(r.job)}</td>
+    <td class="n">${secs(r.seconds)}</td><td><span class="pill ${cls[r.state] || ""}">${esc(r.state || "—")}</span></td>
+    <td>${r.end_photo_url ? `<a href="${esc(r.end_photo_url)}" target="_blank">photo</a>` : ""}</td></tr>`).join("")
+    : `<tr><td class="nm">No run yet.</td></tr>`;
+}
+
+// ── FIRE: two taps, so a brush does not fire it; the second tap is the go ──
+let armTimer = null, hotUntil = 0, pend = null;
+function disarm(){ clearTimeout(armTimer); armTimer = null; $("go").classList.remove("armed"); $("go").textContent = "fire"; }
+function say(id, text){ const m = $(id); m.textContent = text; m.classList.add("lit"); clearTimeout(m._t); m._t = setTimeout(() => m.classList.remove("lit"), 4000); }
+async function post(path){
+  try { const r = await fetch(path, {method: "POST", cache: "no-store"}); return {code: r.status, body: await r.json()}; }
+  catch (e) { return {code: 0, body: {reason: "board offline"}}; }
+}
+$("go").addEventListener("click", async () => {
+  const go = $("go");                                   // one tap fires (Edson, 00:32): the frame being on is the gate
+  go.disabled = true;
+  const r = await post("/api/fire");
+  go.disabled = false;
+  say("a-msg", r.code === 200 ? "go sent" : (r.body.reason || "refused"));
+  hotUntil = Date.now() + 20000; tick();
+});
+$("frame").addEventListener("click", async () => {
+  disarm(); const fr = $("frame"), off = fr.classList.contains("on");   // a switch: on until tapped again or fire
+  pend = {on: !off, until: Date.now() + 12000};
+  fr.classList.toggle("on", !off); fr.textContent = off ? "frame" : "framing";   // answer the tap now; the poll confirms
+  if (off){ $("go").classList.remove("live"); $("go").disabled = true; }
+  fr.disabled = true;
+  const r = await post(off ? "/api/stop" : "/api/frame");
+  fr.disabled = false;
+  if (r.code !== 200) pend = null;
+  say("a-msg", r.code === 200 ? (off ? "the red ends, nothing fires" : "raio started: the red comes on in a moment") : (r.body.reason || "refused"));
+  hotUntil = Date.now() + 20000; tick();
+});
+let pauseWant = null;
+$("pause").addEventListener("click", async () => {
+  const on = !$("pause").classList.contains("on");
+  pauseWant = {on, until: Date.now() + 3000};               // answer the tap now; the poll confirms
+  $("pause").classList.toggle("on", on); $("pause").textContent = on ? "pausing" : "resuming";
+  const r = await post("/api/pause");
+  if (r.code !== 200){ pauseWant = null; say("a-msg", r.body.reason || "refused"); }
+  else say("a-msg", r.body.paused ? "pause sent: the list holds, emission off" : "resume sent");
+  hotUntil = Date.now() + 8000; tick();
+});
+$("stop").addEventListener("click", async () => { hotUntil = Date.now() + 8000; const r = await post("/api/stop"); say("a-msg", r.code === 200 ? "cancel sent: the board aborts" : (r.body.reason || "refused")); tick(); });
+
+// ── ?demo: many made-up layers to judge the list's look; frame and fire are off in this view (nothing real is shown) ──
+const DEMO = new URLSearchParams(location.search).has("demo");
+const P = ["#d1495b", "#2e86ab", "#3a9d23", "#e08e0b", "#8e44ad", "#16a085", "#c0392b", "#2c3e50"];
+const DEMO_LAYERS = [
+  ["H_P070_DRILL", "line", 80, 300, 30, 200, 8, 3021.4, "0.1/0.02", null],
+  ["H_P100_DRILL", "line", 85, 300, 30, 200, 10, 1880.2, "0.12/0.02", null],
+  ["CLEAR_COPPER", "fill", 60, 1500, 40, 200, 3, 18240.0, null, "0.03 mm @ 0.0° +90.0°/pass"],
+  ["ISOLATE", "line", 70, 600, 45, 120, 4, 812.6, null, null],
+  ["SILK_TEXT", "fill", 20, 2000, 60, 4, 1, 940.3, null, "0.02 mm @ 45.0°"],
+  ["MASK_OPEN", "fill", 35, 1200, 50, 30, 2, 2210.8, null, "0.04 mm @ 0.0° +45.0°/pass"],
+  ["OUTLINE_CUT", "line", 100, 200, 40, 350, 24, 410.2, "0.15/0.025", null],
+  ["ANNEAL_BLACK", "fill", 30, 50, 200, 2, 1, 120.0, null, "0.01 mm @ 0.0°"],
+  ["GUIDE", "line", 10, 1000, 30, 200, 1, null, null, null, false],
+].map(([name, mode, power_pct, speed_mm_s, freq_khz, pulse_ns, passes, path_mm, wobble, fill, output = true], i) =>
+  ({order: i, name, mode, power_pct, speed_mm_s, freq_khz, pulse_ns, passes, path_mm, wobble, fill, output, color: output ? P[i % P.length] : "#9a9a9a"}));
+
+// ── poll: 1 s while firing, 2 s in red, 15 s otherwise ──
+let pollTimer = null;
+async function tick(){
+  clearTimeout(pollTimer);
+  let wait = 15000;
+  try {
+    const d = await (await fetch("/api/state", {cache: "no-store"})).json();
+    if (DEMO){
+      d.next = Object.assign({}, d.next || {}, {job: "demo · many layers", state: "ready", layers: DEMO_LAYERS, notes: "Made-up layers to judge the list. Nothing here can fire."});
+      d.busy = "demo view: frame and fire are off";
+    }
+    const n = d.next, live = d.live, st = n && n.state;
+    wait = st === "firing" || Date.now() < hotUntil ? 500 : (st === "red" || d.busy) ? 2000 : 15000;
+    const pills = {ready: ["ready", "ink"], red: ["red", "warn"], firing: ["firing", "bad"], done: ["done", "ok"], stopped: ["stopped", "warn"], error: ["error", "bad"]};
+    const [pt, pc] = pills[st] || ["idle", ""];
+    pill(pt, pc);
+    dev("d-laser", "laser", d.eye ? !!d.eye.laser : null);
+    dev("d-cam", "camera", d.eye ? !!d.eye.camera : null);
+    $("cal").textContent = d.cal ? `calibrated ${when(d.cal.date + "T12:00").replace(/ \d\d:\d\d$/, "")} · x ${(+d.cal.x).toFixed(4)} y ${(+d.cal.y).toFixed(4)}` : "not calibrated";
+    renderAlerts(d); renderJob(n, live); renderAct(n, live, d); renderHistory(d);
+    $("upd").textContent = "updated " + clock(new Date());
+  } catch (e) { $("upd").textContent = "board offline"; }
+  pollTimer = setTimeout(tick, wait);
+}
+tick();
+</script>
+</body></html>

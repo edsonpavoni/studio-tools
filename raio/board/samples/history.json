@@ -1,0 +1,11 @@
+[
+ {
+  "job": "wobble-circle-raio",
+  "file": "tests/sxs/wobble-circle-raio.raio",
+  "go_at": "2026-10-21T20:14:40",
+  "done_at": "2026-10-21T20:14:46",
+  "seconds": 5.8,
+  "state": "done",
+  "end_photo": "no photo: sample"
+ }
+]
